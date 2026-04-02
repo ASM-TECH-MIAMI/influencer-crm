@@ -983,6 +983,10 @@ function calculateMatch(company, inf) {
   for (const tag of antiTags) { if (tag && text.includes(tag)) antiHits++; }
   let tagScore = idealTags.length > 0 ? Math.min(100, (tagHits / Math.min(idealTags.length, 6)) * 100) : 50;
   tagScore = Math.max(0, tagScore - (antiHits * 30));
+  // Universal platforms (PicLink, etc.) shouldn't be penalized for sparse sheet data
+  if (dna.serviceType === 'platform' && dna.exclusivity === 'none' && tagScore < 50) {
+    tagScore = Math.max(tagScore, 50); // floor at 50 for universal platforms
+  }
 
   // 5. QUALITY & AI SCORE (weight: 10%)
   let qualityScore = 50; // neutral
