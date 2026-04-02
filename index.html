@@ -306,34 +306,57 @@ function parseSheetData(data) {
 
   return rows.map(row => {
     if (!row?.c) return null;
-    const username = get(row, 'Perfil').replace(/^@/, '').trim();
-    const name = get(row, 'Nombre').trim();
-    if (!username || !name) return null;
+    const username = get(row, 'username').replace(/^@/, '').trim();
+    if (!username) return null;
 
-    let followers = get(row, 'Followers');
-    followers = followers.replace(/(\d+)\.0([KMB])/gi, '$1$2');
+    // Format followers number
+    let followersRaw = get(row, 'followers_num');
+    let followers = '';
+    if (followersRaw) {
+      const num = parseInt(followersRaw, 10);
+      if (!isNaN(num)) {
+        if (num >= 1000000) followers = (num / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
+        else if (num >= 1000) followers = (num / 1000).toFixed(1).replace(/\.0$/, '') + 'K';
+        else followers = String(num);
+      } else {
+        followers = followersRaw;
+      }
+    }
+
+    // Use username as display name (capitalize first letter)
+    const name = username.replace(/[._]/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+
+    // Derive potential from ai_score
+    const aiScore = parseFloat(get(row, 'ai_score')) || 0;
+    let potential = '';
+    if (aiScore >= 7) potential = 'Alto';
+    else if (aiScore >= 4) potential = 'Medio';
+    else if (aiScore > 0) potential = 'Bajo';
 
     return {
       id: username,
       username,
       name,
-      country: get(row, 'Country'),
-      city: get(row, 'Cuidad'),
+      country: get(row, 'country'),
+      city: get(row, 'city'),
       followers,
-      posts: get(row, 'Posts'),
-      following: get(row, 'Following'),
-      source: get(row, 'Fuente'),
-      potential: get(row, 'Potencial'),
-      lifestyle: get(row, 'Lifestyle'),
-      bio: get(row, 'Bio'),
-      accountStatus: get(row, 'Estado Cuenta'),
-      verified: get(row, 'Verificación IG'),
-      appearance: get(row, 'Aspecto Físico'),
-      contentType: get(row, 'Tipo de Contenido'),
-      links: get(row, 'Links en Bio'),
-      category: get(row, 'Categoría'),
-      ambassador: get(row, 'Embajador Potencial'),
-      notes_sheet: get(row, 'Notas'),
+      posts: get(row, 'posts_num'),
+      following: get(row, 'following_num'),
+      source: get(row, 'source_acccount'),
+      potential,
+      lifestyle: '',
+      bio: get(row, 'bio_completa'),
+      accountStatus: get(row, 'active_following') === 'true' ? 'Activa' : '',
+      verified: '',
+      appearance: '',
+      contentType: get(row, 'category'),
+      links: get(row, 'link_bio'),
+      category: get(row, 'category'),
+      ambassador: get(row, 'ai_status'),
+      notes_sheet: get(row, 'ai_reason'),
+      aiScore,
+      hasReplied: get(row, 'has_replied'),
+      followups: get(row, 'number_followups'),
     };
   }).filter(Boolean);
 }
