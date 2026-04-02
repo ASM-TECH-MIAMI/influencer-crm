@@ -276,8 +276,27 @@
     display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: all .15s;
   }
   .creator-modal-close:hover { background: rgba(255,255,255,0.12); color: var(--text); }
-  .creator-modal-body { padding: 16px 20px 24px; }
+  .creator-modal-body { padding: 0; }
   @keyframes modalSlideIn { from { opacity: 0; transform: translateY(16px) scale(0.97); } to { opacity: 1; transform: translateY(0) scale(1); } }
+
+  /* Modal Tab Nav */
+  .modal-tabs {
+    display: flex; border-bottom: 1px solid var(--border); background: var(--bg2);
+    position: sticky; top: 0; z-index: 3;
+  }
+  .modal-tab {
+    flex: 1; padding: 12px 8px; text-align: center; font-size: 0.76rem; font-weight: 600;
+    color: var(--text3); cursor: pointer; border: none; background: none;
+    border-bottom: 2px solid transparent; transition: all .2s; letter-spacing: 0.3px;
+  }
+  .modal-tab:hover { color: var(--text2); background: rgba(255,255,255,0.02); }
+  .modal-tab.active { color: var(--company-accent); border-bottom-color: var(--company-accent); }
+  .modal-tab-icon { display: block; font-size: 1rem; margin-bottom: 2px; }
+  .modal-section { padding: 18px 20px; animation: fadeIn .2s ease; }
+  .modal-section-title {
+    font-size: 0.7rem; color: var(--text3); text-transform: uppercase; letter-spacing: 1px;
+    font-weight: 600; margin-bottom: 12px; padding-bottom: 6px; border-bottom: 1px solid var(--border);
+  }
 
   /* ═══ Worked Today Section ═══ */
   .worked-today {
@@ -1701,9 +1720,17 @@ function getTodayWorked() {
     .sort((a,b) => new Date(b.lastOpen) - new Date(a.lastOpen));
 }
 
-/* ─── Creator Modal Content ─── */
+/* ─── Creator Modal Content — Tabbed ─── */
+const MODAL_TABS = [
+  { id: 'match', label: 'Match', icon: '\u2726' },
+  { id: 'profile', label: 'Creadora', icon: '\u2605' },
+  { id: 'approach', label: 'Approach', icon: '\u2709' },
+  { id: 'actions', label: 'Acciones', icon: '\u2699' },
+];
+
 function CreatorModal({ inf, infState, onUpdateState, onClose, currentUser, company, allCompanies }) {
   const [noteText, setNoteText] = useState('');
+  const [activeTab, setActiveTab] = useState('match');
   const msgs = getCompanyMessages(company, inf);
   const tip = TIPS_DB[inf.username] || genTip(inf);
   const statusObj = STATUS_OPTIONS.find(s => s.value === infState.status) || STATUS_OPTIONS[0];
@@ -1737,131 +1764,215 @@ function CreatorModal({ inf, infState, onUpdateState, onClose, currentUser, comp
 
   const notes = Array.isArray(infState.notes)?infState.notes:(infState.notes?[{text:infState.notes,user:'Sistema',date:new Date().toISOString()}]:[]);
 
-  // Close on Escape
   useEffect(() => {
     const handler = (e) => { if (e.key === 'Escape') onClose(); };
     window.addEventListener('keydown', handler);
     return () => window.removeEventListener('keydown', handler);
   }, [onClose]);
 
+  // Detect archetypes for display
+  const archetypes = detectArchetypes(inf);
+  const activeArchetypes = Object.entries(archetypes).filter(([k,v]) => v > 0 && k !== 'brandReady').map(([k]) => k);
+  const isBrandReady = archetypes.brandReady > 0;
+
   return (
     <div className="creator-modal-overlay" onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}>
       <div className="creator-modal">
+        {/* Header */}
         <div className="creator-modal-header">
           <div className="card-info">
-            <div className="avatar">{initial}</div>
+            <div className="avatar" style={{width:'42px',height:'42px',fontSize:'1.1rem'}}>{initial}</div>
             <div style={{minWidth:0}}>
-              <div className="card-name" style={{fontSize:'1rem'}}>{inf.name}</div>
+              <div className="card-name" style={{fontSize:'1.05rem'}}>{inf.name}</div>
               <div className="card-user"><a href={`https://instagram.com/${inf.username}`} target="_blank">@{inf.username}</a></div>
               <div className="card-meta">{inf.followers&&`${inf.followers} seg`}{inf.city&&` · ${inf.city}`}{inf.country&&`, ${inf.country}`}</div>
             </div>
           </div>
           <div style={{display:'flex',alignItems:'center',gap:8}}>
-            <span className={`match-badge ${matchStyle.cls}`}>{matchPct}%</span>
+            <span className={`match-badge ${matchStyle.cls}`} style={{fontSize:'0.82rem',padding:'5px 12px'}}>{matchPct}%</span>
             <span className={`status-badge ${statusObj.cls}`}>{statusObj.label}</span>
             <button className="creator-modal-close" onClick={onClose}>&times;</button>
           </div>
         </div>
-        <div className="creator-modal-body">
-          {/* Company identity + match banner */}
-          <div className="company-identity">
-            <div className="co-dot" />
-            Contactando como <strong style={{marginLeft:4,display:'inline-flex',alignItems:'center',gap:'6px'}}>
-              <span style={{display:'inline-flex',alignItems:'center'}}>
-                {company?.logo ?
-                  <img src={company.logo} alt={companyName} style={{width:'20px',height:'20px',objectFit:'contain',borderRadius:'3px'}} /> :
-                  <span>{company?.icon}</span>
-                }
-              </span>
-              {companyName}
-            </strong>
-            <span style={{marginLeft:'auto',fontSize:'0.85rem',fontWeight:700}}>{matchPct}% Match — {getMatchLabel(matchPct)}</span>
-          </div>
 
-          {/* Cross-company match comparison */}
-          {allCompanies && allCompanies.length > 1 && (
-            <div className="match-comparison">
-              <div className="match-comparison-title">Match por compañía</div>
-              {allCompanies.map(co => {
-                const pct = calculateMatch(co, inf);
-                const mc = getMatchColor(pct);
-                const t = getTheme(co.theme);
-                return (
-                  <div className="match-row" key={co.id}>
-                    <div className="co-dot-sm" style={{background:t.accent2}} />
-                    <span className="co-label" style={{display:'inline-flex',alignItems:'center',gap:'6px'}}>
-                      <span style={{display:'inline-flex',alignItems:'center'}}>
-                        {co.logo ?
-                          <img src={co.logo} alt={co.name} style={{width:'18px',height:'18px',objectFit:'contain',borderRadius:'3px'}} /> :
-                          <span>{co.icon}</span>
-                        }
-                      </span>
-                      {co.name}
-                    </span>
-                    <div className="match-bar"><div className="match-bar-fill" style={{width:`${pct}%`,background:mc.color}} /></div>
-                    <span className="match-pct" style={{color:mc.color}}>{pct}%</span>
-                  </div>
-                );
-              })}
+        {/* Tab Navigation */}
+        <div className="modal-tabs">
+          {MODAL_TABS.map(tab => (
+            <button key={tab.id} className={`modal-tab${activeTab===tab.id?' active':''}`} onClick={() => setActiveTab(tab.id)}>
+              <span className="modal-tab-icon">{tab.icon}</span>
+              {tab.label}
+            </button>
+          ))}
+        </div>
+
+        <div className="creator-modal-body">
+
+          {/* ═══ TAB: MATCH ═══ */}
+          {activeTab === 'match' && (
+            <div className="modal-section">
+              {/* Company identity banner */}
+              <div className="company-identity">
+                <div className="co-dot" />
+                Contactando como <strong style={{marginLeft:4,display:'inline-flex',alignItems:'center',gap:'6px'}}>
+                  <span style={{display:'inline-flex',alignItems:'center'}}>
+                    {company?.logo ?
+                      <img src={company.logo} alt={companyName} style={{width:'20px',height:'20px',objectFit:'contain',borderRadius:'3px'}} /> :
+                      <span>{company?.icon}</span>
+                    }
+                  </span>
+                  {companyName}
+                </strong>
+                <span style={{marginLeft:'auto',fontSize:'0.9rem',fontWeight:700}}>{matchPct}% — {getMatchLabel(matchPct)}</span>
+              </div>
+
+              {/* Cross-company match comparison */}
+              {allCompanies && allCompanies.length > 1 && (
+                <div className="match-comparison" style={{marginTop:12}}>
+                  <div className="match-comparison-title">Match por compañía</div>
+                  {allCompanies.slice().sort((a,b) => calculateMatch(b,inf) - calculateMatch(a,inf)).map(co => {
+                    const pct = calculateMatch(co, inf);
+                    const mc = getMatchColor(pct);
+                    const t = getTheme(co.theme);
+                    const isActive = co.id === company?.id;
+                    return (
+                      <div className="match-row" key={co.id} style={isActive?{background:'rgba(99,102,241,0.06)',borderRadius:'6px',padding:'6px 8px',margin:'-2px -8px'}:{}}>
+                        <div className="co-dot-sm" style={{background:t.accent2}} />
+                        <span className="co-label" style={{display:'inline-flex',alignItems:'center',gap:'6px',color:isActive?'var(--text)':'var(--text3)'}}>
+                          <span style={{display:'inline-flex',alignItems:'center'}}>
+                            {co.logo ?
+                              <img src={co.logo} alt={co.name} style={{width:'18px',height:'18px',objectFit:'contain',borderRadius:'3px'}} /> :
+                              <span>{co.icon}</span>
+                            }
+                          </span>
+                          {co.name}
+                        </span>
+                        <div className="match-bar"><div className="match-bar-fill" style={{width:`${pct}%`,background:mc.color}} /></div>
+                        <span className="match-pct" style={{color:mc.color,fontWeight:isActive?800:700}}>{pct}%</span>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+
+              {/* Detected signals */}
+              <div style={{marginTop:14}}>
+                <div className="modal-section-title">Signals detectados</div>
+                <div style={{display:'flex',gap:6,flexWrap:'wrap'}}>
+                  {activeArchetypes.map(a => (
+                    <span key={a} className="badge" style={{background:'rgba(99,102,241,0.1)',color:'var(--company-accent)',padding:'4px 10px',fontSize:'0.72rem'}}>{a}</span>
+                  ))}
+                  {isBrandReady && <span className="badge" style={{background:'rgba(16,185,129,0.12)',color:'var(--green)',padding:'4px 10px',fontSize:'0.72rem'}}>Brand Ready</span>}
+                  {activeArchetypes.length === 0 && !isBrandReady && <span style={{fontSize:'0.78rem',color:'var(--text3)'}}>Sin signals claros del Sheet — datos limitados</span>}
+                </div>
+              </div>
             </div>
           )}
 
-          {inf.bio && <><div className="section-title">Bio</div><div className="bio-text">{inf.bio}</div></>}
-          <div className="tip-box"><div className="msg-label" style={{color:'var(--yellow)'}}>Tip</div><div className="msg-text">{tip}</div></div>
-
-          <div className="section-title">
-            Mensajes —
-            <span style={{display:'inline-flex',alignItems:'center',gap:'6px',marginLeft:'8px'}}>
-              <span style={{display:'inline-flex',alignItems:'center'}}>
-                {company?.logo ?
-                  <img src={company.logo} alt={companyName} style={{width:'18px',height:'18px',objectFit:'contain',borderRadius:'3px'}} /> :
-                  <span>{company?.icon}</span>
-                }
-              </span>
-              {companyName}
-            </span>
-          </div>
-          {msgs && <>
-            <MsgCard label="Primer contacto" text={msgs.first} currentUser={currentUser} influencer={inf.username} companyName={companyName} />
-            <MsgCard label="Follow Up 1" text={msgs.fu1} color="var(--teal)" currentUser={currentUser} influencer={inf.username} companyName={companyName} />
-            <MsgCard label="Follow Up 2" text={msgs.fu2} color="var(--orange)" currentUser={currentUser} influencer={inf.username} companyName={companyName} />
-            <MsgCard label="Follow Up 3" text={msgs.fu3} color="var(--red)" currentUser={currentUser} influencer={inf.username} companyName={companyName} />
-          </>}
-
-          <div className="section-title">Acciones</div>
-          <div style={{display:'flex',gap:'8px',flexWrap:'wrap',margin:'8px 0'}}>
-            <button className="btn btn-green btn-sm" onClick={nextStep}>Siguiente paso</button>
-            <select className="btn btn-sm" value={infState.status} onChange={e=>setStatus(e.target.value)}>
-              {STATUS_OPTIONS.map(s=><option key={s.value} value={s.value}>{s.label}</option>)}
-            </select>
-          </div>
-          <div className="contact-counter"><span style={{fontSize:'0.8rem',color:'var(--text2)'}}>Contactos:</span><span className="counter-val">{infState.count}</span></div>
-
-          <div className="section-title">Notas del equipo</div>
-          {notes.map((n,i)=>(
-            <div className="note-entry" key={i}>
-              <span className="note-author">{n.user||'Sistema'}</span>
-              {n.company && <span className="note-company-tag" style={{background:'var(--company-glow)',color:'var(--company-accent)'}}>{n.company}</span>}
-              <span className="note-date">{new Date(n.date).toLocaleDateString('es-ES',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'})}</span>
-              <div className="note-text">{n.text}</div>
-            </div>
-          ))}
-          <div className="add-note-wrap">
-            <textarea className="notes-area" value={noteText} onChange={e=>setNoteText(e.target.value)} placeholder="Escribe una nota..." onKeyDown={e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();addNote();}}} />
-            <button className="btn btn-sm btn-accent" onClick={addNote} style={{alignSelf:'flex-end'}}>+</button>
-          </div>
-
-          {infState.history&&infState.history.length>0&&<>
-            <div className="section-title">Historial</div>
-            {infState.history.slice().reverse().map((h,i)=>(
-              <div className="history-item" key={i}>
-                <span className="history-date">{h.date}</span>
-                {h.user&&<>{' — '}<span className="history-user">{h.user}</span></>}
-                {h.company&&<span style={{color:'var(--text2)',fontSize:'0.7rem'}}> ({h.company})</span>}
-                {' — '}{h.action}
+          {/* ═══ TAB: PROFILE ═══ */}
+          {activeTab === 'profile' && (
+            <div className="modal-section">
+              {/* Key stats */}
+              <div style={{display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:10,marginBottom:16}}>
+                <div style={{background:'rgba(255,255,255,0.03)',border:'1px solid var(--border)',borderRadius:'10px',padding:'12px',textAlign:'center'}}>
+                  <div style={{fontSize:'1.2rem',fontWeight:700,color:'var(--text)'}}>{inf.followers||'—'}</div>
+                  <div style={{fontSize:'0.68rem',color:'var(--text3)',marginTop:2}}>Seguidores</div>
+                </div>
+                <div style={{background:'rgba(255,255,255,0.03)',border:'1px solid var(--border)',borderRadius:'10px',padding:'12px',textAlign:'center'}}>
+                  <div style={{fontSize:'1.2rem',fontWeight:700,color:'var(--text)'}}>{inf.posts||'—'}</div>
+                  <div style={{fontSize:'0.68rem',color:'var(--text3)',marginTop:2}}>Posts</div>
+                </div>
+                <div style={{background:'rgba(255,255,255,0.03)',border:'1px solid var(--border)',borderRadius:'10px',padding:'12px',textAlign:'center'}}>
+                  <div style={{fontSize:'1.2rem',fontWeight:700,color:'var(--text)'}}>{inf.following||'—'}</div>
+                  <div style={{fontSize:'0.68rem',color:'var(--text3)',marginTop:2}}>Siguiendo</div>
+                </div>
               </div>
-            ))}
-          </>}
+
+              {inf.bio && <>
+                <div className="modal-section-title">Bio de Instagram</div>
+                <div className="bio-text" style={{marginBottom:14}}>{inf.bio}</div>
+              </>}
+
+              <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:8,fontSize:'0.82rem'}}>
+                {inf.country && <div><span style={{color:'var(--text3)'}}>Pais:</span> {inf.country}</div>}
+                {inf.city && <div><span style={{color:'var(--text3)'}}>Ciudad:</span> {inf.city}</div>}
+                {inf.contentType && <div><span style={{color:'var(--text3)'}}>Contenido:</span> {inf.contentType}</div>}
+                {inf.potential && <div><span style={{color:'var(--text3)'}}>Potencial:</span> {inf.potential}</div>}
+                {inf.aiScore > 0 && <div><span style={{color:'var(--text3)'}}>AI Score:</span> {inf.aiScore}/10</div>}
+                {inf.links && <div style={{gridColumn:'1/-1'}}><span style={{color:'var(--text3)'}}>Links:</span> {inf.links}</div>}
+              </div>
+
+              <div style={{marginTop:14}}>
+                <a href={`https://instagram.com/${inf.username}`} target="_blank" className="btn btn-sm btn-accent" style={{display:'inline-flex',alignItems:'center',gap:6}}>
+                  Ver perfil en Instagram
+                </a>
+              </div>
+            </div>
+          )}
+
+          {/* ═══ TAB: APPROACH ═══ */}
+          {activeTab === 'approach' && (
+            <div className="modal-section">
+              <div className="tip-box" style={{margin:'0 0 16px'}}><div className="msg-label" style={{color:'var(--yellow)'}}>Tip estratégico</div><div className="msg-text">{tip}</div></div>
+
+              <div className="modal-section-title" style={{display:'flex',alignItems:'center',gap:8}}>
+                Mensajes —
+                <span style={{display:'inline-flex',alignItems:'center',gap:'4px'}}>
+                  {company?.logo ?
+                    <img src={company.logo} alt={companyName} style={{width:'16px',height:'16px',objectFit:'contain',borderRadius:'3px'}} /> :
+                    <span>{company?.icon}</span>
+                  }
+                  {companyName}
+                </span>
+              </div>
+              {msgs && <>
+                <MsgCard label="Primer contacto" text={msgs.first} currentUser={currentUser} influencer={inf.username} companyName={companyName} />
+                <MsgCard label="Follow Up 1" text={msgs.fu1} color="var(--teal)" currentUser={currentUser} influencer={inf.username} companyName={companyName} />
+                <MsgCard label="Follow Up 2" text={msgs.fu2} color="var(--orange)" currentUser={currentUser} influencer={inf.username} companyName={companyName} />
+                <MsgCard label="Follow Up 3" text={msgs.fu3} color="var(--red)" currentUser={currentUser} influencer={inf.username} companyName={companyName} />
+              </>}
+            </div>
+          )}
+
+          {/* ═══ TAB: ACTIONS ═══ */}
+          {activeTab === 'actions' && (
+            <div className="modal-section">
+              <div className="modal-section-title">Estado y workflow</div>
+              <div style={{display:'flex',gap:'8px',flexWrap:'wrap',margin:'8px 0 16px'}}>
+                <button className="btn btn-green btn-sm" onClick={nextStep}>Siguiente paso</button>
+                <select className="btn btn-sm" value={infState.status} onChange={e=>setStatus(e.target.value)}>
+                  {STATUS_OPTIONS.map(s=><option key={s.value} value={s.value}>{s.label}</option>)}
+                </select>
+                <div className="contact-counter" style={{marginLeft:'auto'}}><span style={{fontSize:'0.8rem',color:'var(--text2)'}}>Contactos:</span><span className="counter-val">{infState.count}</span></div>
+              </div>
+
+              <div className="modal-section-title">Notas del equipo</div>
+              {notes.map((n,i)=>(
+                <div className="note-entry" key={i}>
+                  <span className="note-author">{n.user||'Sistema'}</span>
+                  {n.company && <span className="note-company-tag" style={{background:'var(--company-glow)',color:'var(--company-accent)'}}>{n.company}</span>}
+                  <span className="note-date">{new Date(n.date).toLocaleDateString('es-ES',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'})}</span>
+                  <div className="note-text">{n.text}</div>
+                </div>
+              ))}
+              <div className="add-note-wrap">
+                <textarea className="notes-area" value={noteText} onChange={e=>setNoteText(e.target.value)} placeholder="Escribe una nota..." onKeyDown={e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();addNote();}}} />
+                <button className="btn btn-sm btn-accent" onClick={addNote} style={{alignSelf:'flex-end'}}>+</button>
+              </div>
+
+              {infState.history&&infState.history.length>0&&<>
+                <div className="modal-section-title" style={{marginTop:16}}>Historial</div>
+                {infState.history.slice().reverse().map((h,i)=>(
+                  <div className="history-item" key={i}>
+                    <span className="history-date">{h.date}</span>
+                    {h.user&&<>{' — '}<span className="history-user">{h.user}</span></>}
+                    {h.company&&<span style={{color:'var(--text2)',fontSize:'0.7rem'}}> ({h.company})</span>}
+                    {' — '}{h.action}
+                  </div>
+                ))}
+              </>}
+            </div>
+          )}
+
         </div>
       </div>
     </div>
