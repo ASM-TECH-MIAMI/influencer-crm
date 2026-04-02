@@ -1894,6 +1894,7 @@ function App() {
     {/* Company Bar */}
     <div className="company-bar">
       <div className="company-bar-left">
+        <LogoRender company={activeCo} size="26px" />
         <select className="company-selector" value={activeCo?.id} onChange={e => switchCompany(e.target.value)}>
           {companies.map(co => <option key={co.id} value={co.id}>{co.name}</option>)}
         </select>
@@ -1919,7 +1920,7 @@ function App() {
 
     <div className="header">
       <div className="header-top">
-        <h1><span>{activeCo?.name}</span> CRM</h1>
+        <h1 style={{display:'flex',alignItems:'center',gap:'10px'}}><LogoRender company={activeCo} size="30px" /><span>{activeCo?.name}</span> CRM</h1>
         <div className="header-actions">
           <span className={`sync-status ${syncStatus==='ok'?'ok':syncStatus==='error'?'err':syncStatus==='loading'?'loading':''}`}>
             {syncStatus==='loading'?'Cargando...':syncStatus==='ok'?'Sync OK':syncStatus==='error'?'Error':'—'}
