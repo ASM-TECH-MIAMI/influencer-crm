@@ -422,7 +422,7 @@ const STORAGE_KEY = 'ig_crm_v5';
 const USERS_KEY = 'ig_crm_users';
 const SESSION_KEY = 'ig_crm_session';
 const ACTIVITY_KEY = 'ig_crm_activity';
-const COMPANIES_KEY = 'ig_crm_companies_v2';
+const COMPANIES_KEY = 'ig_crm_companies_v3';
 const ACTIVE_CO_KEY = 'ig_crm_active_company';
 
 /* ─── Company color themes ─── */
@@ -439,7 +439,7 @@ const THEME_COLORS = [
 
 const DEFAULT_COMPANIES = [
   {
-    id: 'ora', name: 'Ora', icon: 'OR', theme: 'indigo',
+    id: 'ora', name: 'Ora', icon: 'OR', logo: 'https://unlimited.partners/assets/ora-logo-nnJgRAER.png', theme: 'indigo',
     description: 'Creator & Brand Management',
     website: 'https://myora.co',
     social: { ig: '@ora.creators', tiktok: '', twitter: '' },
@@ -479,7 +479,7 @@ const DEFAULT_COMPANIES = [
     }
   },
   {
-    id: 'trafix', name: 'Trafix', icon: 'TX', theme: 'cyan',
+    id: 'trafix', name: 'Trafix', icon: 'TX', logo: 'https://unlimited.partners/assets/trafix-logo-DJKvbqYH.png', theme: 'cyan',
     description: 'Traffic Acquisition & SFS',
     website: 'https://unlimited.partners',
     social: { ig: '', tiktok: '', twitter: '' },
@@ -508,7 +508,7 @@ const DEFAULT_COMPANIES = [
     }
   },
   {
-    id: 'leakhunter', name: 'LeakHunter', icon: 'LH', theme: 'red',
+    id: 'leakhunter', name: 'LeakHunter', icon: 'LH', logo: 'https://unlimited.partners/assets/leakhunter-logo-ZAy9tbrP.png', theme: 'red',
     description: 'Content Protection & DMCA',
     website: 'https://unlimited.partners',
     social: { ig: '', tiktok: '', twitter: '' },
@@ -537,7 +537,7 @@ const DEFAULT_COMPANIES = [
     }
   },
   {
-    id: 'piclink', name: 'PicLink', icon: 'PL', theme: 'emerald',
+    id: 'piclink', name: 'PicLink', icon: 'PL', logo: 'https://unlimited.partners/assets/piclink-logo-DOcx_678.png', theme: 'emerald',
     description: 'Smart Bio Links & Monetization',
     website: 'https://unlimited.partners',
     social: { ig: '', tiktok: '', twitter: '' },
@@ -566,7 +566,7 @@ const DEFAULT_COMPANIES = [
     }
   },
   {
-    id: 'lumina', name: 'Lumina', icon: 'LM', theme: 'violet',
+    id: 'lumina', name: 'Lumina', icon: 'LM', logo: 'https://unlimited.partners/assets/lumina-logo-BVAqO2Z6.png', theme: 'violet',
     description: 'AI Content Enhancement & Chat',
     website: 'https://unlimited.partners',
     social: { ig: '', tiktok: '', twitter: '' },
@@ -595,7 +595,7 @@ const DEFAULT_COMPANIES = [
     }
   },
   {
-    id: 'blu', name: 'Blu', icon: 'BL', theme: 'cyan',
+    id: 'blu', name: 'Blu', icon: 'BL', logo: 'https://unlimited.partners/assets/blu-logo-JP-h7QUY.png', theme: 'cyan',
     description: 'Fan & Subscriber CRM',
     website: 'https://unlimited.partners',
     social: { ig: '', tiktok: '', twitter: '' },
@@ -624,7 +624,7 @@ const DEFAULT_COMPANIES = [
     }
   },
   {
-    id: 'lets_shoot', name: "Let's Shoot", icon: 'LS', theme: 'pink',
+    id: 'lets_shoot', name: "Let's Shoot", icon: 'LS', logo: 'https://unlimited.partners/assets/letshoot-logo-CEPLxZOV.png', theme: 'pink',
     description: 'AI Digital Clone Photoshoots',
     website: 'https://unlimited.partners',
     social: { ig: '', tiktok: '', twitter: '' },
@@ -653,7 +653,7 @@ const DEFAULT_COMPANIES = [
     }
   },
   {
-    id: 'makeme', name: 'MakeMe', icon: 'MM', theme: 'violet',
+    id: 'makeme', name: 'MakeMe', icon: 'MM', logo: 'https://unlimited.partners/assets/makeme-logo-w2uVHO59.png', theme: 'violet',
     description: 'AI Avatars & Virtual Influencers',
     website: 'https://unlimited.partners',
     social: { ig: '', tiktok: '', twitter: '' },
@@ -682,7 +682,7 @@ const DEFAULT_COMPANIES = [
     }
   },
   {
-    id: 'creator_radar', name: 'Creator Radar', icon: 'CR', theme: 'emerald',
+    id: 'creator_radar', name: 'Creator Radar', icon: 'CR', logo: 'https://unlimited.partners/assets/creatorradar-logo-DkchmAE_.png', theme: 'emerald',
     description: 'Creator Discovery & Brand Matching',
     website: 'https://unlimited.partners',
     social: { ig: '', tiktok: '', twitter: '' },
@@ -711,7 +711,7 @@ const DEFAULT_COMPANIES = [
     }
   },
   {
-    id: 'maven', name: 'Maven', icon: 'MV', theme: 'amber',
+    id: 'maven', name: 'Maven', icon: 'MV', logo: 'https://unlimited.partners/assets/maven-logo-y7lZW1uu.png', theme: 'amber',
     description: 'The Operating Platform for Agencies',
     website: 'https://unlimited.partners',
     social: { ig: '', tiktok: '', twitter: '' },
@@ -740,7 +740,7 @@ const DEFAULT_COMPANIES = [
     }
   },
   {
-    id: 'kash', name: 'KASH Agency', icon: 'KA', theme: 'pink',
+    id: 'kash', name: 'KASH Agency', icon: 'KA', logo: 'https://kash-creator-hub.lovable.app/lovable-uploads/aba7ce9c-73a8-4e32-a22e-eb5b67330028.png', theme: 'pink',
     description: 'OnlyFans Management Agency — Miami',
     website: 'https://kash-creator-hub.lovable.app',
     social: { ig: '@kash_miami__', tiktok: '', twitter: '' },
@@ -979,6 +979,15 @@ function getMatchLabel(pct) {
   return 'No match';
 }
 
+// Render logo with fallback to icon text
+function LogoRender({ company, size='24px' }) {
+  if (!company) return null;
+  if (company.logo) {
+    return <img src={company.logo} alt={company.name} style={{width:size,height:size,objectFit:'contain',borderRadius:'4px'}} />;
+  }
+  return <span>{company.icon}</span>;
+}
+
 const STATUS_OPTIONS = [
   { value:"pendiente",      label:"Pendiente",       cls:"s-pendiente" },
   { value:"enviado_1",      label:"Msg 1 Enviado",   cls:"s-enviado_1" },
@@ -1032,6 +1041,12 @@ function getCompanies() {
         // Always sync matchDNA from defaults (ensures latest intelligence)
         if (def.matchDNA && (!c.matchDNA || JSON.stringify(c.matchDNA) !== JSON.stringify(def.matchDNA))) {
           updates.matchDNA = def.matchDNA;
+          added = true; // flag to save
+        }
+        // Always sync logo and icon from defaults (ensures latest branding)
+        if (def.logo !== c.logo || def.icon !== c.icon) {
+          updates.logo = def.logo;
+          updates.icon = def.icon;
           added = true; // flag to save
         }
         if (Object.keys(updates).length > 0) return { ...c, ...updates };
@@ -1242,6 +1257,7 @@ function CompanyManager({ companies, onSave, onClose }) {
   const [editing, setEditing] = useState(null); // null = list, or company object
   const [name, setName] = useState('');
   const [icon, setIcon] = useState('CO');
+  const [logo, setLogo] = useState('');
   const [theme, setTheme] = useState('indigo');
   const [desc, setDesc] = useState('');
   const [idealProfile, setIdealProfile] = useState('');
@@ -1253,9 +1269,10 @@ function CompanyManager({ companies, onSave, onClose }) {
   const [msgFu3, setMsgFu3] = useState('');
 
   const startEdit = (co) => {
-    setEditing(co || { id:'', name:'', icon:'CO', theme:'indigo', description:'', idealProfile:'', idealTags:[], antiTags:[], msgTemplates:{ first:'', fu1:'', fu2:'', fu3:'' } });
+    setEditing(co || { id:'', name:'', icon:'CO', logo:'', theme:'indigo', description:'', idealProfile:'', idealTags:[], antiTags:[], msgTemplates:{ first:'', fu1:'', fu2:'', fu3:'' } });
     setName(co?.name || '');
     setIcon(co?.icon || 'CO');
+    setLogo(co?.logo || '');
     setTheme(co?.theme || 'indigo');
     setDesc(co?.description || '');
     setIdealProfile(co?.idealProfile || '');
@@ -1271,7 +1288,7 @@ function CompanyManager({ companies, onSave, onClose }) {
     if (!name.trim()) return;
     const id = editing.id || name.trim().toLowerCase().replace(/\s+/g, '_').replace(/[^a-z0-9_]/g, '');
     const parseTags = (s) => s.split(',').map(t=>t.trim().toLowerCase()).filter(Boolean);
-    const updated = { id, name: name.trim(), icon, theme, description: desc, idealProfile, idealTags: parseTags(idealTagsStr), antiTags: parseTags(antiTagsStr), msgTemplates: { first: msgFirst, fu1: msgFu1, fu2: msgFu2, fu3: msgFu3 } };
+    const updated = { id, name: name.trim(), icon, logo, theme, description: desc, idealProfile, idealTags: parseTags(idealTagsStr), antiTags: parseTags(antiTagsStr), msgTemplates: { first: msgFirst, fu1: msgFu1, fu2: msgFu2, fu3: msgFu3 } };
     const list = [...companies];
     const existIdx = list.findIndex(c => c.id === id);
     if (existIdx >= 0) list[existIdx] = updated; else list.push(updated);
@@ -1292,16 +1309,23 @@ function CompanyManager({ companies, onSave, onClose }) {
           <h2>{editing.id ? 'Editar Compañía' : 'Nueva Compañía'}</h2>
           <div className="modal-label">Nombre</div>
           <input className="modal-input" value={name} onChange={e => setName(e.target.value)} placeholder="Ej: Leak Hunter" />
-          <div className="modal-label">Icono (emoji)</div>
-          <input className="modal-input" value={icon} onChange={e => setIcon(e.target.value)} placeholder="🏢" style={{width:80}} />
+          <div className="modal-label">Logo URL</div>
+          <input className="modal-input" value={logo} onChange={e => setLogo(e.target.value)} placeholder="https://example.com/logo.png" />
+          <div className="modal-label">Icono de Fallback</div>
+          <input className="modal-input" value={icon} onChange={e => setIcon(e.target.value)} placeholder="Ej: LH" style={{width:80}} />
           <div className="modal-label">Color / Tema</div>
           <div className="color-picker-row">
             {THEME_COLORS.map(tc => (
               <div key={tc.id} className={`color-swatch${theme===tc.id?' active':''}`} style={{background:tc.accent2}} onClick={() => setTheme(tc.id)} title={tc.label} />
             ))}
           </div>
-          <div style={{padding:'8px 12px',borderRadius:8,background:t.glow,border:`1px solid ${t.accent2}`,color:t.accent,marginBottom:12,fontSize:'0.85rem',fontWeight:600}}>
-            Vista previa: {icon} {name || 'Mi Compañía'}
+          <div style={{padding:'8px 12px',borderRadius:8,background:t.glow,border:`1px solid ${t.accent2}`,color:t.accent,marginBottom:12,fontSize:'0.85rem',fontWeight:600,display:'flex',alignItems:'center',gap:'8px'}}>
+            Vista previa:
+            {logo ?
+              <img src={logo} alt="Logo preview" style={{width:'20px',height:'20px',objectFit:'contain',borderRadius:'3px'}} /> :
+              <span>{icon}</span>
+            }
+            {name || 'Mi Compañía'}
           </div>
           <div className="modal-label">Descripción</div>
           <input className="modal-input" value={desc} onChange={e => setDesc(e.target.value)} placeholder="Breve descripción de la compañía" />
@@ -1341,7 +1365,12 @@ function CompanyManager({ companies, onSave, onClose }) {
           return (
             <div className="company-list-item" key={co.id}>
               <div className="co-color-dot" style={{background:t.accent2}} />
-              <span style={{fontSize:'1.1rem'}}>{co.icon}</span>
+              <span style={{fontSize:'1.1rem',display:'inline-flex',alignItems:'center'}}>
+                {co.logo ?
+                  <img src={co.logo} alt={co.name} style={{width:'24px',height:'24px',objectFit:'contain',borderRadius:'4px'}} /> :
+                  <span>{co.icon}</span>
+                }
+              </span>
               <span className="co-name">{co.name}</span>
               <div className="co-actions">
                 <button className="btn btn-sm" onClick={() => startEdit(co)}>Editar</button>
@@ -1385,7 +1414,15 @@ function CompanyProfilePanel({ open, onClose, company, companies, onSave }) {
     <div className="activity-backdrop" onClick={onClose} />
     <div className={`profile-panel${open ? ' open' : ''}`}>
       <div className="profile-panel-header">
-        <h2><span style={{fontSize:'1.3rem'}}>{company.icon}</span> Perfil de {company.name}</h2>
+        <h2>
+          <span style={{fontSize:'1.3rem',display:'inline-flex',alignItems:'center',marginRight:'8px'}}>
+            {company.logo ?
+              <img src={company.logo} alt={company.name} style={{width:'28px',height:'28px',objectFit:'contain',borderRadius:'4px'}} /> :
+              <span>{company.icon}</span>
+            }
+          </span>
+          Perfil de {company.name}
+        </h2>
         <div style={{display:'flex',gap:6}}>
           {!editing && <button className="btn btn-sm btn-accent" onClick={() => setEditing(true)}>Editar</button>}
           <button className="btn btn-sm" onClick={onClose}>✕</button>
@@ -1395,8 +1432,14 @@ function CompanyProfilePanel({ open, onClose, company, companies, onSave }) {
         {/* Hero */}
         <div className="profile-hero">
           <div className="profile-icon">{editing ? (
-            <input className="profile-edit-input" value={form.icon||''} onChange={e=>updateForm('icon',e.target.value)} style={{width:60,textAlign:'center',fontSize:'2rem',padding:4}} />
-          ) : company.icon}</div>
+            <input className="profile-edit-input" value={form.logo||''} onChange={e=>updateForm('logo',e.target.value)} placeholder="Logo URL" style={{width:180,textAlign:'center',fontSize:'0.9rem',padding:4}} />
+          ) : form.logo ? (
+            <img src={form.logo} alt={company.name} style={{width:'48px',height:'48px',objectFit:'contain',borderRadius:'4px'}} />
+          ) : company.logo ? (
+            <img src={company.logo} alt={company.name} style={{width:'48px',height:'48px',objectFit:'contain',borderRadius:'4px'}} />
+          ) : (
+            <span>{company.icon}</span>
+          )}</div>
           <div className="profile-company-name">{editing ? (
             <input className="profile-edit-input" value={form.name||''} onChange={e=>updateForm('name',e.target.value)} style={{textAlign:'center',fontSize:'1.2rem',fontWeight:700}} />
           ) : company.name}</div>
@@ -1633,7 +1676,15 @@ function InfluencerCard({ inf, infState, onUpdateState, expanded, onToggle, curr
         {/* Company identity + match banner */}
         <div className="company-identity">
           <div className="co-dot" />
-          Contactando como <strong style={{marginLeft:4}}>{company?.icon} {companyName}</strong>
+          Contactando como <strong style={{marginLeft:4,display:'inline-flex',alignItems:'center',gap:'6px'}}>
+            <span style={{display:'inline-flex',alignItems:'center'}}>
+              {company?.logo ?
+                <img src={company.logo} alt={companyName} style={{width:'20px',height:'20px',objectFit:'contain',borderRadius:'3px'}} /> :
+                <span>{company?.icon}</span>
+              }
+            </span>
+            {companyName}
+          </strong>
           <span style={{marginLeft:'auto',fontSize:'0.85rem',fontWeight:700}}>{matchPct}% Match — {getMatchLabel(matchPct)}</span>
         </div>
 
@@ -1648,7 +1699,15 @@ function InfluencerCard({ inf, infState, onUpdateState, expanded, onToggle, curr
               return (
                 <div className="match-row" key={co.id}>
                   <div className="co-dot-sm" style={{background:t.accent2}} />
-                  <span className="co-label">{co.icon} {co.name}</span>
+                  <span className="co-label" style={{display:'inline-flex',alignItems:'center',gap:'6px'}}>
+                    <span style={{display:'inline-flex',alignItems:'center'}}>
+                      {co.logo ?
+                        <img src={co.logo} alt={co.name} style={{width:'18px',height:'18px',objectFit:'contain',borderRadius:'3px'}} /> :
+                        <span>{co.icon}</span>
+                      }
+                    </span>
+                    {co.name}
+                  </span>
                   <div className="match-bar"><div className="match-bar-fill" style={{width:`${pct}%`,background:mc.color}} /></div>
                   <span className="match-pct" style={{color:mc.color}}>{pct}%</span>
                 </div>
@@ -1660,7 +1719,18 @@ function InfluencerCard({ inf, infState, onUpdateState, expanded, onToggle, curr
         {inf.bio && <><div className="section-title">Bio</div><div className="bio-text">{inf.bio}</div></>}
         <div className="tip-box"><div className="msg-label" style={{color:'var(--yellow)'}}>Tip</div><div className="msg-text">{tip}</div></div>
 
-        <div className="section-title">Mensajes — {company?.icon} {companyName}</div>
+        <div className="section-title">
+          Mensajes —
+          <span style={{display:'inline-flex',alignItems:'center',gap:'6px',marginLeft:'8px'}}>
+            <span style={{display:'inline-flex',alignItems:'center'}}>
+              {company?.logo ?
+                <img src={company.logo} alt={companyName} style={{width:'18px',height:'18px',objectFit:'contain',borderRadius:'3px'}} /> :
+                <span>{company?.icon}</span>
+              }
+            </span>
+            {companyName}
+          </span>
+        </div>
         {msgs && <>
           <MsgCard label="Primer contacto" text={msgs.first} currentUser={currentUser} influencer={inf.username} companyName={companyName} />
           <MsgCard label="Follow Up 1" text={msgs.fu1} color="var(--teal)" currentUser={currentUser} influencer={inf.username} companyName={companyName} />
