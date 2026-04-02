@@ -324,6 +324,44 @@
     font-size: 0.6rem; font-weight: 700;
   }
   .worked-chip-time { color: var(--text3); font-size: 0.66rem; margin-left: 2px; }
+
+  /* ═══ Daily Dashboard ═══ */
+  .daily-dash {
+    background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-lg);
+    margin: 16px 24px 0; backdrop-filter: blur(20px); overflow: hidden;
+  }
+  .daily-dash-header {
+    display: flex; align-items: center; justify-content: space-between; padding: 14px 18px;
+    cursor: pointer; transition: all .15s;
+  }
+  .daily-dash-header:hover { background: rgba(255,255,255,0.02); }
+  .daily-dash-title {
+    font-size: 0.76rem; font-weight: 700; color: var(--text);
+    display: flex; align-items: center; gap: 10px;
+  }
+  .daily-dash-toggle { color: var(--text3); font-size: 0.8rem; transition: transform .2s; }
+  .daily-dash-toggle.open { transform: rotate(180deg); }
+  .daily-dash-body { padding: 0 18px 16px; animation: fadeIn .2s ease; }
+  .daily-dash-stats {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 8px; margin-bottom: 14px;
+  }
+  .daily-stat {
+    background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: 10px;
+    padding: 10px 12px; text-align: center;
+  }
+  .daily-stat-num { font-size: 1.4rem; font-weight: 800; color: var(--text); }
+  .daily-stat-label { font-size: 0.66rem; color: var(--text3); margin-top: 2px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .daily-company-row {
+    display: flex; align-items: center; gap: 10px; padding: 6px 0;
+    font-size: 0.8rem; border-bottom: 1px solid rgba(255,255,255,0.03);
+  }
+  .daily-company-row:last-child { border-bottom: none; }
+  .daily-company-logo { width: 20px; height: 20px; object-fit: contain; border-radius: 3px; }
+  .daily-company-name { flex: 1; color: var(--text2); font-weight: 500; }
+  .daily-company-counts { display: flex; gap: 12px; }
+  .daily-count-pill {
+    font-size: 0.68rem; padding: 2px 8px; border-radius: 10px; font-weight: 600;
+  }
   .section-title { font-size: 0.68rem; color: var(--text3); text-transform: uppercase; letter-spacing: 0.8px; font-weight: 500; margin: 14px 0 6px; }
   .bio-text { font-size: 0.82rem; color: var(--text2); line-height: 1.6; }
   .msg-card { background: rgba(255,255,255,0.02); border: 1px solid var(--border); border-radius: 10px; padding: 14px; margin: 6px 0; transition: all .15s; }
@@ -835,10 +873,10 @@ const DEFAULT_COMPANIES = [
       exclusivity: 'preferred',
     },
     msgTemplates: {
-      first: 'Hola {name}! 💎 Soy de KASH Agency — somos una agencia de management en Miami con 50+ creadoras. Ofrecemos gestión 360°: marketing, chat 24/7, producción y protección legal. ¿Te gustaría saber cómo podemos hacer crecer tu cuenta?',
-      fu1: 'Hey {name}! Follow up — en KASH tenemos 94% de retención porque nuestras creadoras CRECEN de verdad. Sin contratos de permanencia, todo transparente. ¿Hablamos? 😊',
-      fu2: '{name}! 💰 Nuestras creadoras ven crecimiento real desde el primer mes. Gestión completa con IA + account managers dedicadas. ¿Te interesa?',
-      fu3: '{name}! Último mensaje — cuando quieras una agencia que realmente mueva tu cuenta, KASH está aquí desde Miami. ¡Éxitos! 💎',
+      first: 'Hola {name}! Soy de KASH Agency, una agencia de management basada en Miami. Representamos a mas de 50 creadoras y ofrecemos gestion completa: marketing multiplataforma, chat management 24/7, produccion de contenido y proteccion legal. Todo sin contratos de permanencia. Me gustaria platicarte como podemos trabajar juntas.',
+      fu1: 'Hey {name}! Te escribi hace unos dias de KASH Agency. Tenemos 94% de retencion porque nuestras creadoras ven crecimiento real. Cada creadora tiene una account manager dedicada. Si te interesa, me encantaria agendar una llamada rapida.',
+      fu2: '{name}! Solo queria dar seguimiento. En KASH manejamos todo: desde la estrategia de marketing hasta la gestion diaria con IA y equipo humano. Nuestras creadoras se enfocan en crear, nosotros nos encargamos del resto. Dime si quieres saber mas.',
+      fu3: '{name}! Ultimo mensaje de mi parte. Si en algun momento buscas una agencia profesional desde Miami que realmente mueva tu carrera, KASH esta aqui. Te deseo mucho exito!',
     }
   },
 ];
@@ -1649,7 +1687,7 @@ function ActivityPanel({ open, onClose }) {
     return true;
   });
   const fmtTime = (iso) => { const d = new Date(iso); return d.toLocaleDateString('es-ES',{day:'2-digit',month:'short'})+' '+d.toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit'}); };
-  const labels = { login:'Inicio sesion', logout:'Cerro sesion', copy_message:'Copio mensaje', status_change:'Cambio estado', next_step:'Avanzo paso', add_note:'Nota', expand_card:'Abrio tarjeta' };
+  const labels = { login:'Inicio sesion', logout:'Cerro sesion', copy_message:'Copio mensaje', status_change:'Cambio estado', next_step:'Avanzo paso', add_note:'Nota', expand_card:'Abrio tarjeta', open_creator:'Reviso perfil', switch_company:'Cambio empresa' };
   if (!open) return null;
   return (<>
     <div className="activity-backdrop" onClick={onClose} />
@@ -1694,6 +1732,102 @@ function MsgCard({ label, text, color, currentUser, influencer, companyName }) {
       <div className="msg-label" style={color?{color}:{}}>{label}</div>
       <div className="msg-text">{text}</div>
       <div className="msg-actions"><CopyBtn text={text} currentUser={currentUser} influencer={influencer} companyName={companyName} /></div>
+    </div>
+  );
+}
+
+/* ─── Daily Dashboard ─── */
+function DailyDashboard({ companies, influencers }) {
+  const [open, setOpen] = useState(true);
+  const log = getActivityLog();
+  const today = new Date().toISOString().slice(0, 10);
+
+  // Filter today's log entries
+  const todayLog = log.filter(e => e.timestamp && e.timestamp.slice(0, 10) === today);
+
+  // Aggregate stats
+  const reviewed = new Set(todayLog.filter(e => e.action === 'open_creator').map(e => e.target)).size;
+  const contacted = todayLog.filter(e => e.action === 'copy_message').length;
+  const statusChanges = todayLog.filter(e => e.action === 'next_step' || e.action === 'status_change').length;
+  const notesAdded = todayLog.filter(e => e.action === 'add_note').length;
+  const followUps = todayLog.filter(e => e.action === 'copy_message' && e.detail && /follow up/i.test(e.detail)).length;
+
+  // Per-company breakdown
+  const companyStats = {};
+  for (const entry of todayLog) {
+    if (!entry.company) continue;
+    if (!companyStats[entry.company]) companyStats[entry.company] = { reviewed: new Set(), contacted: 0, advanced: 0 };
+    const cs = companyStats[entry.company];
+    if (entry.action === 'open_creator' && entry.target) cs.reviewed.add(entry.target);
+    if (entry.action === 'copy_message') cs.contacted++;
+    if (entry.action === 'next_step' || entry.action === 'status_change') cs.advanced++;
+  }
+
+  // Convert Sets to counts
+  const companyBreakdown = Object.entries(companyStats).map(([name, stats]) => ({
+    name,
+    reviewed: stats.reviewed.size,
+    contacted: stats.contacted,
+    advanced: stats.advanced,
+    company: companies.find(c => c.name === name),
+  })).sort((a, b) => (b.reviewed + b.contacted) - (a.reviewed + a.contacted));
+
+  if (todayLog.length === 0) return null;
+
+  return (
+    <div className="daily-dash">
+      <div className="daily-dash-header" onClick={() => setOpen(!open)}>
+        <div className="daily-dash-title">
+          Resumen del dia
+          <span className="worked-today-count">{todayLog.length} acciones</span>
+        </div>
+        <span className={`daily-dash-toggle${open ? ' open' : ''}`}>{'\u25BC'}</span>
+      </div>
+
+      {open && (
+        <div className="daily-dash-body">
+          {/* Summary stats */}
+          <div className="daily-dash-stats">
+            <div className="daily-stat">
+              <div className="daily-stat-num" style={{color:'var(--company-accent)'}}>{reviewed}</div>
+              <div className="daily-stat-label">Revisadas</div>
+            </div>
+            <div className="daily-stat">
+              <div className="daily-stat-num" style={{color:'var(--blue)'}}>{contacted}</div>
+              <div className="daily-stat-label">Mensajes copiados</div>
+            </div>
+            <div className="daily-stat">
+              <div className="daily-stat-num" style={{color:'var(--green)'}}>{statusChanges}</div>
+              <div className="daily-stat-label">Avances</div>
+            </div>
+            <div className="daily-stat">
+              <div className="daily-stat-num" style={{color:'var(--yellow)'}}>{notesAdded}</div>
+              <div className="daily-stat-label">Notas</div>
+            </div>
+          </div>
+
+          {/* Per-company breakdown */}
+          {companyBreakdown.length > 0 && (
+            <div>
+              <div style={{fontSize:'0.68rem',color:'var(--text3)',textTransform:'uppercase',letterSpacing:'0.8px',fontWeight:600,marginBottom:8}}>Por empresa</div>
+              {companyBreakdown.map(cs => (
+                <div className="daily-company-row" key={cs.name}>
+                  {cs.company?.logo ?
+                    <img src={cs.company.logo} alt={cs.name} className="daily-company-logo" /> :
+                    <span style={{fontSize:'0.7rem',fontWeight:700,color:'var(--text3)'}}>{cs.company?.icon || cs.name.slice(0,2)}</span>
+                  }
+                  <span className="daily-company-name">{cs.name}</span>
+                  <div className="daily-company-counts">
+                    {cs.reviewed > 0 && <span className="daily-count-pill" style={{background:'rgba(99,102,241,0.1)',color:'var(--company-accent)'}}>{cs.reviewed} rev</span>}
+                    {cs.contacted > 0 && <span className="daily-count-pill" style={{background:'rgba(59,130,246,0.1)',color:'var(--blue)'}}>{cs.contacted} msg</span>}
+                    {cs.advanced > 0 && <span className="daily-count-pill" style={{background:'rgba(16,185,129,0.1)',color:'var(--green)'}}>{cs.advanced} avz</span>}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 }
@@ -2186,6 +2320,9 @@ function App() {
 
     {/* Creator Modal */}
     {modalInf && <CreatorModal inf={modalInf} infState={getInfState(crmState,modalInf.username)} onUpdateState={updateInfState} onClose={closeCreatorModal} currentUser={userName} company={activeCo} allCompanies={companies} />}
+
+    {/* Daily Dashboard */}
+    <DailyDashboard companies={companies} influencers={influencers} />
 
     {/* Worked Today */}
     {workedToday.length > 0 && (
