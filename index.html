@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Influencer CRM — Multi-Company</title>
-<!-- v21: logos + dark/light mode + segmented filters -->
+<!-- v22: PicLink boost + name dedup + clean header -->
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
   :root, [data-theme="dark"] {
@@ -424,7 +424,7 @@ const STORAGE_KEY = 'ig_crm_v5';
 const USERS_KEY = 'ig_crm_users';
 const SESSION_KEY = 'ig_crm_session';
 const ACTIVITY_KEY = 'ig_crm_activity';
-const COMPANIES_KEY = 'ig_crm_companies_v3';
+const COMPANIES_KEY = 'ig_crm_companies_v4';
 const ACTIVE_CO_KEY = 'ig_crm_active_company';
 
 /* ─── Company color themes ─── */
@@ -549,14 +549,14 @@ const DEFAULT_COMPANIES = [
     idealTags: ['link in bio','linktree','beacons','allmylinks','monetización','revenue','e-commerce','tienda','shop','affiliate','afiliado','suscripción','contenido','creator','influencer','múltiples plataformas','youtube','tiktok','podcast','merch'],
     antiTags: ['no links','sin bio','empty bio'],
     matchDNA: {
-      audienceTiers: { nano: 30, micro: 70, mid: 90, macro: 100, mega: 100 },
-      archetypeAffinity: { model: 60, lifestyle: 70, fitness: 60, adultCreator: 70, agency: 30, humor: 50, visualCreator: 60, techCreator: 50 },
-      platformPriority: { instagram: 90, tiktok: 70, youtube: 80, onlyfans: 60, fansly: 60 },
+      audienceTiers: { nano: 70, micro: 90, mid: 100, macro: 100, mega: 100 },
+      archetypeAffinity: { model: 90, lifestyle: 90, fitness: 90, adultCreator: 90, agency: 40, humor: 85, visualCreator: 90, techCreator: 80 },
+      platformPriority: { instagram: 100, tiktok: 90, youtube: 90, onlyfans: 80, fansly: 80 },
       geoPreference: { regions: [], boost: 0 },
-      monetizationReady: 50,
-      qualityBar: 30,
-      brandSafety: 20,
-      engagementWeight: 50,
+      monetizationReady: 20,
+      qualityBar: 10,
+      brandSafety: 5,
+      engagementWeight: 30,
       serviceType: 'platform',
       exclusivity: 'none',
     },
@@ -1922,14 +1922,14 @@ function App() {
 
     <div className="header">
       <div className="header-top">
-        <h1 style={{display:'flex',alignItems:'center',gap:'10px'}}><LogoRender company={activeCo} size="30px" /><span>{activeCo?.name}</span> CRM</h1>
+        <h1 style={{display:'flex',alignItems:'center',gap:'10px'}}>Influencer CRM</h1>
         <div className="header-actions">
           <span className={`sync-status ${syncStatus==='ok'?'ok':syncStatus==='error'?'err':syncStatus==='loading'?'loading':''}`}>
             {syncStatus==='loading'?'Cargando...':syncStatus==='ok'?'Sync OK':syncStatus==='error'?'Error':'—'}
           </span>
           <button className="btn btn-sm" onClick={loadSheet} title="Recargar datos del Sheet">Sync Sheet</button>
           <button className="btn btn-sm btn-accent" onClick={()=>syncCompanyDNA(activeCo?.id)} disabled={syncing} title="Recalcular match scores para esta empresa">
-            {syncing ? 'Syncing...' : `Sync ${activeCo?.name}`}
+            {syncing ? 'Syncing...' : 'Sync DNA'}
           </button>
           <button className="btn btn-sm" onClick={()=>setActivityOpen(true)}>Actividad</button>
           <a href={SHEET_URL} target="_blank" className="btn btn-sm">Sheet</a>
