@@ -950,8 +950,16 @@ function App() {
     if (activeCo) { setCrmState(loadCompanyState(activeCo.id)); setActiveCompanyId(activeCo.id); }
   }, [activeCo?.id]);
 
-  // Check session on mount
-  useEffect(() => { const s = getSession(); if (s) setCurrentUser(s); }, []);
+  // Auto-login: skip auth screen (disabled until further notice)
+  useEffect(() => {
+    const s = getSession();
+    if (s) { setCurrentUser(s); }
+    else {
+      const autoSession = { uid:'admin', displayName:'Admin', loginAt: new Date().toISOString() };
+      saveSession(autoSession);
+      setCurrentUser(autoSession);
+    }
+  }, []);
 
   const handleLogin = (session) => setCurrentUser(session);
   const handleLogout = () => { if(currentUser) logActivity(currentUser.displayName,'logout','','Cerró sesión',activeCo?.name); saveSession(null); setCurrentUser(null); };
@@ -976,7 +984,8 @@ function App() {
 
   useEffect(() => { if(currentUser) loadSheet(); }, [currentUser, loadSheet]);
 
-  if (!currentUser) return <AuthScreen onLogin={handleLogin} />;
+  // Auth disabled — show loading briefly while auto-session initializes
+  if (!currentUser) return <div style={{display:'flex',alignItems:'center',justifyContent:'center',height:'100vh',color:'var(--text2)'}}>Cargando...</div>;
 
   const userName = currentUser.displayName;
   const total = influencers.length;
