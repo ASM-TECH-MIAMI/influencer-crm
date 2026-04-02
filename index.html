@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Influencer CRM — Multi-Company</title>
-<!-- v22: PicLink boost + name dedup + clean header -->
+<!-- v23: modal popup + work log + scoring v4 -->
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
   :root, [data-theme="dark"] {
@@ -217,10 +217,9 @@
   .card {
     background: var(--card); border: 1px solid var(--border);
     border-radius: var(--radius); overflow: hidden;
-    transition: all .2s ease; position: relative;
+    transition: all .2s ease; position: relative; cursor: pointer;
   }
   .card:hover { border-color: rgba(255,255,255,0.1); background: var(--card-hover); }
-  .card.expanded { border-color: rgba(99,102,241,0.2); background: var(--card-expanded); }
   .card-head { padding: 14px 16px; display: flex; justify-content: space-between; align-items: flex-start; cursor: pointer; gap: 10px; }
   .card-info { display: flex; gap: 12px; align-items: center; flex: 1; min-width: 0; }
   .avatar {
@@ -250,9 +249,62 @@
   .s-cerrado_si { background: rgba(16,185,129,0.15); color: var(--green); font-weight: 700; }
   .s-no_interesada { background: rgba(239,68,68,0.1); color: var(--red); }
 
-  /* Card expanded */
-  .card-body { padding: 0 16px 16px; display: none; }
-  .card.expanded .card-body { display: block; animation: fadeIn .2s ease; }
+  /* Card body hidden inline — shown only inside modal */
+  .card-body { display: none; }
+
+  /* ═══ Creator Modal ═══ */
+  .creator-modal-overlay {
+    position: fixed; inset: 0; z-index: 500; display: flex; align-items: center; justify-content: center;
+    background: rgba(0,0,0,0.6); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+    animation: fadeIn .2s ease;
+  }
+  .creator-modal {
+    background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius-xl);
+    width: 94%; max-width: 620px; max-height: 88vh; overflow-y: auto; position: relative;
+    box-shadow: 0 24px 80px rgba(0,0,0,0.5), 0 0 0 1px var(--border);
+    animation: modalSlideIn .25s ease;
+  }
+  .creator-modal-header {
+    position: sticky; top: 0; z-index: 2; background: var(--bg);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 18px 20px 12px; border-bottom: 1px solid var(--border);
+  }
+  .creator-modal-header .card-info { display: flex; align-items: center; gap: 12px; flex: 1; min-width: 0; }
+  .creator-modal-close {
+    background: rgba(255,255,255,0.06); border: 1px solid var(--border); border-radius: 8px;
+    color: var(--text2); font-size: 1.1rem; width: 32px; height: 32px; cursor: pointer;
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: all .15s;
+  }
+  .creator-modal-close:hover { background: rgba(255,255,255,0.12); color: var(--text); }
+  .creator-modal-body { padding: 16px 20px 24px; }
+  @keyframes modalSlideIn { from { opacity: 0; transform: translateY(16px) scale(0.97); } to { opacity: 1; transform: translateY(0) scale(1); } }
+
+  /* ═══ Worked Today Section ═══ */
+  .worked-today {
+    background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-lg);
+    padding: 14px 18px; margin: 16px 24px 0; backdrop-filter: blur(20px);
+  }
+  .worked-today-title {
+    font-size: 0.72rem; color: var(--text3); text-transform: uppercase; letter-spacing: 0.8px;
+    font-weight: 600; margin-bottom: 10px; display: flex; align-items: center; gap: 8px;
+  }
+  .worked-today-count {
+    background: var(--company-glow); color: var(--company-accent); font-size: 0.66rem;
+    padding: 2px 8px; border-radius: 10px; font-weight: 700;
+  }
+  .worked-today-list { display: flex; gap: 8px; flex-wrap: wrap; }
+  .worked-chip {
+    display: flex; align-items: center; gap: 6px; padding: 5px 12px 5px 6px;
+    background: rgba(255,255,255,0.04); border: 1px solid var(--border); border-radius: 20px;
+    font-size: 0.76rem; color: var(--text); cursor: pointer; transition: all .15s;
+  }
+  .worked-chip:hover { background: rgba(255,255,255,0.08); border-color: var(--company-accent); }
+  .worked-chip .mini-avatar {
+    width: 22px; height: 22px; border-radius: 50%; background: var(--company-glow);
+    color: var(--company-accent); display: flex; align-items: center; justify-content: center;
+    font-size: 0.6rem; font-weight: 700;
+  }
+  .worked-chip-time { color: var(--text3); font-size: 0.66rem; margin-left: 2px; }
   .section-title { font-size: 0.68rem; color: var(--text3); text-transform: uppercase; letter-spacing: 0.8px; font-weight: 500; margin: 14px 0 6px; }
   .bio-text { font-size: 0.82rem; color: var(--text2); line-height: 1.6; }
   .msg-card { background: rgba(255,255,255,0.02); border: 1px solid var(--border); border-radius: 10px; padding: 14px; margin: 6px 0; transition: all .15s; }
@@ -798,17 +850,20 @@ function getAudienceTier(followers) {
 
 // Detect creator archetypes — returns object with confidence 0-1
 function detectArchetypes(inf) {
-  const text = [inf.bio||'', inf.category||'', inf.contentType||'', inf.links||'', inf.name||''].join(' ').toLowerCase();
+  const text = [inf.bio||'', inf.category||'', inf.contentType||'', inf.links||'', inf.name||'', inf.notes_sheet||''].join(' ').toLowerCase();
   const has = (rx) => rx.test(text);
+  // "brandReady" = explicitly open to collabs/ads — boosts ALL company scores
+  const brandReady = has(/publicidad|ads|collab|colaboraci|sponsor|ambassador|embajadora|booking|book me|dm for|contact|portafolio|portfolio|creator|creadora|influencer|brand|marca/) ? 1 : 0;
   return {
-    model: has(/model|modelo|fashion|moda|belleza|beauty|glamour|bikini|swim|lingerie/) ? 1 : 0,
-    lifestyle: has(/lifestyle|travel|viajes|lujo|luxury/) ? 1 : 0,
-    fitness: has(/fitness|gym|fit|workout|health|deport/) ? 1 : 0,
-    adultCreator: has(/onlyfans|fansly|18\+|adult|exclusive content|contenido exclusivo|ppv|fan platform/) ? 1 : 0,
+    model: has(/model|modelo|fashion|moda|belleza|beauty|glamour|bikini|swim|lingerie|selfie|foto|photo/) ? 1 : (brandReady ? 0.5 : 0),
+    lifestyle: has(/lifestyle|travel|viajes|lujo|luxury|life|vida|contenido/) ? 1 : 0,
+    fitness: has(/fitness|gym|fit|workout|health|deport|entrena/) ? 1 : 0,
+    adultCreator: has(/onlyfans|fansly|18\+|adult|exclusive content|contenido exclusivo|ppv|fan platform|contenido exclus/) ? 1 : 0,
     agency: has(/agencia|agency|management|manager|talent|multi.*creator/) ? 1 : 0,
     humor: has(/humor|comedia|comedy|entretenimiento|memes|funny/) ? 1 : 0,
-    visualCreator: has(/model|modelo|fashion|moda|belleza|beauty|glamour|bikini|swim|lingerie|fitness|gym|fit|foto|photo|visual|estética|aesthetic/) ? 1 : 0,
+    visualCreator: has(/model|modelo|fashion|moda|belleza|beauty|glamour|bikini|swim|lingerie|fitness|gym|fit|foto|photo|visual|estética|aesthetic|contenido|creator|creadora/) ? 1 : 0,
     techCreator: has(/tech|tecnolog|ai|artificial|digital|web3|nft|software|developer/) ? 1 : 0,
+    brandReady,
   };
 }
 
@@ -844,13 +899,19 @@ function checkGeoMatch(inf, geoPreference) {
 
 // Estimate monetization signals from profile
 function estimateMonetization(inf) {
-  const text = [inf.bio||'', inf.links||''].join(' ').toLowerCase();
+  const text = [inf.bio||'', inf.links||'', inf.notes_sheet||''].join(' ').toLowerCase();
   let signals = 0;
   if (/linktree|beacons|allmylinks|linktr|link in bio|linkr/.test(text)) signals += 25;
   if (/onlyfans|fansly|patreon|subscribe|suscri/.test(text)) signals += 35;
   if (/shop|tienda|merch|store|compra|buy/.test(text)) signals += 20;
-  if (/booking|book|reserv|contrat|hire|collab/.test(text)) signals += 15;
-  if (inf.links) signals += 10;
+  if (/booking|book|reserv|contrat|hire|collab|publicidad|ads|sponsor/.test(text)) signals += 25;
+  if (/portafolio|portfolio|canva\.site|carrd\.co|notion\.site/.test(text)) signals += 20;
+  if (/dm|contact|email|correo|whatsapp|telegram/.test(text)) signals += 10;
+  if (inf.links) signals += 15;
+  // Having a lot of followers with any links = likely monetizing
+  const fNum = parseFollowers(inf.followers);
+  if (fNum >= 50000 && inf.links) signals += 15;
+  if (fNum >= 100000) signals += 10;
   return Math.min(100, signals);
 }
 
@@ -946,10 +1007,12 @@ function calculateMatch(company, inf) {
   else if (monetReq > 50 && monetization < 20) bonusScore -= 10;
   // Active creator bonus
   if (isActive) bonusScore += 10;
+  // Brand-ready creators (say "publicidad", have portfolio, etc.) get big bonus
+  if (archetypes.brandReady) bonusScore += 20;
   bonusScore = Math.max(0, Math.min(100, bonusScore + 40)); // normalize around 40 base
 
   // ═══ WEIGHTED COMBINATION ═══
-  const weights = { archetype: 0.35, audience: 0.20, platform: 0.15, tags: 0.15, quality: 0.10, bonus: 0.05 };
+  const weights = { archetype: 0.30, audience: 0.18, platform: 0.12, tags: 0.12, quality: 0.08, bonus: 0.20 };
   let finalScore = (
     archetypeScore * weights.archetype +
     audienceScore * weights.audience +
@@ -1612,15 +1675,38 @@ function MsgCard({ label, text, color, currentUser, influencer, companyName }) {
   );
 }
 
-function InfluencerCard({ inf, infState, onUpdateState, expanded, onToggle, currentUser, company, allCompanies }) {
+/* ─── Work Log helpers ─── */
+const WORKLOG_KEY = 'ig_crm_worklog';
+function getWorkLog() { try { return JSON.parse(localStorage.getItem(WORKLOG_KEY)||'{}'); } catch { return {}; } }
+function saveWorkLog(log) { localStorage.setItem(WORKLOG_KEY, JSON.stringify(log)); }
+function getTodayKey() { return new Date().toISOString().slice(0,10); }
+function logWork(username, user) {
+  const log = getWorkLog(); const day = getTodayKey();
+  if (!log[day]) log[day] = {};
+  if (!log[day][username]) log[day][username] = { user, firstOpen: new Date().toISOString(), opens: 0 };
+  log[day][username].opens++;
+  log[day][username].lastOpen = new Date().toISOString();
+  log[day][username].user = user;
+  saveWorkLog(log);
+  return log;
+}
+function getTodayWorked() {
+  const log = getWorkLog(); const day = getTodayKey();
+  if (!log[day]) return [];
+  return Object.entries(log[day]).map(([username, data]) => ({ username, ...data }))
+    .sort((a,b) => new Date(b.lastOpen) - new Date(a.lastOpen));
+}
+
+/* ─── Creator Modal Content ─── */
+function CreatorModal({ inf, infState, onUpdateState, onClose, currentUser, company, allCompanies }) {
   const [noteText, setNoteText] = useState('');
   const msgs = getCompanyMessages(company, inf);
   const tip = TIPS_DB[inf.username] || genTip(inf);
   const statusObj = STATUS_OPTIONS.find(s => s.value === infState.status) || STATUS_OPTIONS[0];
   const companyName = company?.name || '';
-  const theme = getTheme(company?.theme);
   const matchPct = calculateMatch(company, inf);
   const matchStyle = getMatchColor(matchPct);
+  const initial = inf.name.charAt(0).toUpperCase();
 
   const nextStep = () => {
     const ci = STATUS_FLOW.indexOf(infState.status); if (ci<0||ci>=STATUS_FLOW.length-1) return;
@@ -1645,18 +1731,154 @@ function InfluencerCard({ inf, infState, onUpdateState, expanded, onToggle, curr
     setNoteText('');
   };
 
-  const handleToggle = () => { if (!expanded) logActivity(currentUser,'expand_card',inf.username,'',companyName); onToggle(); };
-  const initial = inf.name.charAt(0).toUpperCase();
   const notes = Array.isArray(infState.notes)?infState.notes:(infState.notes?[{text:infState.notes,user:'Sistema',date:new Date().toISOString()}]:[]);
 
+  // Close on Escape
+  useEffect(() => {
+    const handler = (e) => { if (e.key === 'Escape') onClose(); };
+    window.addEventListener('keydown', handler);
+    return () => window.removeEventListener('keydown', handler);
+  }, [onClose]);
+
   return (
-    <div className={`card${expanded?' expanded':''}`}>
-      <div className="card-head" onClick={handleToggle}>
+    <div className="creator-modal-overlay" onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}>
+      <div className="creator-modal">
+        <div className="creator-modal-header">
+          <div className="card-info">
+            <div className="avatar">{initial}</div>
+            <div style={{minWidth:0}}>
+              <div className="card-name" style={{fontSize:'1rem'}}>{inf.name}</div>
+              <div className="card-user"><a href={`https://instagram.com/${inf.username}`} target="_blank">@{inf.username}</a></div>
+              <div className="card-meta">{inf.followers&&`${inf.followers} seg`}{inf.city&&` · ${inf.city}`}{inf.country&&`, ${inf.country}`}</div>
+            </div>
+          </div>
+          <div style={{display:'flex',alignItems:'center',gap:8}}>
+            <span className={`match-badge ${matchStyle.cls}`}>{matchPct}%</span>
+            <span className={`status-badge ${statusObj.cls}`}>{statusObj.label}</span>
+            <button className="creator-modal-close" onClick={onClose}>&times;</button>
+          </div>
+        </div>
+        <div className="creator-modal-body">
+          {/* Company identity + match banner */}
+          <div className="company-identity">
+            <div className="co-dot" />
+            Contactando como <strong style={{marginLeft:4,display:'inline-flex',alignItems:'center',gap:'6px'}}>
+              <span style={{display:'inline-flex',alignItems:'center'}}>
+                {company?.logo ?
+                  <img src={company.logo} alt={companyName} style={{width:'20px',height:'20px',objectFit:'contain',borderRadius:'3px'}} /> :
+                  <span>{company?.icon}</span>
+                }
+              </span>
+              {companyName}
+            </strong>
+            <span style={{marginLeft:'auto',fontSize:'0.85rem',fontWeight:700}}>{matchPct}% Match — {getMatchLabel(matchPct)}</span>
+          </div>
+
+          {/* Cross-company match comparison */}
+          {allCompanies && allCompanies.length > 1 && (
+            <div className="match-comparison">
+              <div className="match-comparison-title">Match por compañía</div>
+              {allCompanies.map(co => {
+                const pct = calculateMatch(co, inf);
+                const mc = getMatchColor(pct);
+                const t = getTheme(co.theme);
+                return (
+                  <div className="match-row" key={co.id}>
+                    <div className="co-dot-sm" style={{background:t.accent2}} />
+                    <span className="co-label" style={{display:'inline-flex',alignItems:'center',gap:'6px'}}>
+                      <span style={{display:'inline-flex',alignItems:'center'}}>
+                        {co.logo ?
+                          <img src={co.logo} alt={co.name} style={{width:'18px',height:'18px',objectFit:'contain',borderRadius:'3px'}} /> :
+                          <span>{co.icon}</span>
+                        }
+                      </span>
+                      {co.name}
+                    </span>
+                    <div className="match-bar"><div className="match-bar-fill" style={{width:`${pct}%`,background:mc.color}} /></div>
+                    <span className="match-pct" style={{color:mc.color}}>{pct}%</span>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+
+          {inf.bio && <><div className="section-title">Bio</div><div className="bio-text">{inf.bio}</div></>}
+          <div className="tip-box"><div className="msg-label" style={{color:'var(--yellow)'}}>Tip</div><div className="msg-text">{tip}</div></div>
+
+          <div className="section-title">
+            Mensajes —
+            <span style={{display:'inline-flex',alignItems:'center',gap:'6px',marginLeft:'8px'}}>
+              <span style={{display:'inline-flex',alignItems:'center'}}>
+                {company?.logo ?
+                  <img src={company.logo} alt={companyName} style={{width:'18px',height:'18px',objectFit:'contain',borderRadius:'3px'}} /> :
+                  <span>{company?.icon}</span>
+                }
+              </span>
+              {companyName}
+            </span>
+          </div>
+          {msgs && <>
+            <MsgCard label="Primer contacto" text={msgs.first} currentUser={currentUser} influencer={inf.username} companyName={companyName} />
+            <MsgCard label="Follow Up 1" text={msgs.fu1} color="var(--teal)" currentUser={currentUser} influencer={inf.username} companyName={companyName} />
+            <MsgCard label="Follow Up 2" text={msgs.fu2} color="var(--orange)" currentUser={currentUser} influencer={inf.username} companyName={companyName} />
+            <MsgCard label="Follow Up 3" text={msgs.fu3} color="var(--red)" currentUser={currentUser} influencer={inf.username} companyName={companyName} />
+          </>}
+
+          <div className="section-title">Acciones</div>
+          <div style={{display:'flex',gap:'8px',flexWrap:'wrap',margin:'8px 0'}}>
+            <button className="btn btn-green btn-sm" onClick={nextStep}>Siguiente paso</button>
+            <select className="btn btn-sm" value={infState.status} onChange={e=>setStatus(e.target.value)}>
+              {STATUS_OPTIONS.map(s=><option key={s.value} value={s.value}>{s.label}</option>)}
+            </select>
+          </div>
+          <div className="contact-counter"><span style={{fontSize:'0.8rem',color:'var(--text2)'}}>Contactos:</span><span className="counter-val">{infState.count}</span></div>
+
+          <div className="section-title">Notas del equipo</div>
+          {notes.map((n,i)=>(
+            <div className="note-entry" key={i}>
+              <span className="note-author">{n.user||'Sistema'}</span>
+              {n.company && <span className="note-company-tag" style={{background:'var(--company-glow)',color:'var(--company-accent)'}}>{n.company}</span>}
+              <span className="note-date">{new Date(n.date).toLocaleDateString('es-ES',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'})}</span>
+              <div className="note-text">{n.text}</div>
+            </div>
+          ))}
+          <div className="add-note-wrap">
+            <textarea className="notes-area" value={noteText} onChange={e=>setNoteText(e.target.value)} placeholder="Escribe una nota..." onKeyDown={e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();addNote();}}} />
+            <button className="btn btn-sm btn-accent" onClick={addNote} style={{alignSelf:'flex-end'}}>+</button>
+          </div>
+
+          {infState.history&&infState.history.length>0&&<>
+            <div className="section-title">Historial</div>
+            {infState.history.slice().reverse().map((h,i)=>(
+              <div className="history-item" key={i}>
+                <span className="history-date">{h.date}</span>
+                {h.user&&<>{' — '}<span className="history-user">{h.user}</span></>}
+                {h.company&&<span style={{color:'var(--text2)',fontSize:'0.7rem'}}> ({h.company})</span>}
+                {' — '}{h.action}
+              </div>
+            ))}
+          </>}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ─── Compact Card (list item) ─── */
+function InfluencerCard({ inf, infState, onOpenModal, company }) {
+  const statusObj = STATUS_OPTIONS.find(s => s.value === infState.status) || STATUS_OPTIONS[0];
+  const matchPct = calculateMatch(company, inf);
+  const matchStyle = getMatchColor(matchPct);
+  const initial = inf.name.charAt(0).toUpperCase();
+
+  return (
+    <div className="card" onClick={() => onOpenModal(inf)}>
+      <div className="card-head">
         <div className="card-info">
           <div className="avatar">{initial}</div>
           <div style={{minWidth:0}}>
             <div className="card-name">{inf.name}</div>
-            <div className="card-user"><a href={`https://instagram.com/${inf.username}`} target="_blank" onClick={e=>e.stopPropagation()}>@{inf.username}</a></div>
+            <div className="card-user">@{inf.username}</div>
             <div className="card-meta">{inf.followers&&`${inf.followers} seg`}{inf.city&&` · ${inf.city}`}{inf.country&&`, ${inf.country}`}</div>
             <div className="card-badges">
               {inf.potential==='Alto'&&<span className="badge badge-high">Alto</span>}
@@ -1672,108 +1894,6 @@ function InfluencerCard({ inf, infState, onUpdateState, expanded, onToggle, curr
             {matchPct}%
           </span>
         </div>
-      </div>
-
-      <div className="card-body">
-        {/* Company identity + match banner */}
-        <div className="company-identity">
-          <div className="co-dot" />
-          Contactando como <strong style={{marginLeft:4,display:'inline-flex',alignItems:'center',gap:'6px'}}>
-            <span style={{display:'inline-flex',alignItems:'center'}}>
-              {company?.logo ?
-                <img src={company.logo} alt={companyName} style={{width:'20px',height:'20px',objectFit:'contain',borderRadius:'3px'}} /> :
-                <span>{company?.icon}</span>
-              }
-            </span>
-            {companyName}
-          </strong>
-          <span style={{marginLeft:'auto',fontSize:'0.85rem',fontWeight:700}}>{matchPct}% Match — {getMatchLabel(matchPct)}</span>
-        </div>
-
-        {/* Cross-company match comparison */}
-        {allCompanies && allCompanies.length > 1 && (
-          <div className="match-comparison">
-            <div className="match-comparison-title">Match por compañía</div>
-            {allCompanies.map(co => {
-              const pct = calculateMatch(co, inf);
-              const mc = getMatchColor(pct);
-              const t = getTheme(co.theme);
-              return (
-                <div className="match-row" key={co.id}>
-                  <div className="co-dot-sm" style={{background:t.accent2}} />
-                  <span className="co-label" style={{display:'inline-flex',alignItems:'center',gap:'6px'}}>
-                    <span style={{display:'inline-flex',alignItems:'center'}}>
-                      {co.logo ?
-                        <img src={co.logo} alt={co.name} style={{width:'18px',height:'18px',objectFit:'contain',borderRadius:'3px'}} /> :
-                        <span>{co.icon}</span>
-                      }
-                    </span>
-                    {co.name}
-                  </span>
-                  <div className="match-bar"><div className="match-bar-fill" style={{width:`${pct}%`,background:mc.color}} /></div>
-                  <span className="match-pct" style={{color:mc.color}}>{pct}%</span>
-                </div>
-              );
-            })}
-          </div>
-        )}
-
-        {inf.bio && <><div className="section-title">Bio</div><div className="bio-text">{inf.bio}</div></>}
-        <div className="tip-box"><div className="msg-label" style={{color:'var(--yellow)'}}>Tip</div><div className="msg-text">{tip}</div></div>
-
-        <div className="section-title">
-          Mensajes —
-          <span style={{display:'inline-flex',alignItems:'center',gap:'6px',marginLeft:'8px'}}>
-            <span style={{display:'inline-flex',alignItems:'center'}}>
-              {company?.logo ?
-                <img src={company.logo} alt={companyName} style={{width:'18px',height:'18px',objectFit:'contain',borderRadius:'3px'}} /> :
-                <span>{company?.icon}</span>
-              }
-            </span>
-            {companyName}
-          </span>
-        </div>
-        {msgs && <>
-          <MsgCard label="Primer contacto" text={msgs.first} currentUser={currentUser} influencer={inf.username} companyName={companyName} />
-          <MsgCard label="Follow Up 1" text={msgs.fu1} color="var(--teal)" currentUser={currentUser} influencer={inf.username} companyName={companyName} />
-          <MsgCard label="Follow Up 2" text={msgs.fu2} color="var(--orange)" currentUser={currentUser} influencer={inf.username} companyName={companyName} />
-          <MsgCard label="Follow Up 3" text={msgs.fu3} color="var(--red)" currentUser={currentUser} influencer={inf.username} companyName={companyName} />
-        </>}
-
-        <div className="section-title">Acciones</div>
-        <div style={{display:'flex',gap:'8px',flexWrap:'wrap',margin:'8px 0'}}>
-          <button className="btn btn-green btn-sm" onClick={nextStep}>▶ Siguiente paso</button>
-          <select className="btn btn-sm" value={infState.status} onChange={e=>setStatus(e.target.value)} onClick={e=>e.stopPropagation()}>
-            {STATUS_OPTIONS.map(s=><option key={s.value} value={s.value}>{s.label}</option>)}
-          </select>
-        </div>
-        <div className="contact-counter"><span style={{fontSize:'0.8rem',color:'var(--text2)'}}>Contactos:</span><span className="counter-val">{infState.count}</span></div>
-
-        <div className="section-title">Notas del equipo</div>
-        {notes.map((n,i)=>(
-          <div className="note-entry" key={i}>
-            <span className="note-author">{n.user||'Sistema'}</span>
-            {n.company && <span className="note-company-tag" style={{background:'var(--company-glow)',color:'var(--company-accent)'}}>{n.company}</span>}
-            <span className="note-date">{new Date(n.date).toLocaleDateString('es-ES',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'})}</span>
-            <div className="note-text">{n.text}</div>
-          </div>
-        ))}
-        <div className="add-note-wrap">
-          <textarea className="notes-area" value={noteText} onChange={e=>setNoteText(e.target.value)} placeholder="Escribe una nota..." onClick={e=>e.stopPropagation()} onKeyDown={e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();addNote();}}} />
-          <button className="btn btn-sm btn-accent" onClick={addNote} style={{alignSelf:'flex-end'}}>+</button>
-        </div>
-
-        {infState.history&&infState.history.length>0&&<>
-          <div className="section-title">Historial</div>
-          {infState.history.slice().reverse().map((h,i)=>(
-            <div className="history-item" key={i}>
-              <span className="history-date">{h.date}</span>
-              {h.user&&<>{' — '}<span className="history-user">{h.user}</span></>}
-              {h.company&&<span style={{color:'var(--text2)',fontSize:'0.7rem'}}> ({h.company})</span>}
-              {' — '}{h.action}
-            </div>
-          ))}
-        </>}
       </div>
     </div>
   );
@@ -1793,7 +1913,8 @@ function App() {
   const [filterCity, setFilterCity] = useState('all');
   const [filterScore, setFilterScore] = useState('all');
   const [filterMatch, setFilterMatch] = useState('all');
-  const [expanded, setExpanded] = useState({});
+  const [modalInf, setModalInf] = useState(null);
+  const [workedToday, setWorkedToday] = useState(getTodayWorked);
   const [activityOpen, setActivityOpen] = useState(false);
   const [coManagerOpen, setCoManagerOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
@@ -1844,6 +1965,15 @@ function App() {
   }, [activeCo?.id]);
 
   const handleSaveCompanies = (list) => { setCompanies(list); saveCompanies(list); };
+
+  const openCreatorModal = useCallback((inf) => {
+    setModalInf(inf);
+    logActivity(userName,'open_creator',inf.username,'',activeCo?.name);
+    logWork(inf.username, userName);
+    setWorkedToday(getTodayWorked());
+  }, [userName, activeCo?.name]);
+
+  const closeCreatorModal = useCallback(() => { setModalInf(null); }, []);
 
   const loadSheet = useCallback(async () => {
     setSyncStatus('loading');
@@ -1939,6 +2069,32 @@ function App() {
 
     <ActivityPanel open={activityOpen} onClose={()=>setActivityOpen(false)} />
 
+    {/* Creator Modal */}
+    {modalInf && <CreatorModal inf={modalInf} infState={getInfState(crmState,modalInf.username)} onUpdateState={updateInfState} onClose={closeCreatorModal} currentUser={userName} company={activeCo} allCompanies={companies} />}
+
+    {/* Worked Today */}
+    {workedToday.length > 0 && (
+      <div className="worked-today">
+        <div className="worked-today-title">
+          Trabajadas hoy <span className="worked-today-count">{workedToday.length}</span>
+        </div>
+        <div className="worked-today-list">
+          {workedToday.map(w => {
+            const inf = influencers.find(i => i.username === w.username);
+            const time = new Date(w.lastOpen).toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit'});
+            return (
+              <div className="worked-chip" key={w.username} onClick={() => { if(inf) openCreatorModal(inf); }}>
+                <div className="mini-avatar">{(inf?.name||w.username).charAt(0).toUpperCase()}</div>
+                <span>{inf?.name || w.username}</span>
+                <span className="worked-chip-time">{time}</span>
+                {w.opens > 1 && <span className="worked-chip-time">x{w.opens}</span>}
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    )}
+
     <div className="stats">
       <div className="stat"><div className="stat-label">Total</div><div className="stat-value accent">{total}</div></div>
       <div className="stat"><div className="stat-label">Contactadas</div><div className="stat-value yellow">{contacted}</div></div>
@@ -1987,7 +2143,7 @@ function App() {
       <div className="empty"><h2>{syncStatus==='loading'?'Cargando...':'Sin resultados'}</h2><p>{syncStatus==='loading'?'Conectando...':'Cambia los filtros'}</p></div>
     ):(
       <div className="cards">
-        {filtered.map(inf=>(<InfluencerCard key={inf.id} inf={inf} infState={getInfState(crmState,inf.username)} onUpdateState={updateInfState} expanded={!!expanded[inf.id]} onToggle={()=>setExpanded(p=>({...p,[inf.id]:!p[inf.id]}))} currentUser={userName} company={activeCo} allCompanies={companies} />))}
+        {filtered.map(inf=>(<InfluencerCard key={inf.id} inf={inf} infState={getInfState(crmState,inf.username)} onOpenModal={openCreatorModal} company={activeCo} />))}
       </div>
     )}
   </>);
