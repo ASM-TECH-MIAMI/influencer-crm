@@ -3,46 +3,57 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Influencer CRM — Brand Ambassador</title>
+<title>Influencer CRM — Multi-Company</title>
 <style>
   :root {
     --bg: #0f1117; --card: #1a1d27; --card2: #22252f; --border: #2a2d3a;
     --text: #e4e4e7; --text2: #a1a1aa; --accent: #818cf8; --accent2: #6366f1;
     --green: #22c55e; --yellow: #eab308; --red: #ef4444; --orange: #f97316;
     --blue: #3b82f6; --pink: #ec4899; --teal: #14b8a6;
+    --company-accent: #818cf8; --company-accent2: #6366f1; --company-glow: rgba(99,102,241,0.15);
   }
   * { margin:0; padding:0; box-sizing:border-box; }
-  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background:var(--bg); color:var(--text); min-height:100vh; }
-  a { color:var(--accent); text-decoration:none; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background:var(--bg); color:var(--text); min-height:100vh; transition:background .4s; }
+  a { color:var(--company-accent); text-decoration:none; }
   a:hover { text-decoration:underline; }
 
   /* Auth Screen */
   .auth-overlay { position:fixed; inset:0; background:var(--bg); z-index:9999; display:flex; align-items:center; justify-content:center; }
   .auth-box { background:var(--card); border:1px solid var(--border); border-radius:16px; padding:40px; width:100%; max-width:400px; text-align:center; }
   .auth-box h1 { font-size:1.6rem; margin-bottom:4px; }
-  .auth-box h1 span { color:var(--accent); }
+  .auth-box h1 span { color:var(--company-accent); }
   .auth-subtitle { color:var(--text2); font-size:0.85rem; margin-bottom:24px; }
   .auth-input { width:100%; padding:12px 16px; border-radius:10px; border:1px solid var(--border); background:var(--card2); color:var(--text); font-size:0.95rem; outline:none; margin-bottom:12px; }
-  .auth-input:focus { border-color:var(--accent); }
-  .auth-btn { width:100%; padding:12px; border-radius:10px; border:none; background:var(--accent2); color:#fff; font-size:1rem; font-weight:600; cursor:pointer; transition:all .2s; }
-  .auth-btn:hover { background:var(--accent); }
-  .auth-toggle { color:var(--accent); cursor:pointer; font-size:0.85rem; margin-top:16px; display:inline-block; }
+  .auth-input:focus { border-color:var(--company-accent); }
+  .auth-btn { width:100%; padding:12px; border-radius:10px; border:none; background:var(--company-accent2); color:#fff; font-size:1rem; font-weight:600; cursor:pointer; transition:all .2s; }
+  .auth-btn:hover { background:var(--company-accent); }
+  .auth-toggle { color:var(--company-accent); cursor:pointer; font-size:0.85rem; margin-top:16px; display:inline-block; }
   .auth-toggle:hover { text-decoration:underline; }
   .auth-error { color:var(--red); font-size:0.83rem; margin-bottom:12px; }
   .auth-success { color:var(--green); font-size:0.83rem; margin-bottom:12px; }
 
+  /* Company bar */
+  .company-bar { background:var(--company-accent2); color:#fff; padding:8px 24px; display:flex; align-items:center; justify-content:space-between; gap:12px; font-size:0.85rem; position:sticky; top:0; z-index:150; box-shadow:0 2px 12px var(--company-glow); transition: background .4s; }
+  .company-bar-left { display:flex; align-items:center; gap:10px; font-weight:700; font-size:1rem; }
+  .company-bar-left .co-icon { font-size:1.3rem; }
+  .company-bar-right { display:flex; align-items:center; gap:8px; }
+  .company-selector { background:rgba(255,255,255,0.15); border:1px solid rgba(255,255,255,0.3); border-radius:8px; color:#fff; padding:5px 12px; font-size:0.82rem; cursor:pointer; outline:none; font-weight:600; }
+  .company-selector option { background:var(--card); color:var(--text); }
+  .co-manage-btn { background:rgba(255,255,255,0.15); border:1px solid rgba(255,255,255,0.3); border-radius:8px; color:#fff; padding:5px 10px; font-size:0.78rem; cursor:pointer; }
+  .co-manage-btn:hover { background:rgba(255,255,255,0.3); }
+
   /* User badge in header */
-  .user-badge { display:flex; align-items:center; gap:8px; background:var(--card2); border:1px solid var(--border); border-radius:10px; padding:6px 12px; }
-  .user-avatar-sm { width:28px; height:28px; border-radius:50%; background:var(--accent2); display:flex; align-items:center; justify-content:center; font-size:0.75rem; font-weight:700; color:#fff; }
-  .user-name { font-size:0.8rem; font-weight:600; }
-  .logout-btn { background:none; border:none; color:var(--text2); cursor:pointer; font-size:0.75rem; padding:2px 6px; border-radius:4px; }
-  .logout-btn:hover { color:var(--red); background:var(--card); }
+  .user-badge { display:flex; align-items:center; gap:8px; background:rgba(255,255,255,0.15); border:1px solid rgba(255,255,255,0.2); border-radius:10px; padding:4px 10px; }
+  .user-avatar-sm { width:24px; height:24px; border-radius:50%; background:rgba(255,255,255,0.3); display:flex; align-items:center; justify-content:center; font-size:0.7rem; font-weight:700; color:#fff; }
+  .user-name { font-size:0.78rem; font-weight:600; }
+  .logout-btn { background:none; border:none; color:rgba(255,255,255,0.7); cursor:pointer; font-size:0.72rem; padding:2px 6px; border-radius:4px; }
+  .logout-btn:hover { color:#fff; background:rgba(255,255,255,0.15); }
 
   /* Header */
-  .header { background:var(--card); border-bottom:1px solid var(--border); padding:16px 24px; position:sticky; top:0; z-index:100; }
+  .header { background:var(--card); border-bottom:1px solid var(--border); padding:14px 24px; position:sticky; top:40px; z-index:100; }
   .header-top { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px; }
-  .header h1 { font-size:1.4rem; font-weight:700; }
-  .header h1 span { color:var(--accent); }
+  .header h1 { font-size:1.3rem; font-weight:700; }
+  .header h1 span { color:var(--company-accent); }
   .header-actions { display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
   .sync-status { font-size:0.75rem; color:var(--text2); padding:4px 10px; border-radius:12px; background:var(--card2); }
   .sync-status.ok { color:var(--green); }
@@ -51,10 +62,10 @@
 
   /* Buttons */
   .btn { padding:8px 16px; border-radius:8px; border:1px solid var(--border); background:var(--card2); color:var(--text); cursor:pointer; font-size:0.85rem; transition:all .2s; display:inline-flex; align-items:center; gap:6px; }
-  .btn:hover { background:var(--accent2); border-color:var(--accent2); color:#fff; }
+  .btn:hover { background:var(--company-accent2); border-color:var(--company-accent2); color:#fff; }
   .btn-sm { padding:5px 10px; font-size:0.78rem; }
-  .btn-accent { background:var(--accent2); border-color:var(--accent2); color:#fff; }
-  .btn-accent:hover { background:var(--accent); }
+  .btn-accent { background:var(--company-accent2); border-color:var(--company-accent2); color:#fff; }
+  .btn-accent:hover { background:var(--company-accent); }
   .btn-green { background:#166534; border-color:#166534; color:#fff; }
   .btn-green:hover { background:var(--green); color:#000; }
 
@@ -63,7 +74,7 @@
   .stat { background:var(--card); border:1px solid var(--border); border-radius:12px; padding:14px 20px; flex:1; min-width:140px; }
   .stat-label { font-size:0.75rem; color:var(--text2); text-transform:uppercase; letter-spacing:0.5px; }
   .stat-value { font-size:1.6rem; font-weight:700; margin-top:4px; }
-  .stat-value.accent { color:var(--accent); }
+  .stat-value.accent { color:var(--company-accent); }
   .stat-value.green { color:var(--green); }
   .stat-value.yellow { color:var(--yellow); }
   .stat-value.pink { color:var(--pink); }
@@ -71,26 +82,26 @@
   /* Progress bar */
   .progress-wrap { padding:0 24px 8px; }
   .progress-bar { height:6px; background:var(--card2); border-radius:3px; overflow:hidden; }
-  .progress-fill { height:100%; background:linear-gradient(90deg, var(--accent2), var(--green)); border-radius:3px; transition:width .5s; }
+  .progress-fill { height:100%; background:linear-gradient(90deg, var(--company-accent2), var(--green)); border-radius:3px; transition:width .5s; }
 
   /* Search & Filters */
   .controls { padding:12px 24px; display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
   .search-input { background:var(--card); border:1px solid var(--border); border-radius:8px; padding:8px 14px; color:var(--text); font-size:0.9rem; width:260px; outline:none; }
-  .search-input:focus { border-color:var(--accent); }
+  .search-input:focus { border-color:var(--company-accent); }
   .filter-btn { padding:6px 14px; border-radius:20px; border:1px solid var(--border); background:var(--card); color:var(--text2); cursor:pointer; font-size:0.8rem; transition:all .2s; }
-  .filter-btn:hover, .filter-btn.active { background:var(--accent2); color:#fff; border-color:var(--accent2); }
+  .filter-btn:hover, .filter-btn.active { background:var(--company-accent2); color:#fff; border-color:var(--company-accent2); }
   .filter-select { padding:6px 12px; border-radius:8px; border:1px solid var(--border); background:var(--card); color:var(--text); font-size:0.8rem; cursor:pointer; outline:none; min-width:120px; }
-  .filter-select:focus { border-color:var(--accent); }
+  .filter-select:focus { border-color:var(--company-accent); }
   .filter-row { display:flex; gap:8px; flex-wrap:wrap; align-items:center; padding:0 24px 8px; }
   .filter-label { font-size:0.72rem; color:var(--text2); text-transform:uppercase; letter-spacing:0.5px; }
 
   /* Cards grid */
   .cards { padding:12px 24px 40px; display:grid; grid-template-columns:repeat(auto-fill, minmax(380px, 1fr)); gap:14px; }
   .card { background:var(--card); border:1px solid var(--border); border-radius:14px; overflow:hidden; transition:all .2s; }
-  .card:hover { border-color:var(--accent); }
+  .card:hover { border-color:var(--company-accent); }
   .card-head { padding:16px; display:flex; justify-content:space-between; align-items:flex-start; cursor:pointer; }
   .card-info { display:flex; gap:12px; align-items:center; flex:1; min-width:0; }
-  .avatar { width:48px; height:48px; border-radius:50%; background:var(--accent2); display:flex; align-items:center; justify-content:center; font-size:1.2rem; font-weight:700; color:#fff; flex-shrink:0; }
+  .avatar { width:48px; height:48px; border-radius:50%; background:var(--company-accent2); display:flex; align-items:center; justify-content:center; font-size:1.2rem; font-weight:700; color:#fff; flex-shrink:0; transition:background .4s; }
   .card-name { font-weight:600; font-size:0.95rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
   .card-user { font-size:0.8rem; color:var(--text2); }
   .card-meta { font-size:0.75rem; color:var(--text2); margin-top:2px; }
@@ -99,13 +110,13 @@
   .badge-high { background:#422006; color:var(--orange); }
   .badge-medio { background:#422006; color:var(--yellow); }
   .badge-bajo { background:#1a2e05; color:var(--green); }
-  .badge-verified { background:#1e1b4b; color:var(--accent); }
+  .badge-verified { background:#1e1b4b; color:var(--company-accent); }
 
   /* Status badge */
   .status-badge { font-size:0.75rem; padding:4px 10px; border-radius:10px; white-space:nowrap; }
   .s-pendiente { background:#422006; color:var(--yellow); }
   .s-enviado_1 { background:#172554; color:var(--blue); }
-  .s-fu1_enviado, .s-fu2_enviado, .s-fu3_enviado { background:#1e1b4b; color:var(--accent); }
+  .s-fu1_enviado, .s-fu2_enviado, .s-fu3_enviado { background:#1e1b4b; color:var(--company-accent); }
   .s-respondio { background:#052e16; color:var(--green); }
   .s-en_negociacion { background:#3b1764; color:var(--pink); }
   .s-cerrado_si { background:#052e16; color:var(--green); font-weight:700; }
@@ -117,17 +128,22 @@
   .section-title { font-size:0.75rem; color:var(--text2); text-transform:uppercase; letter-spacing:0.5px; margin:12px 0 6px; }
   .bio-text { font-size:0.83rem; color:var(--text2); line-height:1.5; }
   .msg-card { background:var(--card2); border:1px solid var(--border); border-radius:10px; padding:12px; margin:6px 0; }
-  .msg-label { font-size:0.72rem; color:var(--accent); font-weight:600; text-transform:uppercase; margin-bottom:6px; }
+  .msg-label { font-size:0.72rem; color:var(--company-accent); font-weight:600; text-transform:uppercase; margin-bottom:6px; }
   .msg-text { font-size:0.83rem; line-height:1.5; white-space:pre-wrap; }
   .msg-actions { display:flex; gap:6px; margin-top:8px; }
-  .tip-box { background:#1e1b4b; border:1px solid var(--accent2); border-radius:10px; padding:12px; margin:6px 0; }
+  .tip-box { background:rgba(99,102,241,0.1); border:1px solid var(--company-accent2); border-radius:10px; padding:12px; margin:6px 0; transition:background .4s, border-color .4s; }
   .tip-box .msg-label { color:var(--yellow); }
+
+  /* Company identity banner inside cards */
+  .company-identity { display:flex; align-items:center; gap:8px; padding:8px 12px; border-radius:8px; margin:8px 0; font-size:0.8rem; font-weight:600; border:1px solid var(--company-accent2); background:var(--company-glow); color:var(--company-accent); transition: all .4s; }
+  .company-identity .co-dot { width:10px; height:10px; border-radius:50%; background:var(--company-accent); }
 
   /* Notes */
   .notes-area { width:100%; background:var(--card2); border:1px solid var(--border); border-radius:8px; padding:10px; color:var(--text); font-size:0.83rem; resize:vertical; min-height:60px; outline:none; font-family:inherit; }
-  .notes-area:focus { border-color:var(--accent); }
+  .notes-area:focus { border-color:var(--company-accent); }
   .note-entry { background:var(--card2); border:1px solid var(--border); border-radius:8px; padding:10px; margin:4px 0; font-size:0.83rem; }
-  .note-author { color:var(--accent); font-weight:600; font-size:0.75rem; }
+  .note-author { color:var(--company-accent); font-weight:600; font-size:0.75rem; }
+  .note-company-tag { font-size:0.68rem; padding:1px 6px; border-radius:6px; margin-left:6px; font-weight:600; }
   .note-date { color:var(--text2); font-size:0.7rem; margin-left:8px; }
   .note-text { color:var(--text); margin-top:4px; line-height:1.4; }
   .add-note-wrap { display:flex; gap:8px; margin-top:8px; }
@@ -136,12 +152,12 @@
   /* History */
   .history-item { font-size:0.78rem; color:var(--text2); padding:4px 0; border-bottom:1px solid var(--border); }
   .history-item:last-child { border-bottom:none; }
-  .history-date { color:var(--accent); font-weight:600; }
+  .history-date { color:var(--company-accent); font-weight:600; }
   .history-user { color:var(--pink); font-weight:600; }
 
   /* Counter */
   .contact-counter { display:flex; align-items:center; gap:8px; margin:8px 0; }
-  .counter-val { font-size:1.1rem; font-weight:700; color:var(--accent); }
+  .counter-val { font-size:1.1rem; font-weight:700; color:var(--company-accent); }
 
   /* Empty state */
   .empty { text-align:center; padding:60px 24px; color:var(--text2); }
@@ -156,13 +172,31 @@
   .activity-item { padding:10px 0; border-bottom:1px solid var(--border); font-size:0.82rem; }
   .activity-item:last-child { border-bottom:none; }
   .activity-time { color:var(--text2); font-size:0.72rem; }
-  .activity-user-tag { color:var(--accent); font-weight:600; }
+  .activity-user-tag { color:var(--company-accent); font-weight:600; }
   .activity-action { color:var(--text); margin-top:2px; }
   .activity-target { color:var(--teal); }
+  .activity-company-tag { font-size:0.68rem; padding:1px 6px; border-radius:6px; font-weight:600; margin-left:4px; }
   .activity-backdrop { position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:199; }
   .activity-filters { display:flex; gap:6px; padding:8px 20px; border-bottom:1px solid var(--border); flex-wrap:wrap; }
   .activity-filter-btn { padding:3px 10px; border-radius:12px; border:1px solid var(--border); background:var(--card2); color:var(--text2); cursor:pointer; font-size:0.72rem; }
-  .activity-filter-btn.active { background:var(--accent2); color:#fff; border-color:var(--accent2); }
+  .activity-filter-btn.active { background:var(--company-accent2); color:#fff; border-color:var(--company-accent2); }
+
+  /* Company Manager Modal */
+  .modal-backdrop { position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:300; display:flex; align-items:center; justify-content:center; }
+  .modal { background:var(--card); border:1px solid var(--border); border-radius:16px; padding:28px; width:100%; max-width:520px; max-height:85vh; overflow-y:auto; }
+  .modal h2 { font-size:1.2rem; margin-bottom:16px; }
+  .modal-input { width:100%; padding:10px 14px; border-radius:8px; border:1px solid var(--border); background:var(--card2); color:var(--text); font-size:0.9rem; outline:none; margin-bottom:10px; }
+  .modal-input:focus { border-color:var(--company-accent); }
+  .modal-textarea { width:100%; padding:10px 14px; border-radius:8px; border:1px solid var(--border); background:var(--card2); color:var(--text); font-size:0.85rem; outline:none; margin-bottom:10px; font-family:inherit; resize:vertical; min-height:60px; }
+  .modal-textarea:focus { border-color:var(--company-accent); }
+  .modal-label { font-size:0.78rem; color:var(--text2); margin-bottom:4px; text-transform:uppercase; letter-spacing:0.5px; }
+  .color-picker-row { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:12px; }
+  .color-swatch { width:36px; height:36px; border-radius:10px; cursor:pointer; border:3px solid transparent; transition:all .2s; }
+  .color-swatch:hover, .color-swatch.active { border-color:#fff; transform:scale(1.1); }
+  .company-list-item { display:flex; align-items:center; gap:10px; padding:10px 12px; border:1px solid var(--border); border-radius:10px; margin-bottom:8px; }
+  .company-list-item .co-color-dot { width:16px; height:16px; border-radius:50%; flex-shrink:0; }
+  .company-list-item .co-name { font-weight:600; flex:1; }
+  .company-list-item .co-actions { display:flex; gap:4px; }
 
   /* Responsive */
   @media (max-width:600px) {
@@ -173,6 +207,7 @@
     .search-input { width:100%; }
     .header { padding:12px 16px; }
     .activity-panel { width:100%; }
+    .company-bar { padding:8px 12px; flex-wrap:wrap; }
   }
 </style>
 </head>
@@ -191,10 +226,53 @@ const { useState, useEffect, useCallback, useRef } = React;
 const SHEET_ID  = "12AdZymPjRbiWdGr1A7BEAN8aRb1RAb5ZfULuJ71Xpb8";
 const SHEET_GID = "0";
 const SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/edit#gid=${SHEET_GID}`;
-const STORAGE_KEY = 'ig_crm_v4';
+const STORAGE_KEY = 'ig_crm_v5';
 const USERS_KEY = 'ig_crm_users';
 const SESSION_KEY = 'ig_crm_session';
 const ACTIVITY_KEY = 'ig_crm_activity';
+const COMPANIES_KEY = 'ig_crm_companies';
+const ACTIVE_CO_KEY = 'ig_crm_active_company';
+
+/* ─── Company color themes ─── */
+const THEME_COLORS = [
+  { id:'indigo',  label:'Indigo',   accent:'#818cf8', accent2:'#6366f1', bg:'#0f1117', glow:'rgba(99,102,241,0.15)' },
+  { id:'red',     label:'Rojo',     accent:'#f87171', accent2:'#dc2626', bg:'#1a0f0f', glow:'rgba(220,38,38,0.15)' },
+  { id:'emerald', label:'Esmeralda',accent:'#34d399', accent2:'#059669', bg:'#0f1a14', glow:'rgba(5,150,105,0.15)' },
+  { id:'amber',   label:'Ámbar',    accent:'#fbbf24', accent2:'#d97706', bg:'#1a170f', glow:'rgba(217,119,6,0.15)' },
+  { id:'cyan',    label:'Cyan',     accent:'#22d3ee', accent2:'#0891b2', bg:'#0f181a', glow:'rgba(8,145,178,0.15)' },
+  { id:'pink',    label:'Rosa',     accent:'#f472b6', accent2:'#db2777', bg:'#1a0f17', glow:'rgba(219,39,119,0.15)' },
+  { id:'orange',  label:'Naranja',  accent:'#fb923c', accent2:'#ea580c', bg:'#1a140f', glow:'rgba(234,88,12,0.15)' },
+  { id:'violet',  label:'Violeta',  accent:'#a78bfa', accent2:'#7c3aed', bg:'#140f1a', glow:'rgba(124,58,237,0.15)' },
+];
+
+const DEFAULT_COMPANIES = [
+  {
+    id: 'swimwear_brand',
+    name: 'Swimwear Brand',
+    icon: '👙',
+    theme: 'indigo',
+    description: 'Marca de swimwear — Brand Ambassadors',
+    msgTemplates: {
+      first: 'Hola {name}! 💜 Me encanta tu contenido y tu estilo. Somos una marca de swimwear y estamos buscando Brand Ambassadors. ¿Te gustaría saber más sobre nuestra propuesta?',
+      fu1: 'Hey {name}! 😊 Solo quería hacer follow up de mi mensaje anterior. ¿Pudiste verlo? Me encantaría contarte sobre nuestra propuesta de Brand Ambassador.',
+      fu2: '{name}! 🌊 Follow up rápido — tenemos beneficios especiales para creadoras como tú. ¿Tienes un momento para platicar?',
+      fu3: '{name}! Último mensaje, lo prometo 💛 Si en algún momento te interesa explorar una colaboración, aquí estamos. ¡Te deseamos lo mejor!',
+    }
+  },
+  {
+    id: 'leak_hunter',
+    name: 'Leak Hunter',
+    icon: '🛡️',
+    theme: 'red',
+    description: 'Protección de contenido — Content Protection',
+    msgTemplates: {
+      first: 'Hola {name}! 🛡️ Nos dedicamos a proteger el contenido de creadoras como tú. Hemos detectado que tu contenido podría estar en riesgo. ¿Te gustaría saber cómo podemos ayudarte?',
+      fu1: 'Hey {name}! Solo quería hacer follow up. La protección de tu contenido es importante y tenemos herramientas que pueden ayudarte. ¿Tienes un momento? 😊',
+      fu2: '{name}! 🔒 Follow up rápido — cada día que pasa tu contenido puede estar siendo compartido sin tu permiso. Podemos ayudarte.',
+      fu3: '{name}! Último mensaje — si alguna vez necesitas proteger tu contenido, aquí estamos. ¡Tu trabajo vale mucho! 🛡️',
+    }
+  },
+];
 
 const STATUS_OPTIONS = [
   { value:"pendiente",      label:"⏳ Pendiente",       cls:"s-pendiente" },
@@ -215,119 +293,81 @@ async function hashPassword(password) {
   const encoder = new TextEncoder();
   const data = encoder.encode(password + '_ig_crm_salt_2026');
   const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-  const hashArray = Array.from(new Uint8Array(hashBuffer));
-  return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+  return Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2, '0')).join('');
 }
+function getUsers() { try { return JSON.parse(localStorage.getItem(USERS_KEY) || '{}'); } catch { return {}; } }
+function saveUsers(u) { localStorage.setItem(USERS_KEY, JSON.stringify(u)); }
+function getSession() { try { return JSON.parse(localStorage.getItem(SESSION_KEY) || 'null'); } catch { return null; } }
+function saveSession(s) { if (s) localStorage.setItem(SESSION_KEY, JSON.stringify(s)); else localStorage.removeItem(SESSION_KEY); }
 
-function getUsers() {
-  try { return JSON.parse(localStorage.getItem(USERS_KEY) || '{}'); } catch { return {}; }
+/* ─── Company helpers ─── */
+function getCompanies() {
+  try {
+    const raw = localStorage.getItem(COMPANIES_KEY);
+    if (!raw) { saveCompanies(DEFAULT_COMPANIES); return DEFAULT_COMPANIES; }
+    return JSON.parse(raw);
+  } catch { return DEFAULT_COMPANIES; }
 }
-function saveUsers(users) {
-  localStorage.setItem(USERS_KEY, JSON.stringify(users));
-}
-function getSession() {
-  try { return JSON.parse(localStorage.getItem(SESSION_KEY) || 'null'); } catch { return null; }
-}
-function saveSession(session) {
-  if (session) localStorage.setItem(SESSION_KEY, JSON.stringify(session));
-  else localStorage.removeItem(SESSION_KEY);
-}
+function saveCompanies(c) { localStorage.setItem(COMPANIES_KEY, JSON.stringify(c)); }
+function getActiveCompanyId() { return localStorage.getItem(ACTIVE_CO_KEY) || null; }
+function setActiveCompanyId(id) { localStorage.setItem(ACTIVE_CO_KEY, id); }
+function getTheme(themeId) { return THEME_COLORS.find(t => t.id === themeId) || THEME_COLORS[0]; }
 
 /* ─── Activity Log helpers ─── */
-function getActivityLog() {
-  try { return JSON.parse(localStorage.getItem(ACTIVITY_KEY) || '[]'); } catch { return []; }
-}
-function logActivity(user, action, target, detail) {
+function getActivityLog() { try { return JSON.parse(localStorage.getItem(ACTIVITY_KEY) || '[]'); } catch { return []; } }
+function logActivity(user, action, target, detail, companyName) {
   const log = getActivityLog();
-  log.unshift({
-    user,
-    action,
-    target: target || '',
-    detail: detail || '',
-    timestamp: new Date().toISOString()
-  });
-  // Keep last 500 entries
+  log.unshift({ user, action, target: target||'', detail: detail||'', company: companyName||'', timestamp: new Date().toISOString() });
   if (log.length > 500) log.length = 500;
   localStorage.setItem(ACTIVITY_KEY, JSON.stringify(log));
 }
 
-/* ─── Personalized Messages ─── */
-const MESSAGES_DB = {
-  "karoramirezl": {
-    first: `Hola Karo! 💜 Me encanta tu estilo y cómo muestras tus outfits. Somos una marca de swimwear y nos encantaría que fueras parte de nuestra familia como Brand Ambassador. ¿Te interesaría saber más?`,
-    fu1: `Hey Karo! Soy yo de nuevo 😊 ¿Pudiste ver mi mensaje anterior? Me encantaría platicar contigo sobre nuestra propuesta de Brand Ambassador. ¡Creo que harías un match increíble con nuestra marca!`,
-    fu2: `Hola Karo! 🌊 Solo quería hacer un último follow up. Nos encanta tu perfil y creemos que juntas podríamos crear contenido increíble. ¿Tienes un momento para platicar?`,
-    fu3: `Hey Karo! Último mensaje, lo prometo 😄 Si en algún momento te interesa explorar una colaboración, aquí estamos. ¡Te deseamos lo mejor! 💜`
-  },
-  "aleja_velezv": {
-    first: `Hola Aleja! 🌟 Tu contenido me parece súper auténtico. Somos una marca de swimwear y estamos buscando embajadoras que compartan nuestros valores. ¿Te gustaría ser parte?`,
-    fu1: `Hey Aleja! ¿Cómo estás? Quería saber si pudiste ver mi mensaje anterior sobre ser Brand Ambassador. ¡Me encantaría contarte más! 😊`,
-    fu2: `Hola Aleja! 🏖️ Follow up rápido — tenemos una propuesta especial para creadoras como tú. ¿Podemos platicar?`,
-    fu3: `Aleja! Último intento 💛 Si alguna vez quieres explorar una collab, aquí estamos. ¡Éxitos en todo!`
-  },
-  "lucianasierra_": {
-    first: `Hola Luciana! ✨ Tu feed es hermoso y tu estilo encaja perfecto con nuestra marca de swimwear. ¿Te interesaría ser nuestra Brand Ambassador?`,
-    fu1: `Hey Luciana! Solo quería hacer follow up de mi mensaje anterior. Nos encantaría tenerte como embajadora 😊`,
-    fu2: `Luciana! 🌺 ¿Tienes un momento? Me encantaría platicarte sobre nuestra propuesta de Brand Ambassador.`,
-    fu3: `Hola Luciana! Último mensaje — si alguna vez te interesa colaborar, ¡aquí estamos! 💜`
-  },
-  "14.mol": {
-    first: `Hola! 🔥 Me encanta tu energía y tu contenido. Somos una marca de swimwear y estamos buscando embajadoras. ¿Te gustaría saber más?`,
-    fu1: `Hey! ¿Pudiste ver mi mensaje? Me encantaría contarte sobre nuestra propuesta de Brand Ambassador 😊`,
-    fu2: `Hola! 🌊 Quick follow up — tenemos algo especial para creadoras como tú. ¿Platicamos?`,
-    fu3: `Hey! Último mensaje — la puerta siempre está abierta si quieres colaborar. ¡Éxitos! 💛`
-  },
-  "katerine_carde": {
-    first: `Hola Katerine! 💫 Tu contenido transmite mucha buena vibra. Somos una marca de swimwear y queremos que seas parte de nuestro equipo de Brand Ambassadors. ¿Te interesa?`,
-    fu1: `Hey Katerine! Solo quería hacer follow up. ¿Te gustó la propuesta? Me encantaría platicar más 😊`,
-    fu2: `Katerine! 🏝️ ¿Tienes un momentito? Quería contarte más sobre lo que ofrecemos a nuestras embajadoras.`,
-    fu3: `Hola Katerine! Último follow up — si en algún momento quieres explorar esto, aquí estamos. ¡Mucho éxito! 💜`
-  },
-  "paulopez.29": {
-    first: `Hola Pau! 🌟 Tu estilo me encanta — encajas perfecto con nuestra marca de swimwear. ¿Te gustaría ser Brand Ambassador?`,
-    fu1: `Hey Pau! ¿Cómo vas? Quería saber si viste mi mensaje sobre la propuesta de Brand Ambassador 😊`,
-    fu2: `Pau! 🌺 Follow up rápido — nos encantaría tenerte en el equipo. ¿Platicamos?`,
-    fu3: `Pau! Último mensaje — la invitación sigue en pie si te interesa. ¡Te deseo lo mejor! 💛`
-  },
-  "alzatejufit": {
-    first: `Hola! 💪✨ Tu dedicación al fitness es inspiradora. Somos una marca de swimwear y nos encantaría que representaras nuestra marca. ¿Te interesa?`,
-    fu1: `Hey! ¿Pudiste ver mi mensaje anterior? Creo que serías una embajadora increíble 😊`,
-    fu2: `Hola! 🏖️ Follow up — tenemos beneficios especiales para creadoras fitness como tú. ¿Hablamos?`,
-    fu3: `Hey! Último intento — si alguna vez te interesa, aquí estamos. ¡Sigue brillando! 💜`
-  },
-  "sofianvalenzuela": {
-    first: `Hola Sofia! 🌸 Tu contenido es precioso. Somos una marca de swimwear y nos encantaría que fueras nuestra Brand Ambassador. ¿Qué dices?`,
-    fu1: `Sofia! ¿Cómo estás? Solo quería hacer follow up de mi propuesta. ¡Me encantaría platicar! 😊`,
-    fu2: `Hey Sofia! 🌊 ¿Tienes un momento? Quería contarte más sobre lo que ofrecemos.`,
-    fu3: `Sofia! Último mensaje — la puerta siempre está abierta. ¡Éxitos en todo! 💛`
-  },
-  "pierina": {
-    first: `Hola Pierina! ✨ Me encanta tu perfil y tu estilo. Somos una marca de swimwear y queremos que seas parte de nuestra familia. ¿Te interesaría?`,
-    fu1: `Pierina! ¿Pudiste ver mi mensaje? Me encantaría platicar sobre la propuesta 😊`,
-    fu2: `Hey Pierina! 🌺 Follow up rápido — creemos que harías un match perfecto con la marca.`,
-    fu3: `Pierina! Último follow up — aquí estamos si alguna vez quieres colaborar. ¡Mucho éxito! 💜`
-  },
-  "majubikini": {
-    first: `Hola Maju! 👙✨ Tu contenido de bikinis es exactamente lo que buscamos. ¿Te gustaría ser Brand Ambassador de nuestra marca de swimwear?`,
-    fu1: `Maju! ¿Cómo estás? Solo quería hacer follow up. ¡Me encantaría contarte más! 😊`,
-    fu2: `Hey Maju! 🌊 ¿Platicamos? Tenemos una propuesta especial para creadoras como tú.`,
-    fu3: `Maju! Último mensaje — si te interesa en el futuro, aquí estaremos. ¡Éxitos! 💛`
-  },
-  "pietracupello": {
-    first: `Hola Pietra! 🌟 Tu feed es increíble y tu estilo es justo lo que buscamos. ¿Te gustaría representar nuestra marca de swimwear como Brand Ambassador?`,
-    fu1: `Pietra! ¿Pudiste ver mi mensaje anterior? ¡Me encantaría platicar contigo! 😊`,
-    fu2: `Hey Pietra! 🏝️ Follow up — creemos que juntas podríamos crear algo increíble.`,
-    fu3: `Pietra! Último intento — la invitación sigue en pie. ¡Te deseamos lo mejor! 💜`
-  }
+/* ─── CRM State (now per-company) ─── */
+function getCrmStorageKey(companyId) { return `${STORAGE_KEY}_${companyId}`; }
+function loadCompanyState(companyId) {
+  try { const raw = localStorage.getItem(getCrmStorageKey(companyId)); return raw ? JSON.parse(raw) : {}; } catch { return {}; }
+}
+function saveCompanyState(companyId, state) {
+  try { localStorage.setItem(getCrmStorageKey(companyId), JSON.stringify(state)); } catch {}
+}
+function getInfState(state, username) {
+  return state[username] || { status:'pendiente', count:0, notes:[], history:[] };
+}
+
+/* ─── Apply theme to CSS vars ─── */
+function applyTheme(theme) {
+  const root = document.documentElement;
+  root.style.setProperty('--company-accent', theme.accent);
+  root.style.setProperty('--company-accent2', theme.accent2);
+  root.style.setProperty('--bg', theme.bg);
+  root.style.setProperty('--company-glow', theme.glow);
+}
+
+/* ─── Personalized Messages (per-company templates) ─── */
+const CUSTOM_MESSAGES = {
+  "karoramirezl": { firstName: "Karo" },
+  "aleja_velezv": { firstName: "Aleja" },
+  "lucianasierra_": { firstName: "Luciana" },
+  "14.mol": { firstName: "" },
+  "katerine_carde": { firstName: "Katerine" },
+  "paulopez.29": { firstName: "Pau" },
+  "alzatejufit": { firstName: "" },
+  "sofianvalenzuela": { firstName: "Sofia" },
+  "pierina": { firstName: "Pierina" },
+  "majubikini": { firstName: "Maju" },
+  "pietracupello": { firstName: "Pietra" },
 };
 
-function genMessages(firstName) {
-  const name = firstName || 'Hola';
+function getCompanyMessages(company, inf) {
+  if (!company || !company.msgTemplates) return null;
+  const custom = CUSTOM_MESSAGES[inf.username];
+  const firstName = custom?.firstName || inf.name.split(' ')[0] || 'Hola';
+  const t = company.msgTemplates;
   return {
-    first: `Hola ${name}! 💜 Me encanta tu contenido y tu estilo. Somos una marca de swimwear y estamos buscando Brand Ambassadors. ¿Te gustaría saber más sobre nuestra propuesta?`,
-    fu1: `Hey ${name}! 😊 Solo quería hacer follow up de mi mensaje anterior. ¿Pudiste verlo? Me encantaría contarte sobre nuestra propuesta de Brand Ambassador.`,
-    fu2: `${name}! 🌊 Follow up rápido — tenemos beneficios especiales para creadoras como tú. ¿Tienes un momento para platicar?`,
-    fu3: `${name}! Último mensaje, lo prometo 💛 Si en algún momento te interesa explorar una colaboración, aquí estamos. ¡Te deseamos lo mejor!`
+    first: t.first.replace(/\{name\}/g, firstName),
+    fu1: t.fu1.replace(/\{name\}/g, firstName),
+    fu2: t.fu2.replace(/\{name\}/g, firstName),
+    fu3: t.fu3.replace(/\{name\}/g, firstName),
   };
 }
 
@@ -345,7 +385,6 @@ const TIPS_DB = {
   "majubikini": "Ya crea contenido de bikinis — match natural con la marca.",
   "pietracupello": "Feed curado — habla de la estética de la marca."
 };
-
 function genTip(inf) {
   if (inf.links) return `Revisar sus links en bio: ${inf.links}`;
   if (inf.contentType) return `Contenido principal: ${inf.contentType}. Adaptar el pitch.`;
@@ -358,30 +397,18 @@ function loadSheetGviz(sheetId, gid) {
     const SCRIPT_ID = '_gviz_load';
     const old = document.getElementById(SCRIPT_ID);
     if (old) old.remove();
-
-    const timer = setTimeout(() => {
-      const el = document.getElementById(SCRIPT_ID);
-      if (el) el.remove();
-      reject(new Error('Timeout cargando el Sheet'));
-    }, 15000);
-
+    const timer = setTimeout(() => { const el = document.getElementById(SCRIPT_ID); if (el) el.remove(); reject(new Error('Timeout')); }, 15000);
     window.google = window.google || {};
     window.google.visualization = window.google.visualization || {};
     window.google.visualization.Query = window.google.visualization.Query || {};
     window.google.visualization.Query.setResponse = (data) => {
-      clearTimeout(timer);
-      const el = document.getElementById(SCRIPT_ID);
-      if (el) el.remove();
-      if (!data || data.status === 'error') {
-        reject(new Error(data?.errors?.[0]?.message || 'Error en el Sheet'));
-      } else {
-        resolve(data);
-      }
+      clearTimeout(timer); const el = document.getElementById(SCRIPT_ID); if (el) el.remove();
+      if (!data || data.status === 'error') reject(new Error(data?.errors?.[0]?.message || 'Error'));
+      else resolve(data);
     };
-
     const s = document.createElement('script');
     s.id = SCRIPT_ID;
-    s.onerror = () => { clearTimeout(timer); reject(new Error('No se pudo cargar el script')); };
+    s.onerror = () => { clearTimeout(timer); reject(new Error('Script error')); };
     s.src = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json&gid=${gid}`;
     document.head.appendChild(s);
   });
@@ -391,89 +418,43 @@ function parseSheetData(data) {
   const { cols, rows } = data.table;
   const idx = {};
   cols.forEach((c, i) => { if (c.label) idx[c.label.trim()] = i; });
-
   function get(row, label) {
-    const i = idx[label];
-    if (i == null || !row.c?.[i]) return '';
+    const i = idx[label]; if (i == null || !row.c?.[i]) return '';
     const cell = row.c[i];
     return (cell.f != null ? String(cell.f) : (cell.v != null ? String(cell.v) : '')).trim();
   }
-
   return rows.map(row => {
     if (!row?.c) return null;
     const username = get(row, 'username').replace(/^@/, '').trim();
     if (!username) return null;
-
-    let followersRaw = get(row, 'followers_num');
-    let followers = '';
-    if (followersRaw) {
-      const num = parseInt(followersRaw, 10);
-      if (!isNaN(num)) {
-        if (num >= 1000000) followers = (num / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
-        else if (num >= 1000) followers = (num / 1000).toFixed(1).replace(/\.0$/, '') + 'K';
-        else followers = String(num);
-      } else {
-        followers = followersRaw;
-      }
-    }
-
+    let followersRaw = get(row, 'followers_num'), followers = '';
+    if (followersRaw) { const num = parseInt(followersRaw, 10); if (!isNaN(num)) { if (num >= 1e6) followers = (num/1e6).toFixed(1).replace(/\.0$/,'')+'M'; else if (num >= 1e3) followers = (num/1e3).toFixed(1).replace(/\.0$/,'')+'K'; else followers = String(num); } else followers = followersRaw; }
     const name = username.replace(/[._]/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
     const aiScore = parseFloat(get(row, 'ai_score')) || 0;
-    let potential = '';
-    if (aiScore >= 7) potential = 'Alto';
-    else if (aiScore >= 4) potential = 'Medio';
-    else if (aiScore > 0) potential = 'Bajo';
-
+    let potential = ''; if (aiScore >= 7) potential = 'Alto'; else if (aiScore >= 4) potential = 'Medio'; else if (aiScore > 0) potential = 'Bajo';
     return {
-      id: username, username, name,
-      country: get(row, 'country'), city: get(row, 'city'),
-      followers, posts: get(row, 'posts_num'), following: get(row, 'following_num'),
-      source: get(row, 'source_acccount'), potential, lifestyle: '',
-      bio: get(row, 'bio_completa'), accountStatus: get(row, 'active_following') === 'true' ? 'Activa' : '',
-      verified: '', appearance: '', contentType: get(row, 'category'),
-      links: get(row, 'link_bio'), category: get(row, 'category'),
-      ambassador: get(row, 'ai_status'), notes_sheet: get(row, 'ai_reason'),
-      aiScore, hasReplied: get(row, 'has_replied'), followups: get(row, 'number_followups'),
+      id: username, username, name, country: get(row,'country'), city: get(row,'city'),
+      followers, posts: get(row,'posts_num'), following: get(row,'following_num'),
+      source: get(row,'source_acccount'), potential, lifestyle: '',
+      bio: get(row,'bio_completa'), accountStatus: get(row,'active_following') === 'true' ? 'Activa' : '',
+      verified:'', appearance:'', contentType: get(row,'category'),
+      links: get(row,'link_bio'), category: get(row,'category'),
+      ambassador: get(row,'ai_status'), notes_sheet: get(row,'ai_reason'),
+      aiScore, hasReplied: get(row,'has_replied'), followups: get(row,'number_followups'),
     };
   }).filter(Boolean);
 }
 
-/* ─── localStorage helpers ─── */
-function loadState() {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return {};
-    return JSON.parse(raw);
-  } catch { return {}; }
-}
-
-function saveState(state) {
-  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch {}
-}
-
-function getInfState(state, username) {
-  return state[username] || { status: 'pendiente', count: 0, notes: [], history: [] };
-}
-
 /* ─── Copy helper ─── */
 async function copyText(text) {
-  try {
-    await navigator.clipboard.writeText(text);
-    return true;
-  } catch {
-    const ta = document.createElement('textarea');
-    ta.value = text;
-    ta.style.cssText = 'position:fixed;left:-9999px';
-    document.body.appendChild(ta);
-    ta.select();
-    let ok = false;
-    try { ok = document.execCommand('copy'); } catch {}
-    document.body.removeChild(ta);
-    return ok;
+  try { await navigator.clipboard.writeText(text); return true; } catch {
+    const ta = document.createElement('textarea'); ta.value = text; ta.style.cssText = 'position:fixed;left:-9999px';
+    document.body.appendChild(ta); ta.select(); let ok = false;
+    try { ok = document.execCommand('copy'); } catch {} document.body.removeChild(ta); return ok;
   }
 }
 
-/* ─── Auth Screen Component ─── */
+/* ─── Auth Screen ─── */
 function AuthScreen({ onLogin }) {
   const [mode, setMode] = useState('login');
   const [username, setUsername] = useState('');
@@ -483,60 +464,22 @@ function AuthScreen({ onLogin }) {
   const [success, setSuccess] = useState('');
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError('');
-    setSuccess('');
-
-    if (!username.trim() || !password.trim()) {
-      setError('Todos los campos son obligatorios');
-      return;
-    }
-
-    const users = getUsers();
-    const passHash = await hashPassword(password);
-
+    e.preventDefault(); setError(''); setSuccess('');
+    if (!username.trim() || !password.trim()) { setError('Todos los campos son obligatorios'); return; }
+    const users = getUsers(); const passHash = await hashPassword(password);
     if (mode === 'signup') {
-      if (!displayName.trim()) {
-        setError('El nombre es obligatorio');
-        return;
-      }
-      if (username.trim().length < 3) {
-        setError('El usuario debe tener al menos 3 caracteres');
-        return;
-      }
-      if (password.length < 4) {
-        setError('La contraseña debe tener al menos 4 caracteres');
-        return;
-      }
-      if (users[username.trim().toLowerCase()]) {
-        setError('Este usuario ya existe');
-        return;
-      }
+      if (!displayName.trim()) { setError('El nombre es obligatorio'); return; }
+      if (username.trim().length < 3) { setError('El usuario debe tener al menos 3 caracteres'); return; }
+      if (password.length < 4) { setError('La contraseña debe tener al menos 4 caracteres'); return; }
       const uid = username.trim().toLowerCase();
-      users[uid] = {
-        displayName: displayName.trim(),
-        passHash,
-        createdAt: new Date().toISOString()
-      };
-      saveUsers(users);
-      setSuccess('Cuenta creada. Ahora inicia sesión.');
-      setMode('login');
-      setPassword('');
-      return;
+      if (users[uid]) { setError('Este usuario ya existe'); return; }
+      users[uid] = { displayName: displayName.trim(), passHash, createdAt: new Date().toISOString() };
+      saveUsers(users); setSuccess('Cuenta creada. Ahora inicia sesión.'); setMode('login'); setPassword(''); return;
     }
-
-    // Login
-    const uid = username.trim().toLowerCase();
-    const user = users[uid];
-    if (!user || user.passHash !== passHash) {
-      setError('Usuario o contraseña incorrectos');
-      return;
-    }
-
+    const uid = username.trim().toLowerCase(); const user = users[uid];
+    if (!user || user.passHash !== passHash) { setError('Usuario o contraseña incorrectos'); return; }
     const session = { uid, displayName: user.displayName, loginAt: new Date().toISOString() };
-    saveSession(session);
-    logActivity(user.displayName, 'login', '', 'Inicio de sesión');
-    onLogin(session);
+    saveSession(session); logActivity(user.displayName, 'login', '', 'Inicio de sesión'); onLogin(session);
   };
 
   return (
@@ -544,47 +487,15 @@ function AuthScreen({ onLogin }) {
       <div className="auth-box">
         <h1>👙 Influencer <span>CRM</span></h1>
         <div className="auth-subtitle">{mode === 'login' ? 'Inicia sesión para continuar' : 'Crea tu cuenta'}</div>
-
         <form onSubmit={handleSubmit}>
           {error && <div className="auth-error">{error}</div>}
           {success && <div className="auth-success">{success}</div>}
-
-          {mode === 'signup' && (
-            <input
-              className="auth-input"
-              type="text"
-              placeholder="Tu nombre (ej: María García)"
-              value={displayName}
-              onChange={e => setDisplayName(e.target.value)}
-              autoComplete="name"
-            />
-          )}
-          <input
-            className="auth-input"
-            type="text"
-            placeholder="Usuario"
-            value={username}
-            onChange={e => setUsername(e.target.value)}
-            autoComplete="username"
-          />
-          <input
-            className="auth-input"
-            type="password"
-            placeholder="Contraseña"
-            value={password}
-            onChange={e => setPassword(e.target.value)}
-            autoComplete={mode === 'login' ? 'current-password' : 'new-password'}
-          />
-
-          <button type="submit" className="auth-btn">
-            {mode === 'login' ? 'Entrar' : 'Crear cuenta'}
-          </button>
+          {mode === 'signup' && <input className="auth-input" type="text" placeholder="Tu nombre (ej: María García)" value={displayName} onChange={e => setDisplayName(e.target.value)} autoComplete="name" />}
+          <input className="auth-input" type="text" placeholder="Usuario" value={username} onChange={e => setUsername(e.target.value)} autoComplete="username" />
+          <input className="auth-input" type="password" placeholder="Contraseña" value={password} onChange={e => setPassword(e.target.value)} autoComplete={mode==='login'?'current-password':'new-password'} />
+          <button type="submit" className="auth-btn">{mode === 'login' ? 'Entrar' : 'Crear cuenta'}</button>
         </form>
-
-        <div
-          className="auth-toggle"
-          onClick={() => { setMode(mode === 'login' ? 'signup' : 'login'); setError(''); setSuccess(''); }}
-        >
+        <div className="auth-toggle" onClick={() => { setMode(mode==='login'?'signup':'login'); setError(''); setSuccess(''); }}>
           {mode === 'login' ? '¿No tienes cuenta? Regístrate' : '¿Ya tienes cuenta? Inicia sesión'}
         </div>
       </div>
@@ -592,198 +503,222 @@ function AuthScreen({ onLogin }) {
   );
 }
 
-/* ─── Activity Panel Component ─── */
-function ActivityPanel({ open, onClose }) {
-  const [activityFilter, setActivityFilter] = useState('all');
-  const log = getActivityLog();
+/* ─── Company Manager Modal ─── */
+function CompanyManager({ companies, onSave, onClose }) {
+  const [editing, setEditing] = useState(null); // null = list, or company object
+  const [name, setName] = useState('');
+  const [icon, setIcon] = useState('🏢');
+  const [theme, setTheme] = useState('indigo');
+  const [desc, setDesc] = useState('');
+  const [msgFirst, setMsgFirst] = useState('');
+  const [msgFu1, setMsgFu1] = useState('');
+  const [msgFu2, setMsgFu2] = useState('');
+  const [msgFu3, setMsgFu3] = useState('');
 
-  const filtered = log.filter(entry => {
-    if (activityFilter === 'all') return true;
-    if (activityFilter === 'copy') return entry.action === 'copy_message';
-    if (activityFilter === 'status') return entry.action === 'status_change' || entry.action === 'next_step';
-    if (activityFilter === 'notes') return entry.action === 'add_note';
-    if (activityFilter === 'login') return entry.action === 'login' || entry.action === 'logout';
-    return true;
-  });
-
-  const formatTime = (iso) => {
-    const d = new Date(iso);
-    return d.toLocaleDateString('es-ES', { day:'2-digit', month:'short' }) + ' ' +
-           d.toLocaleTimeString('es-ES', { hour:'2-digit', minute:'2-digit' });
+  const startEdit = (co) => {
+    setEditing(co || { id: '', name:'', icon:'🏢', theme:'indigo', description:'', msgTemplates:{ first:'', fu1:'', fu2:'', fu3:'' } });
+    setName(co?.name || '');
+    setIcon(co?.icon || '🏢');
+    setTheme(co?.theme || 'indigo');
+    setDesc(co?.description || '');
+    setMsgFirst(co?.msgTemplates?.first || 'Hola {name}! ');
+    setMsgFu1(co?.msgTemplates?.fu1 || 'Hey {name}! ');
+    setMsgFu2(co?.msgTemplates?.fu2 || '{name}! ');
+    setMsgFu3(co?.msgTemplates?.fu3 || '{name}! ');
   };
 
-  const actionLabels = {
-    login: '🔑 Inicio de sesión',
-    logout: '🚪 Cerró sesión',
-    copy_message: '📋 Copió mensaje',
-    status_change: '🔄 Cambió estado',
-    next_step: '▶ Avanzó paso',
-    add_note: '📝 Agregó nota',
-    expand_card: '👁 Abrió tarjeta',
+  const handleSave = () => {
+    if (!name.trim()) return;
+    const id = editing.id || name.trim().toLowerCase().replace(/\s+/g, '_').replace(/[^a-z0-9_]/g, '');
+    const updated = { id, name: name.trim(), icon, theme, description: desc, msgTemplates: { first: msgFirst, fu1: msgFu1, fu2: msgFu2, fu3: msgFu3 } };
+    const list = [...companies];
+    const existIdx = list.findIndex(c => c.id === id);
+    if (existIdx >= 0) list[existIdx] = updated; else list.push(updated);
+    onSave(list);
+    setEditing(null);
   };
 
-  if (!open) return null;
+  const handleDelete = (id) => {
+    if (companies.length <= 1) return;
+    onSave(companies.filter(c => c.id !== id));
+  };
 
-  return (
-    <>
-      <div className="activity-backdrop" onClick={onClose} />
-      <div className={`activity-panel${open ? ' open' : ''}`}>
-        <div className="activity-panel-header">
-          <h2>📊 Registro de Actividad</h2>
-          <button className="btn btn-sm" onClick={onClose}>✕ Cerrar</button>
-        </div>
-        <div className="activity-filters">
-          {[
-            { key: 'all', label: 'Todo' },
-            { key: 'copy', label: '📋 Copias' },
-            { key: 'status', label: '🔄 Estados' },
-            { key: 'notes', label: '📝 Notas' },
-            { key: 'login', label: '🔑 Sesiones' },
-          ].map(f => (
-            <button
-              key={f.key}
-              className={`activity-filter-btn${activityFilter === f.key ? ' active' : ''}`}
-              onClick={() => setActivityFilter(f.key)}
-            >
-              {f.label}
-            </button>
-          ))}
-        </div>
-        <div className="activity-list">
-          {filtered.length === 0 ? (
-            <div style={{textAlign:'center', padding:'40px 0', color:'var(--text2)'}}>
-              No hay actividad registrada
-            </div>
-          ) : filtered.map((entry, i) => (
-            <div className="activity-item" key={i}>
-              <div className="activity-time">{formatTime(entry.timestamp)}</div>
-              <div>
-                <span className="activity-user-tag">{entry.user}</span>
-                {' — '}
-                <span>{actionLabels[entry.action] || entry.action}</span>
-              </div>
-              {entry.target && (
-                <div className="activity-action">
-                  <span className="activity-target">@{entry.target}</span>
-                  {entry.detail && ` — ${entry.detail}`}
-                </div>
-              )}
-            </div>
-          ))}
+  if (editing) {
+    const t = getTheme(theme);
+    return (
+      <div className="modal-backdrop" onClick={onClose}>
+        <div className="modal" onClick={e => e.stopPropagation()}>
+          <h2>{editing.id ? 'Editar Compañía' : 'Nueva Compañía'}</h2>
+          <div className="modal-label">Nombre</div>
+          <input className="modal-input" value={name} onChange={e => setName(e.target.value)} placeholder="Ej: Leak Hunter" />
+          <div className="modal-label">Icono (emoji)</div>
+          <input className="modal-input" value={icon} onChange={e => setIcon(e.target.value)} placeholder="🏢" style={{width:80}} />
+          <div className="modal-label">Color / Tema</div>
+          <div className="color-picker-row">
+            {THEME_COLORS.map(tc => (
+              <div key={tc.id} className={`color-swatch${theme===tc.id?' active':''}`} style={{background:tc.accent2}} onClick={() => setTheme(tc.id)} title={tc.label} />
+            ))}
+          </div>
+          <div style={{padding:'8px 12px',borderRadius:8,background:t.glow,border:`1px solid ${t.accent2}`,color:t.accent,marginBottom:12,fontSize:'0.85rem',fontWeight:600}}>
+            Vista previa: {icon} {name || 'Mi Compañía'}
+          </div>
+          <div className="modal-label">Descripción</div>
+          <input className="modal-input" value={desc} onChange={e => setDesc(e.target.value)} placeholder="Breve descripción de la compañía" />
+          <div className="modal-label">Mensaje Primer Contacto <span style={{color:'var(--text2)',fontWeight:400,textTransform:'none'}}>— usa {'{name}'} para el nombre</span></div>
+          <textarea className="modal-textarea" value={msgFirst} onChange={e => setMsgFirst(e.target.value)} />
+          <div className="modal-label">Follow Up 1</div>
+          <textarea className="modal-textarea" value={msgFu1} onChange={e => setMsgFu1(e.target.value)} />
+          <div className="modal-label">Follow Up 2</div>
+          <textarea className="modal-textarea" value={msgFu2} onChange={e => setMsgFu2(e.target.value)} />
+          <div className="modal-label">Follow Up 3</div>
+          <textarea className="modal-textarea" value={msgFu3} onChange={e => setMsgFu3(e.target.value)} />
+          <div style={{display:'flex',gap:8,marginTop:16}}>
+            <button className="btn btn-accent" onClick={handleSave}>Guardar</button>
+            <button className="btn" onClick={() => setEditing(null)}>Cancelar</button>
+          </div>
         </div>
       </div>
-    </>
-  );
-}
+    );
+  }
 
-/* ─── Components ─── */
-
-function CopyBtn({ text, currentUser, influencer }) {
-  const [copied, setCopied] = useState(false);
-  const handleCopy = async (e) => {
-    e.stopPropagation();
-    const ok = await copyText(text);
-    if (ok) {
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-      if (currentUser && influencer) {
-        const msgPreview = text.substring(0, 50) + (text.length > 50 ? '...' : '');
-        logActivity(currentUser, 'copy_message', influencer, msgPreview);
-      }
-    }
-  };
   return (
-    <button className="btn btn-sm" onClick={handleCopy}>
-      {copied ? '✅ Copiado' : '📋 Copiar'}
-    </button>
-  );
-}
-
-function MsgCard({ label, text, color, currentUser, influencer }) {
-  return (
-    <div className="msg-card">
-      <div className="msg-label" style={color ? { color } : {}}>{label}</div>
-      <div className="msg-text">{text}</div>
-      <div className="msg-actions">
-        <CopyBtn text={text} currentUser={currentUser} influencer={influencer} />
+    <div className="modal-backdrop" onClick={onClose}>
+      <div className="modal" onClick={e => e.stopPropagation()}>
+        <h2>Mis Compañías</h2>
+        {companies.map(co => {
+          const t = getTheme(co.theme);
+          return (
+            <div className="company-list-item" key={co.id}>
+              <div className="co-color-dot" style={{background:t.accent2}} />
+              <span style={{fontSize:'1.1rem'}}>{co.icon}</span>
+              <span className="co-name">{co.name}</span>
+              <div className="co-actions">
+                <button className="btn btn-sm" onClick={() => startEdit(co)}>Editar</button>
+                {companies.length > 1 && <button className="btn btn-sm" style={{color:'var(--red)'}} onClick={() => handleDelete(co.id)}>✕</button>}
+              </div>
+            </div>
+          );
+        })}
+        <div style={{marginTop:12}}>
+          <button className="btn btn-accent" onClick={() => startEdit(null)}>+ Nueva Compañía</button>
+          <button className="btn" style={{marginLeft:8}} onClick={onClose}>Cerrar</button>
+        </div>
       </div>
     </div>
   );
 }
 
-function InfluencerCard({ inf, infState, onUpdateState, expanded, onToggle, currentUser }) {
+/* ─── Activity Panel ─── */
+function ActivityPanel({ open, onClose }) {
+  const [actFilter, setActFilter] = useState('all');
+  const log = getActivityLog();
+  const filtered = log.filter(e => {
+    if (actFilter === 'all') return true;
+    if (actFilter === 'copy') return e.action === 'copy_message';
+    if (actFilter === 'status') return e.action === 'status_change' || e.action === 'next_step';
+    if (actFilter === 'notes') return e.action === 'add_note';
+    if (actFilter === 'login') return e.action === 'login' || e.action === 'logout';
+    return true;
+  });
+  const fmtTime = (iso) => { const d = new Date(iso); return d.toLocaleDateString('es-ES',{day:'2-digit',month:'short'})+' '+d.toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit'}); };
+  const labels = { login:'🔑 Inicio sesión', logout:'🚪 Cerró sesión', copy_message:'📋 Copió mensaje', status_change:'🔄 Cambió estado', next_step:'▶ Avanzó paso', add_note:'📝 Nota', expand_card:'👁 Abrió tarjeta' };
+  if (!open) return null;
+  return (<>
+    <div className="activity-backdrop" onClick={onClose} />
+    <div className={`activity-panel${open?' open':''}`}>
+      <div className="activity-panel-header"><h2>📊 Actividad</h2><button className="btn btn-sm" onClick={onClose}>✕</button></div>
+      <div className="activity-filters">
+        {[{key:'all',label:'Todo'},{key:'copy',label:'📋 Copias'},{key:'status',label:'🔄 Estados'},{key:'notes',label:'📝 Notas'},{key:'login',label:'🔑 Sesiones'}].map(f=>(
+          <button key={f.key} className={`activity-filter-btn${actFilter===f.key?' active':''}`} onClick={()=>setActFilter(f.key)}>{f.label}</button>
+        ))}
+      </div>
+      <div className="activity-list">
+        {filtered.length===0 ? <div style={{textAlign:'center',padding:'40px 0',color:'var(--text2)'}}>Sin actividad</div> :
+        filtered.map((e,i)=>(
+          <div className="activity-item" key={i}>
+            <div className="activity-time">{fmtTime(e.timestamp)}</div>
+            <div><span className="activity-user-tag">{e.user}</span>{' — '}{labels[e.action]||e.action}
+              {e.company && <span className="activity-company-tag" style={{background:'var(--company-glow)',color:'var(--company-accent)'}}>{e.company}</span>}
+            </div>
+            {e.target && <div className="activity-action"><span className="activity-target">@{e.target}</span>{e.detail && ` — ${e.detail}`}</div>}
+          </div>
+        ))}
+      </div>
+    </div>
+  </>);
+}
+
+/* ─── Components ─── */
+function CopyBtn({ text, currentUser, influencer, companyName }) {
+  const [copied, setCopied] = useState(false);
+  const handleCopy = async (e) => {
+    e.stopPropagation(); const ok = await copyText(text);
+    if (ok) { setCopied(true); setTimeout(()=>setCopied(false),2000);
+      if (currentUser && influencer) logActivity(currentUser,'copy_message',influencer,text.substring(0,50)+'...',companyName);
+    }
+  };
+  return <button className="btn btn-sm" onClick={handleCopy}>{copied ? '✅ Copiado' : '📋 Copiar'}</button>;
+}
+
+function MsgCard({ label, text, color, currentUser, influencer, companyName }) {
+  return (
+    <div className="msg-card">
+      <div className="msg-label" style={color?{color}:{}}>{label}</div>
+      <div className="msg-text">{text}</div>
+      <div className="msg-actions"><CopyBtn text={text} currentUser={currentUser} influencer={influencer} companyName={companyName} /></div>
+    </div>
+  );
+}
+
+function InfluencerCard({ inf, infState, onUpdateState, expanded, onToggle, currentUser, company }) {
   const [noteText, setNoteText] = useState('');
-  const msgs = MESSAGES_DB[inf.username] || genMessages(inf.name.split(' ')[0]);
+  const msgs = getCompanyMessages(company, inf);
   const tip = TIPS_DB[inf.username] || genTip(inf);
   const statusObj = STATUS_OPTIONS.find(s => s.value === infState.status) || STATUS_OPTIONS[0];
+  const companyName = company?.name || '';
+  const theme = getTheme(company?.theme);
 
   const nextStep = () => {
-    const currentIdx = STATUS_FLOW.indexOf(infState.status);
-    if (currentIdx < 0 || currentIdx >= STATUS_FLOW.length - 1) return;
-    const nextStatus = STATUS_FLOW[currentIdx + 1];
-    const nextLabel = STATUS_OPTIONS.find(s => s.value === nextStatus)?.label || nextStatus;
-    const now = new Date().toLocaleDateString('es-ES', { day:'2-digit', month:'short', year:'numeric' });
-    logActivity(currentUser, 'next_step', inf.username, `${statusObj.label} → ${nextLabel}`);
-    onUpdateState(inf.username, {
-      ...infState,
-      status: nextStatus,
-      count: infState.count + (nextStatus.includes('enviado') || nextStatus.includes('fu') ? 1 : 0),
-      history: [...(infState.history || []), { date: now, action: nextLabel, user: currentUser }]
-    });
+    const ci = STATUS_FLOW.indexOf(infState.status); if (ci<0||ci>=STATUS_FLOW.length-1) return;
+    const ns = STATUS_FLOW[ci+1]; const nl = STATUS_OPTIONS.find(s=>s.value===ns)?.label||ns;
+    const now = new Date().toLocaleDateString('es-ES',{day:'2-digit',month:'short',year:'numeric'});
+    logActivity(currentUser,'next_step',inf.username,`${statusObj.label} → ${nl}`,companyName);
+    onUpdateState(inf.username,{...infState, status:ns, count:infState.count+(ns.includes('enviado')||ns.includes('fu')?1:0), history:[...(infState.history||[]),{date:now,action:nl,user:currentUser,company:companyName}]});
   };
 
   const setStatus = (value) => {
-    const label = STATUS_OPTIONS.find(s => s.value === value)?.label || value;
-    const now = new Date().toLocaleDateString('es-ES', { day:'2-digit', month:'short', year:'numeric' });
-    logActivity(currentUser, 'status_change', inf.username, `Cambio a: ${label}`);
-    onUpdateState(inf.username, {
-      ...infState,
-      status: value,
-      history: [...(infState.history || []), { date: now, action: `Cambio a: ${label}`, user: currentUser }]
-    });
+    const label = STATUS_OPTIONS.find(s=>s.value===value)?.label||value;
+    const now = new Date().toLocaleDateString('es-ES',{day:'2-digit',month:'short',year:'numeric'});
+    logActivity(currentUser,'status_change',inf.username,`→ ${label}`,companyName);
+    onUpdateState(inf.username,{...infState, status:value, history:[...(infState.history||[]),{date:now,action:`Cambio a: ${label}`,user:currentUser,company:companyName}]});
   };
 
   const addNote = () => {
-    if (!noteText.trim()) return;
-    const now = new Date().toISOString();
-    const notes = Array.isArray(infState.notes) ? infState.notes : (infState.notes ? [{ text: infState.notes, user: 'Sistema', date: now }] : []);
-    const newNotes = [...notes, { text: noteText.trim(), user: currentUser, date: now }];
-    logActivity(currentUser, 'add_note', inf.username, noteText.trim().substring(0, 50));
-    onUpdateState(inf.username, { ...infState, notes: newNotes });
+    if (!noteText.trim()) return; const now = new Date().toISOString();
+    const notes = Array.isArray(infState.notes)?infState.notes:(infState.notes?[{text:infState.notes,user:'Sistema',date:now}]:[]);
+    logActivity(currentUser,'add_note',inf.username,noteText.trim().substring(0,50),companyName);
+    onUpdateState(inf.username,{...infState,notes:[...notes,{text:noteText.trim(),user:currentUser,date:now,company:companyName}]});
     setNoteText('');
   };
 
-  const handleToggle = () => {
-    if (!expanded) {
-      logActivity(currentUser, 'expand_card', inf.username, '');
-    }
-    onToggle();
-  };
-
+  const handleToggle = () => { if (!expanded) logActivity(currentUser,'expand_card',inf.username,'',companyName); onToggle(); };
   const initial = inf.name.charAt(0).toUpperCase();
-  const notes = Array.isArray(infState.notes) ? infState.notes : (infState.notes ? [{ text: infState.notes, user: 'Sistema', date: new Date().toISOString() }] : []);
+  const notes = Array.isArray(infState.notes)?infState.notes:(infState.notes?[{text:infState.notes,user:'Sistema',date:new Date().toISOString()}]:[]);
 
   return (
-    <div className={`card${expanded ? ' expanded' : ''}`}>
+    <div className={`card${expanded?' expanded':''}`}>
       <div className="card-head" onClick={handleToggle}>
         <div className="card-info">
           <div className="avatar">{initial}</div>
           <div style={{minWidth:0}}>
             <div className="card-name">{inf.name}</div>
-            <div className="card-user">
-              <a href={`https://instagram.com/${inf.username}`} target="_blank" onClick={e => e.stopPropagation()}>@{inf.username}</a>
-            </div>
-            <div className="card-meta">
-              {inf.followers && `${inf.followers} seguidores`}
-              {inf.city && ` · ${inf.city}`}
-              {inf.country && `, ${inf.country}`}
-            </div>
+            <div className="card-user"><a href={`https://instagram.com/${inf.username}`} target="_blank" onClick={e=>e.stopPropagation()}>@{inf.username}</a></div>
+            <div className="card-meta">{inf.followers&&`${inf.followers} seg`}{inf.city&&` · ${inf.city}`}{inf.country&&`, ${inf.country}`}</div>
             <div className="card-badges">
-              {inf.potential === 'Alto' && <span className="badge badge-high">🔥 Alto</span>}
-              {inf.potential === 'Medio' && <span className="badge badge-medio">⚡ Medio</span>}
-              {inf.potential === 'Bajo' && <span className="badge badge-bajo">📊 Bajo</span>}
-              {inf.verified && inf.verified.includes('✔') && <span className="badge badge-verified">✔️ Verificada</span>}
-              {inf.contentType && <span className="badge" style={{background:'#1a2e3a',color:'var(--teal)'}}>{inf.contentType}</span>}
+              {inf.potential==='Alto'&&<span className="badge badge-high">🔥 Alto</span>}
+              {inf.potential==='Medio'&&<span className="badge badge-medio">⚡ Medio</span>}
+              {inf.potential==='Bajo'&&<span className="badge badge-bajo">📊 Bajo</span>}
+              {inf.contentType&&<span className="badge" style={{background:'#1a2e3a',color:'var(--teal)'}}>{inf.contentType}</span>}
             </div>
           </div>
         </div>
@@ -791,66 +726,53 @@ function InfluencerCard({ inf, infState, onUpdateState, expanded, onToggle, curr
       </div>
 
       <div className="card-body">
-        {inf.bio && <>
-          <div className="section-title">Bio</div>
-          <div className="bio-text">{inf.bio}</div>
+        {/* Company identity banner */}
+        <div className="company-identity">
+          <div className="co-dot" />
+          Contactando como <strong style={{marginLeft:4}}>{company?.icon} {companyName}</strong>
+        </div>
+
+        {inf.bio && <><div className="section-title">Bio</div><div className="bio-text">{inf.bio}</div></>}
+        <div className="tip-box"><div className="msg-label" style={{color:'var(--yellow)'}}>💡 Tip</div><div className="msg-text">{tip}</div></div>
+
+        <div className="section-title">Mensajes — {company?.icon} {companyName}</div>
+        {msgs && <>
+          <MsgCard label="📤 Primer contacto" text={msgs.first} currentUser={currentUser} influencer={inf.username} companyName={companyName} />
+          <MsgCard label="🔄 Follow Up 1" text={msgs.fu1} color="var(--teal)" currentUser={currentUser} influencer={inf.username} companyName={companyName} />
+          <MsgCard label="🔄 Follow Up 2" text={msgs.fu2} color="var(--orange)" currentUser={currentUser} influencer={inf.username} companyName={companyName} />
+          <MsgCard label="🔄 Follow Up 3" text={msgs.fu3} color="var(--red)" currentUser={currentUser} influencer={inf.username} companyName={companyName} />
         </>}
 
-        <div className="tip-box">
-          <div className="msg-label" style={{color:'var(--yellow)'}}>💡 Tip estratégico</div>
-          <div className="msg-text">{tip}</div>
-        </div>
-
-        <div className="section-title">Mensajes</div>
-        <MsgCard label="📤 Primer contacto" text={msgs.first} currentUser={currentUser} influencer={inf.username} />
-        <MsgCard label="🔄 Follow Up 1 (día 3)" text={msgs.fu1} color="var(--teal)" currentUser={currentUser} influencer={inf.username} />
-        <MsgCard label="🔄 Follow Up 2 (día 7)" text={msgs.fu2} color="var(--orange)" currentUser={currentUser} influencer={inf.username} />
-        <MsgCard label="🔄 Follow Up 3 (día 14)" text={msgs.fu3} color="var(--red)" currentUser={currentUser} influencer={inf.username} />
-
         <div className="section-title">Acciones</div>
-        <div style={{display:'flex', gap:'8px', flexWrap:'wrap', margin:'8px 0'}}>
+        <div style={{display:'flex',gap:'8px',flexWrap:'wrap',margin:'8px 0'}}>
           <button className="btn btn-green btn-sm" onClick={nextStep}>▶ Siguiente paso</button>
-          <select
-            className="btn btn-sm"
-            value={infState.status}
-            onChange={e => setStatus(e.target.value)}
-            onClick={e => e.stopPropagation()}
-          >
-            {STATUS_OPTIONS.map(s => <option key={s.value} value={s.value}>{s.label}</option>)}
+          <select className="btn btn-sm" value={infState.status} onChange={e=>setStatus(e.target.value)} onClick={e=>e.stopPropagation()}>
+            {STATUS_OPTIONS.map(s=><option key={s.value} value={s.value}>{s.label}</option>)}
           </select>
         </div>
-
-        <div className="contact-counter">
-          <span style={{fontSize:'0.8rem', color:'var(--text2)'}}>Contactos realizados:</span>
-          <span className="counter-val">{infState.count}</span>
-        </div>
+        <div className="contact-counter"><span style={{fontSize:'0.8rem',color:'var(--text2)'}}>Contactos:</span><span className="counter-val">{infState.count}</span></div>
 
         <div className="section-title">Notas del equipo</div>
-        {notes.length > 0 && notes.map((n, i) => (
+        {notes.map((n,i)=>(
           <div className="note-entry" key={i}>
-            <span className="note-author">{n.user || 'Sistema'}</span>
-            <span className="note-date">{new Date(n.date).toLocaleDateString('es-ES', { day:'2-digit', month:'short', hour:'2-digit', minute:'2-digit' })}</span>
+            <span className="note-author">{n.user||'Sistema'}</span>
+            {n.company && <span className="note-company-tag" style={{background:'var(--company-glow)',color:'var(--company-accent)'}}>{n.company}</span>}
+            <span className="note-date">{new Date(n.date).toLocaleDateString('es-ES',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'})}</span>
             <div className="note-text">{n.text}</div>
           </div>
         ))}
         <div className="add-note-wrap">
-          <textarea
-            className="notes-area"
-            value={noteText}
-            onChange={e => setNoteText(e.target.value)}
-            placeholder="Escribe una nota..."
-            onClick={e => e.stopPropagation()}
-            onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); addNote(); } }}
-          />
-          <button className="btn btn-sm btn-accent" onClick={addNote} style={{alignSelf:'flex-end'}}>Agregar</button>
+          <textarea className="notes-area" value={noteText} onChange={e=>setNoteText(e.target.value)} placeholder="Escribe una nota..." onClick={e=>e.stopPropagation()} onKeyDown={e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();addNote();}}} />
+          <button className="btn btn-sm btn-accent" onClick={addNote} style={{alignSelf:'flex-end'}}>+</button>
         </div>
 
-        {infState.history && infState.history.length > 0 && <>
+        {infState.history&&infState.history.length>0&&<>
           <div className="section-title">Historial</div>
-          {infState.history.slice().reverse().map((h, i) => (
+          {infState.history.slice().reverse().map((h,i)=>(
             <div className="history-item" key={i}>
               <span className="history-date">{h.date}</span>
-              {h.user && <> — <span className="history-user">{h.user}</span></>}
+              {h.user&&<>{' — '}<span className="history-user">{h.user}</span></>}
+              {h.company&&<span style={{color:'var(--text2)',fontSize:'0.7rem'}}> ({h.company})</span>}
               {' — '}{h.action}
             </div>
           ))}
@@ -860,10 +782,13 @@ function InfluencerCard({ inf, infState, onUpdateState, expanded, onToggle, curr
   );
 }
 
+/* ─── Main App ─── */
 function App() {
   const [currentUser, setCurrentUser] = useState(null);
+  const [companies, setCompanies] = useState(getCompanies);
+  const [activeCoId, setActiveCoId] = useState(getActiveCompanyId);
   const [influencers, setInfluencers] = useState([]);
-  const [crmState, setCrmState] = useState(loadState);
+  const [crmState, setCrmState] = useState({});
   const [syncStatus, setSyncStatus] = useState('idle');
   const [search, setSearch] = useState('');
   const [filter, setFilter] = useState('all');
@@ -872,222 +797,152 @@ function App() {
   const [filterScore, setFilterScore] = useState('all');
   const [expanded, setExpanded] = useState({});
   const [activityOpen, setActivityOpen] = useState(false);
+  const [coManagerOpen, setCoManagerOpen] = useState(false);
 
-  // Check existing session on mount
+  // Resolve active company
+  const activeCo = companies.find(c => c.id === activeCoId) || companies[0];
+  const activeTheme = getTheme(activeCo?.theme);
+
+  // Apply theme whenever company changes
+  useEffect(() => { if (activeTheme) applyTheme(activeTheme); }, [activeCo?.theme]);
+
+  // Load CRM state when company changes
   useEffect(() => {
-    const session = getSession();
-    if (session) setCurrentUser(session);
-  }, []);
+    if (activeCo) { setCrmState(loadCompanyState(activeCo.id)); setActiveCompanyId(activeCo.id); }
+  }, [activeCo?.id]);
+
+  // Check session on mount
+  useEffect(() => { const s = getSession(); if (s) setCurrentUser(s); }, []);
 
   const handleLogin = (session) => setCurrentUser(session);
+  const handleLogout = () => { if(currentUser) logActivity(currentUser.displayName,'logout','','Cerró sesión',activeCo?.name); saveSession(null); setCurrentUser(null); };
 
-  const handleLogout = () => {
-    if (currentUser) {
-      logActivity(currentUser.displayName, 'logout', '', 'Cerró sesión');
-    }
-    saveSession(null);
-    setCurrentUser(null);
+  const switchCompany = (id) => {
+    setActiveCoId(id); setActiveCompanyId(id); setCrmState(loadCompanyState(id));
+    const co = companies.find(c=>c.id===id);
+    if(currentUser&&co) logActivity(currentUser.displayName,'switch_company','',co.name,co.name);
   };
 
   const updateInfState = useCallback((username, newState) => {
-    setCrmState(prev => {
-      const next = { ...prev, [username]: newState };
-      saveState(next);
-      return next;
-    });
-  }, []);
+    setCrmState(prev => { const next = {...prev,[username]:newState}; if(activeCo) saveCompanyState(activeCo.id, next); return next; });
+  }, [activeCo?.id]);
+
+  const handleSaveCompanies = (list) => { setCompanies(list); saveCompanies(list); };
 
   const loadSheet = useCallback(async () => {
     setSyncStatus('loading');
-    try {
-      const data = await loadSheetGviz(SHEET_ID, SHEET_GID);
-      const parsed = parseSheetData(data);
-      setInfluencers(parsed);
-      setSyncStatus('ok');
-    } catch (err) {
-      console.error('Error loading sheet:', err);
-      setSyncStatus('error');
-    }
+    try { const data = await loadSheetGviz(SHEET_ID,SHEET_GID); setInfluencers(parseSheetData(data)); setSyncStatus('ok'); }
+    catch(err) { console.error(err); setSyncStatus('error'); }
   }, []);
 
-  useEffect(() => { if (currentUser) loadSheet(); }, [currentUser, loadSheet]);
+  useEffect(() => { if(currentUser) loadSheet(); }, [currentUser, loadSheet]);
 
-  // Show auth screen if not logged in
-  if (!currentUser) {
-    return <AuthScreen onLogin={handleLogin} />;
-  }
+  if (!currentUser) return <AuthScreen onLogin={handleLogin} />;
 
   const userName = currentUser.displayName;
-
-  // Stats
   const total = influencers.length;
-  const contacted = influencers.filter(i => {
-    const s = getInfState(crmState, i.username).status;
-    return s !== 'pendiente';
-  }).length;
-  const responded = influencers.filter(i => {
-    const s = getInfState(crmState, i.username).status;
-    return ['respondio','en_negociacion','cerrado_si'].includes(s);
-  }).length;
-  const closed = influencers.filter(i => getInfState(crmState, i.username).status === 'cerrado_si').length;
-  const totalMessages = influencers.reduce((sum, i) => sum + getInfState(crmState, i.username).count, 0);
-  const progressPct = total > 0 ? Math.round((contacted / total) * 100) : 0;
+  const contacted = influencers.filter(i=>getInfState(crmState,i.username).status!=='pendiente').length;
+  const responded = influencers.filter(i=>['respondio','en_negociacion','cerrado_si'].includes(getInfState(crmState,i.username).status)).length;
+  const closed = influencers.filter(i=>getInfState(crmState,i.username).status==='cerrado_si').length;
+  const totalMessages = influencers.reduce((s,i)=>s+getInfState(crmState,i.username).count,0);
+  const progressPct = total>0?Math.round((contacted/total)*100):0;
 
-  const countries = [...new Set(influencers.map(i => i.country).filter(Boolean))].sort();
-  const cities = [...new Set(influencers
-    .filter(i => filterCountry === 'all' || i.country === filterCountry)
-    .map(i => i.city).filter(Boolean))].sort();
-  const scoreRanges = [
-    { key: 'all', label: 'Todos' },
-    { key: '9-10', label: '9-10 (Top)' },
-    { key: '7-8', label: '7-8 (Alto)' },
-    { key: '4-6', label: '4-6 (Medio)' },
-    { key: '1-3', label: '1-3 (Bajo)' },
-    { key: '0', label: 'Sin score' },
-  ];
+  const countries = [...new Set(influencers.map(i=>i.country).filter(Boolean))].sort();
+  const cities = [...new Set(influencers.filter(i=>filterCountry==='all'||i.country===filterCountry).map(i=>i.city).filter(Boolean))].sort();
+  const scoreRanges = [{key:'all',label:'Todos'},{key:'9-10',label:'9-10 (Top)'},{key:'7-8',label:'7-8 (Alto)'},{key:'4-6',label:'4-6 (Medio)'},{key:'1-3',label:'1-3 (Bajo)'},{key:'0',label:'Sin score'}];
 
   const filtered = influencers.filter(inf => {
-    const s = getInfState(crmState, inf.username).status;
-    if (search) {
-      const q = search.toLowerCase();
-      if (!inf.name.toLowerCase().includes(q) && !inf.username.toLowerCase().includes(q)) return false;
-    }
-    if (filterCountry !== 'all' && inf.country !== filterCountry) return false;
-    if (filterCity !== 'all' && inf.city !== filterCity) return false;
-    if (filterScore !== 'all') {
-      const score = inf.aiScore || 0;
-      switch (filterScore) {
-        case '9-10': if (score < 9) return false; break;
-        case '7-8': if (score < 7 || score >= 9) return false; break;
-        case '4-6': if (score < 4 || score >= 7) return false; break;
-        case '1-3': if (score < 1 || score >= 4) return false; break;
-        case '0': if (score > 0) return false; break;
-      }
-    }
-    switch (filter) {
-      case 'high': return inf.potential === 'Alto';
-      case 'pending': return s === 'pendiente';
-      case 'inprogress': return ['enviado_1','fu1_enviado','fu2_enviado','fu3_enviado','en_negociacion'].includes(s);
-      case 'responded': return ['respondio','cerrado_si'].includes(s);
-      default: return true;
-    }
+    const s = getInfState(crmState,inf.username).status;
+    if(search){const q=search.toLowerCase();if(!inf.name.toLowerCase().includes(q)&&!inf.username.toLowerCase().includes(q))return false;}
+    if(filterCountry!=='all'&&inf.country!==filterCountry)return false;
+    if(filterCity!=='all'&&inf.city!==filterCity)return false;
+    if(filterScore!=='all'){const sc=inf.aiScore||0;switch(filterScore){case '9-10':if(sc<9)return false;break;case '7-8':if(sc<7||sc>=9)return false;break;case '4-6':if(sc<4||sc>=7)return false;break;case '1-3':if(sc<1||sc>=4)return false;break;case '0':if(sc>0)return false;break;}}
+    switch(filter){case 'high':return inf.potential==='Alto';case 'pending':return s==='pendiente';case 'inprogress':return['enviado_1','fu1_enviado','fu2_enviado','fu3_enviado','en_negociacion'].includes(s);case 'responded':return['respondio','cerrado_si'].includes(s);default:return true;}
   });
 
-  const toggleCard = (id) => setExpanded(prev => ({ ...prev, [id]: !prev[id] }));
-
-  return (
-    <>
-      <div className="header">
-        <div className="header-top">
-          <h1>👙 Influencer <span>CRM</span></h1>
-          <div className="header-actions">
-            <span className={`sync-status ${syncStatus === 'ok' ? 'ok' : syncStatus === 'error' ? 'err' : syncStatus === 'loading' ? 'loading' : ''}`}>
-              {syncStatus === 'loading' ? '⏳ Cargando...' : syncStatus === 'ok' ? '✅ Sincronizado' : syncStatus === 'error' ? '❌ Error' : '⏸️ Sin cargar'}
-            </span>
-            <button className="btn btn-sm" onClick={loadSheet}>🔄 Actualizar</button>
-            <button className="btn btn-sm" onClick={() => setActivityOpen(true)}>📊 Actividad</button>
-            <a href={SHEET_URL} target="_blank" className="btn btn-sm">📊 Sheet</a>
-            <div className="user-badge">
-              <div className="user-avatar-sm">{userName.charAt(0).toUpperCase()}</div>
-              <span className="user-name">{userName}</span>
-              <button className="logout-btn" onClick={handleLogout} title="Cerrar sesión">Salir</button>
-            </div>
-          </div>
-        </div>
+  return (<>
+    {/* Company Bar */}
+    <div className="company-bar" style={{background:activeTheme.accent2}}>
+      <div className="company-bar-left">
+        <span className="co-icon">{activeCo?.icon}</span>
+        <span>{activeCo?.name}</span>
+        {activeCo?.description && <span style={{fontWeight:400,fontSize:'0.78rem',opacity:0.8}}>— {activeCo.description}</span>}
       </div>
-
-      <ActivityPanel open={activityOpen} onClose={() => setActivityOpen(false)} />
-
-      <div className="stats">
-        <div className="stat">
-          <div className="stat-label">Total influencers</div>
-          <div className="stat-value accent">{total}</div>
-        </div>
-        <div className="stat">
-          <div className="stat-label">Contactadas</div>
-          <div className="stat-value yellow">{contacted}</div>
-        </div>
-        <div className="stat">
-          <div className="stat-label">Respondieron</div>
-          <div className="stat-value green">{responded}</div>
-        </div>
-        <div className="stat">
-          <div className="stat-label">Cerradas</div>
-          <div className="stat-value pink">{closed}</div>
-        </div>
-        <div className="stat">
-          <div className="stat-label">Mensajes enviados</div>
-          <div className="stat-value">{totalMessages}</div>
-        </div>
-      </div>
-
-      <div className="progress-wrap">
-        <div className="progress-bar">
-          <div className="progress-fill" style={{width: `${progressPct}%`}} />
-        </div>
-        <div style={{fontSize:'0.72rem', color:'var(--text2)', marginTop:'4px', textAlign:'right'}}>{progressPct}% contactadas</div>
-      </div>
-
-      <div className="controls">
-        <input
-          className="search-input"
-          placeholder="🔍 Buscar por nombre o username..."
-          value={search}
-          onChange={e => setSearch(e.target.value)}
-        />
-        {[
-          { key:'all', label:'Todas' },
-          { key:'high', label:'🔥 Prioridad Alta' },
-          { key:'pending', label:'⏳ Pendientes' },
-          { key:'inprogress', label:'📤 En proceso' },
-          { key:'responded', label:'💬 Respondieron' },
-        ].map(f => (
-          <button key={f.key} className={`filter-btn${filter === f.key ? ' active' : ''}`} onClick={() => setFilter(f.key)}>
-            {f.label}
-          </button>
-        ))}
-      </div>
-
-      <div className="filter-row">
-        <span className="filter-label">Filtros:</span>
-        <select className="filter-select" value={filterScore} onChange={e => setFilterScore(e.target.value)}>
-          {scoreRanges.map(s => <option key={s.key} value={s.key}>{`🤖 AI Score: ${s.label}`}</option>)}
+      <div className="company-bar-right">
+        <select className="company-selector" value={activeCo?.id} onChange={e => switchCompany(e.target.value)}>
+          {companies.map(co => <option key={co.id} value={co.id}>{co.icon} {co.name}</option>)}
         </select>
-        <select className="filter-select" value={filterCountry} onChange={e => { setFilterCountry(e.target.value); setFilterCity('all'); }}>
-          <option value="all">🌎 País: Todos</option>
-          {countries.map(c => <option key={c} value={c}>{`🌎 ${c}`}</option>)}
-        </select>
-        <select className="filter-select" value={filterCity} onChange={e => setFilterCity(e.target.value)}>
-          <option value="all">📍 Ciudad: Todas</option>
-          {cities.map(c => <option key={c} value={c}>{`📍 ${c}`}</option>)}
-        </select>
-        {(filterScore !== 'all' || filterCountry !== 'all' || filterCity !== 'all') && (
-          <button className="btn btn-sm" onClick={() => { setFilterScore('all'); setFilterCountry('all'); setFilterCity('all'); }}>✕ Limpiar filtros</button>
-        )}
+        <button className="co-manage-btn" onClick={() => setCoManagerOpen(true)}>⚙️ Compañías</button>
+        <div className="user-badge">
+          <div className="user-avatar-sm">{userName.charAt(0).toUpperCase()}</div>
+          <span className="user-name">{userName}</span>
+          <button className="logout-btn" onClick={handleLogout}>Salir</button>
+        </div>
       </div>
+    </div>
 
-      {filtered.length === 0 ? (
-        <div className="empty">
-          <h2>{syncStatus === 'loading' ? '⏳ Cargando influencers...' : '🔍 No se encontraron resultados'}</h2>
-          <p>{syncStatus === 'loading' ? 'Conectando con Google Sheets...' : 'Intenta con otro filtro o término de búsqueda'}</p>
+    {coManagerOpen && <CompanyManager companies={companies} onSave={handleSaveCompanies} onClose={() => setCoManagerOpen(false)} />}
+
+    <div className="header">
+      <div className="header-top">
+        <h1>{activeCo?.icon} <span>{activeCo?.name}</span> CRM</h1>
+        <div className="header-actions">
+          <span className={`sync-status ${syncStatus==='ok'?'ok':syncStatus==='error'?'err':syncStatus==='loading'?'loading':''}`}>
+            {syncStatus==='loading'?'⏳ Cargando...':syncStatus==='ok'?'✅ Sincronizado':syncStatus==='error'?'❌ Error':'⏸️'}
+          </span>
+          <button className="btn btn-sm" onClick={loadSheet}>🔄</button>
+          <button className="btn btn-sm" onClick={()=>setActivityOpen(true)}>📊 Actividad</button>
+          <a href={SHEET_URL} target="_blank" className="btn btn-sm">📊 Sheet</a>
         </div>
-      ) : (
-        <div className="cards">
-          {filtered.map(inf => (
-            <InfluencerCard
-              key={inf.id}
-              inf={inf}
-              infState={getInfState(crmState, inf.username)}
-              onUpdateState={updateInfState}
-              expanded={!!expanded[inf.id]}
-              onToggle={() => toggleCard(inf.id)}
-              currentUser={userName}
-            />
-          ))}
-        </div>
-      )}
-    </>
-  );
+      </div>
+    </div>
+
+    <ActivityPanel open={activityOpen} onClose={()=>setActivityOpen(false)} />
+
+    <div className="stats">
+      <div className="stat"><div className="stat-label">Total</div><div className="stat-value accent">{total}</div></div>
+      <div className="stat"><div className="stat-label">Contactadas</div><div className="stat-value yellow">{contacted}</div></div>
+      <div className="stat"><div className="stat-label">Respondieron</div><div className="stat-value green">{responded}</div></div>
+      <div className="stat"><div className="stat-label">Cerradas</div><div className="stat-value pink">{closed}</div></div>
+      <div className="stat"><div className="stat-label">Mensajes</div><div className="stat-value">{totalMessages}</div></div>
+    </div>
+
+    <div className="progress-wrap">
+      <div className="progress-bar"><div className="progress-fill" style={{width:`${progressPct}%`}}/></div>
+      <div style={{fontSize:'0.72rem',color:'var(--text2)',marginTop:'4px',textAlign:'right'}}>{progressPct}% contactadas</div>
+    </div>
+
+    <div className="controls">
+      <input className="search-input" placeholder="🔍 Buscar..." value={search} onChange={e=>setSearch(e.target.value)} />
+      {[{key:'all',label:'Todas'},{key:'high',label:'🔥 Alta'},{key:'pending',label:'⏳ Pendientes'},{key:'inprogress',label:'📤 En proceso'},{key:'responded',label:'💬 Respondieron'}].map(f=>(
+        <button key={f.key} className={`filter-btn${filter===f.key?' active':''}`} onClick={()=>setFilter(f.key)}>{f.label}</button>
+      ))}
+    </div>
+
+    <div className="filter-row">
+      <span className="filter-label">Filtros:</span>
+      <select className="filter-select" value={filterScore} onChange={e=>setFilterScore(e.target.value)}>
+        {scoreRanges.map(s=><option key={s.key} value={s.key}>{`🤖 AI: ${s.label}`}</option>)}
+      </select>
+      <select className="filter-select" value={filterCountry} onChange={e=>{setFilterCountry(e.target.value);setFilterCity('all');}}>
+        <option value="all">🌎 País: Todos</option>
+        {countries.map(c=><option key={c} value={c}>{`🌎 ${c}`}</option>)}
+      </select>
+      <select className="filter-select" value={filterCity} onChange={e=>setFilterCity(e.target.value)}>
+        <option value="all">📍 Ciudad: Todas</option>
+        {cities.map(c=><option key={c} value={c}>{`📍 ${c}`}</option>)}
+      </select>
+      {(filterScore!=='all'||filterCountry!=='all'||filterCity!=='all')&&<button className="btn btn-sm" onClick={()=>{setFilterScore('all');setFilterCountry('all');setFilterCity('all');}}>✕ Limpiar</button>}
+    </div>
+
+    {filtered.length===0?(
+      <div className="empty"><h2>{syncStatus==='loading'?'⏳ Cargando...':'🔍 Sin resultados'}</h2><p>{syncStatus==='loading'?'Conectando...':'Cambia los filtros'}</p></div>
+    ):(
+      <div className="cards">
+        {filtered.map(inf=>(<InfluencerCard key={inf.id} inf={inf} infState={getInfState(crmState,inf.username)} onUpdateState={updateInfState} expanded={!!expanded[inf.id]} onToggle={()=>setExpanded(p=>({...p,[inf.id]:!p[inf.id]}))} currentUser={userName} company={activeCo} />))}
+      </div>
+    )}
+  </>);
 }
 
 ReactDOM.createRoot(document.getElementById('root')).render(<App />);
