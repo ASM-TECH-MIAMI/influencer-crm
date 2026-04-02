@@ -138,6 +138,20 @@
   .company-identity { display:flex; align-items:center; gap:8px; padding:8px 12px; border-radius:8px; margin:8px 0; font-size:0.8rem; font-weight:600; border:1px solid var(--company-accent2); background:var(--company-glow); color:var(--company-accent); transition: all .4s; }
   .company-identity .co-dot { width:10px; height:10px; border-radius:50%; background:var(--company-accent); }
 
+  /* Match badge */
+  .match-badge { display:inline-flex; align-items:center; gap:4px; padding:3px 10px; border-radius:10px; font-size:0.72rem; font-weight:700; }
+  .match-high { background:#052e16; color:#22c55e; }
+  .match-med { background:#422006; color:#eab308; }
+  .match-low { background:#2a0a0a; color:#ef4444; }
+  .match-bar { height:4px; border-radius:2px; background:var(--card2); flex:1; min-width:40px; max-width:80px; overflow:hidden; }
+  .match-bar-fill { height:100%; border-radius:2px; transition:width .3s; }
+  .match-comparison { background:var(--card2); border:1px solid var(--border); border-radius:10px; padding:10px 12px; margin:8px 0; }
+  .match-comparison-title { font-size:0.72rem; color:var(--text2); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:6px; }
+  .match-row { display:flex; align-items:center; gap:8px; padding:3px 0; font-size:0.8rem; }
+  .match-row .co-dot-sm { width:8px; height:8px; border-radius:50%; flex-shrink:0; }
+  .match-row .co-label { flex:1; min-width:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; color:var(--text2); }
+  .match-row .match-pct { font-weight:700; min-width:36px; text-align:right; }
+
   /* Notes */
   .notes-area { width:100%; background:var(--card2); border:1px solid var(--border); border-radius:8px; padding:10px; color:var(--text); font-size:0.83rem; resize:vertical; min-height:60px; outline:none; font-family:inherit; }
   .notes-area:focus { border-color:var(--company-accent); }
@@ -252,6 +266,9 @@ const DEFAULT_COMPANIES = [
     icon: '👙',
     theme: 'indigo',
     description: 'Marca de swimwear — Brand Ambassadors',
+    idealProfile: 'Buscamos modelos lifestyle, fitness, moda, viajes, playa. Contenido estético y aspiracional. Preferimos perfiles con buen engagement y estilo de vida saludable.',
+    idealTags: ['lifestyle','fitness','moda','fashion','viajes','travel','playa','beach','swimwear','bikini','modelo','influencer','beauty','estilo','outfit'],
+    antiTags: ['onlyfans','adult','contenido exclusivo','xxx','nsfw'],
     msgTemplates: {
       first: 'Hola {name}! 💜 Me encanta tu contenido y tu estilo. Somos una marca de swimwear y estamos buscando Brand Ambassadors. ¿Te gustaría saber más sobre nuestra propuesta?',
       fu1: 'Hey {name}! 😊 Solo quería hacer follow up de mi mensaje anterior. ¿Pudiste verlo? Me encantaría contarte sobre nuestra propuesta de Brand Ambassador.',
@@ -265,6 +282,9 @@ const DEFAULT_COMPANIES = [
     icon: '🛡️',
     theme: 'red',
     description: 'Protección de contenido — Content Protection',
+    idealProfile: 'Modelos que venden contenido exclusivo, OnlyFans, Fansly, contenido premium. Necesitan proteger su contenido de piratería y leaks.',
+    idealTags: ['onlyfans','fansly','contenido exclusivo','premium','adult','creator','content creator','modelo','exclusive'],
+    antiTags: [],
     msgTemplates: {
       first: 'Hola {name}! 🛡️ Nos dedicamos a proteger el contenido de creadoras como tú. Hemos detectado que tu contenido podría estar en riesgo. ¿Te gustaría saber cómo podemos ayudarte?',
       fu1: 'Hey {name}! Solo quería hacer follow up. La protección de tu contenido es importante y tenemos herramientas que pueden ayudarte. ¿Tienes un momento? 😊',
@@ -273,6 +293,79 @@ const DEFAULT_COMPANIES = [
     }
   },
 ];
+
+/* ─── Match Scoring Engine ─── */
+function calculateMatch(company, inf) {
+  if (!company?.idealTags || company.idealTags.length === 0) return 50; // neutral if no profile set
+  const idealTags = (company.idealTags || []).map(t => t.toLowerCase());
+  const antiTags = (company.antiTags || []).map(t => t.toLowerCase());
+  const idealDesc = (company.idealProfile || '').toLowerCase();
+
+  // Build model text corpus from all available data
+  const modelText = [
+    inf.bio || '',
+    inf.category || '',
+    inf.contentType || '',
+    inf.links || '',
+    inf.name || '',
+  ].join(' ').toLowerCase();
+
+  let score = 30; // base score
+  let matchCount = 0;
+  let antiCount = 0;
+
+  // Check ideal tags
+  for (const tag of idealTags) {
+    if (modelText.includes(tag)) { matchCount++; score += 8; }
+  }
+
+  // Check anti-tags (strong negative signal)
+  for (const tag of antiTags) {
+    if (tag && modelText.includes(tag)) { antiCount++; score -= 20; }
+  }
+
+  // Category match bonus
+  if (inf.category) {
+    const cat = inf.category.toLowerCase();
+    if (idealDesc.includes(cat)) score += 10;
+    // Check each ideal tag against category
+    for (const tag of idealTags) {
+      if (cat.includes(tag) || tag.includes(cat)) score += 5;
+    }
+  }
+
+  // Engagement quality bonus from AI score
+  if (inf.aiScore >= 7) score += 10;
+  else if (inf.aiScore >= 4) score += 5;
+
+  // Links bonus (link in bio suggests active creator)
+  if (inf.links) {
+    const linksLow = inf.links.toLowerCase();
+    for (const tag of idealTags) {
+      if (linksLow.includes(tag)) score += 5;
+    }
+    for (const tag of antiTags) {
+      if (tag && linksLow.includes(tag)) score -= 15;
+    }
+  }
+
+  // Clamp to 0-100
+  return Math.max(0, Math.min(100, score));
+}
+
+function getMatchColor(pct) {
+  if (pct >= 65) return { cls:'match-high', color:'#22c55e' };
+  if (pct >= 35) return { cls:'match-med', color:'#eab308' };
+  return { cls:'match-low', color:'#ef4444' };
+}
+
+function getMatchLabel(pct) {
+  if (pct >= 80) return 'Excelente';
+  if (pct >= 65) return 'Bueno';
+  if (pct >= 45) return 'Medio';
+  if (pct >= 25) return 'Bajo';
+  return 'No match';
+}
 
 const STATUS_OPTIONS = [
   { value:"pendiente",      label:"⏳ Pendiente",       cls:"s-pendiente" },
@@ -510,17 +603,23 @@ function CompanyManager({ companies, onSave, onClose }) {
   const [icon, setIcon] = useState('🏢');
   const [theme, setTheme] = useState('indigo');
   const [desc, setDesc] = useState('');
+  const [idealProfile, setIdealProfile] = useState('');
+  const [idealTagsStr, setIdealTagsStr] = useState('');
+  const [antiTagsStr, setAntiTagsStr] = useState('');
   const [msgFirst, setMsgFirst] = useState('');
   const [msgFu1, setMsgFu1] = useState('');
   const [msgFu2, setMsgFu2] = useState('');
   const [msgFu3, setMsgFu3] = useState('');
 
   const startEdit = (co) => {
-    setEditing(co || { id: '', name:'', icon:'🏢', theme:'indigo', description:'', msgTemplates:{ first:'', fu1:'', fu2:'', fu3:'' } });
+    setEditing(co || { id:'', name:'', icon:'🏢', theme:'indigo', description:'', idealProfile:'', idealTags:[], antiTags:[], msgTemplates:{ first:'', fu1:'', fu2:'', fu3:'' } });
     setName(co?.name || '');
     setIcon(co?.icon || '🏢');
     setTheme(co?.theme || 'indigo');
     setDesc(co?.description || '');
+    setIdealProfile(co?.idealProfile || '');
+    setIdealTagsStr((co?.idealTags || []).join(', '));
+    setAntiTagsStr((co?.antiTags || []).join(', '));
     setMsgFirst(co?.msgTemplates?.first || 'Hola {name}! ');
     setMsgFu1(co?.msgTemplates?.fu1 || 'Hey {name}! ');
     setMsgFu2(co?.msgTemplates?.fu2 || '{name}! ');
@@ -530,7 +629,8 @@ function CompanyManager({ companies, onSave, onClose }) {
   const handleSave = () => {
     if (!name.trim()) return;
     const id = editing.id || name.trim().toLowerCase().replace(/\s+/g, '_').replace(/[^a-z0-9_]/g, '');
-    const updated = { id, name: name.trim(), icon, theme, description: desc, msgTemplates: { first: msgFirst, fu1: msgFu1, fu2: msgFu2, fu3: msgFu3 } };
+    const parseTags = (s) => s.split(',').map(t=>t.trim().toLowerCase()).filter(Boolean);
+    const updated = { id, name: name.trim(), icon, theme, description: desc, idealProfile, idealTags: parseTags(idealTagsStr), antiTags: parseTags(antiTagsStr), msgTemplates: { first: msgFirst, fu1: msgFu1, fu2: msgFu2, fu3: msgFu3 } };
     const list = [...companies];
     const existIdx = list.findIndex(c => c.id === id);
     if (existIdx >= 0) list[existIdx] = updated; else list.push(updated);
@@ -564,6 +664,16 @@ function CompanyManager({ companies, onSave, onClose }) {
           </div>
           <div className="modal-label">Descripción</div>
           <input className="modal-input" value={desc} onChange={e => setDesc(e.target.value)} placeholder="Breve descripción de la compañía" />
+
+          <div style={{background:'var(--card2)',border:'1px solid var(--border)',borderRadius:10,padding:14,margin:'12px 0'}}>
+            <div className="modal-label" style={{color:t.accent}}>🎯 Perfil Ideal (para Match Scoring)</div>
+            <textarea className="modal-textarea" value={idealProfile} onChange={e => setIdealProfile(e.target.value)} placeholder="Describe el tipo de modelo ideal para esta compañía. Ej: Modelos fitness, lifestyle, que promuevan un estilo de vida saludable..." />
+            <div className="modal-label">Tags positivos <span style={{color:'var(--text2)',fontWeight:400,textTransform:'none'}}>— separados por coma</span></div>
+            <input className="modal-input" value={idealTagsStr} onChange={e => setIdealTagsStr(e.target.value)} placeholder="lifestyle, fitness, moda, viajes, playa" />
+            <div className="modal-label">Tags negativos <span style={{color:'var(--text2)',fontWeight:400,textTransform:'none'}}>— reducen el match score</span></div>
+            <input className="modal-input" value={antiTagsStr} onChange={e => setAntiTagsStr(e.target.value)} placeholder="onlyfans, adult, nsfw" style={{marginBottom:0}} />
+          </div>
+
           <div className="modal-label">Mensaje Primer Contacto <span style={{color:'var(--text2)',fontWeight:400,textTransform:'none'}}>— usa {'{name}'} para el nombre</span></div>
           <textarea className="modal-textarea" value={msgFirst} onChange={e => setMsgFirst(e.target.value)} />
           <div className="modal-label">Follow Up 1</div>
@@ -670,13 +780,15 @@ function MsgCard({ label, text, color, currentUser, influencer, companyName }) {
   );
 }
 
-function InfluencerCard({ inf, infState, onUpdateState, expanded, onToggle, currentUser, company }) {
+function InfluencerCard({ inf, infState, onUpdateState, expanded, onToggle, currentUser, company, allCompanies }) {
   const [noteText, setNoteText] = useState('');
   const msgs = getCompanyMessages(company, inf);
   const tip = TIPS_DB[inf.username] || genTip(inf);
   const statusObj = STATUS_OPTIONS.find(s => s.value === infState.status) || STATUS_OPTIONS[0];
   const companyName = company?.name || '';
   const theme = getTheme(company?.theme);
+  const matchPct = calculateMatch(company, inf);
+  const matchStyle = getMatchColor(matchPct);
 
   const nextStep = () => {
     const ci = STATUS_FLOW.indexOf(infState.status); if (ci<0||ci>=STATUS_FLOW.length-1) return;
@@ -722,15 +834,41 @@ function InfluencerCard({ inf, infState, onUpdateState, expanded, onToggle, curr
             </div>
           </div>
         </div>
-        <span className={`status-badge ${statusObj.cls}`}>{statusObj.label}</span>
+        <div style={{display:'flex',flexDirection:'column',alignItems:'flex-end',gap:4}}>
+          <span className={`status-badge ${statusObj.cls}`}>{statusObj.label}</span>
+          <span className={`match-badge ${matchStyle.cls}`}>
+            <span style={{fontSize:'0.9em'}}>🎯</span> {matchPct}%
+          </span>
+        </div>
       </div>
 
       <div className="card-body">
-        {/* Company identity banner */}
+        {/* Company identity + match banner */}
         <div className="company-identity">
           <div className="co-dot" />
           Contactando como <strong style={{marginLeft:4}}>{company?.icon} {companyName}</strong>
+          <span style={{marginLeft:'auto',fontSize:'0.85rem',fontWeight:700}}>{matchPct}% Match — {getMatchLabel(matchPct)}</span>
         </div>
+
+        {/* Cross-company match comparison */}
+        {allCompanies && allCompanies.length > 1 && (
+          <div className="match-comparison">
+            <div className="match-comparison-title">Match por compañía</div>
+            {allCompanies.map(co => {
+              const pct = calculateMatch(co, inf);
+              const mc = getMatchColor(pct);
+              const t = getTheme(co.theme);
+              return (
+                <div className="match-row" key={co.id}>
+                  <div className="co-dot-sm" style={{background:t.accent2}} />
+                  <span className="co-label">{co.icon} {co.name}</span>
+                  <div className="match-bar"><div className="match-bar-fill" style={{width:`${pct}%`,background:mc.color}} /></div>
+                  <span className="match-pct" style={{color:mc.color}}>{pct}%</span>
+                </div>
+              );
+            })}
+          </div>
+        )}
 
         {inf.bio && <><div className="section-title">Bio</div><div className="bio-text">{inf.bio}</div></>}
         <div className="tip-box"><div className="msg-label" style={{color:'var(--yellow)'}}>💡 Tip</div><div className="msg-text">{tip}</div></div>
@@ -795,6 +933,7 @@ function App() {
   const [filterCountry, setFilterCountry] = useState('all');
   const [filterCity, setFilterCity] = useState('all');
   const [filterScore, setFilterScore] = useState('all');
+  const [filterMatch, setFilterMatch] = useState('all');
   const [expanded, setExpanded] = useState({});
   const [activityOpen, setActivityOpen] = useState(false);
   const [coManagerOpen, setCoManagerOpen] = useState(false);
@@ -857,6 +996,7 @@ function App() {
     if(filterCountry!=='all'&&inf.country!==filterCountry)return false;
     if(filterCity!=='all'&&inf.city!==filterCity)return false;
     if(filterScore!=='all'){const sc=inf.aiScore||0;switch(filterScore){case '9-10':if(sc<9)return false;break;case '7-8':if(sc<7||sc>=9)return false;break;case '4-6':if(sc<4||sc>=7)return false;break;case '1-3':if(sc<1||sc>=4)return false;break;case '0':if(sc>0)return false;break;}}
+    if(filterMatch!=='all'){const mp=calculateMatch(activeCo,inf);switch(filterMatch){case 'high':if(mp<65)return false;break;case 'med':if(mp<35||mp>=65)return false;break;case 'low':if(mp>=35)return false;break;}}
     switch(filter){case 'high':return inf.potential==='Alto';case 'pending':return s==='pendiente';case 'inprogress':return['enviado_1','fu1_enviado','fu2_enviado','fu3_enviado','en_negociacion'].includes(s);case 'responded':return['respondio','cerrado_si'].includes(s);default:return true;}
   });
 
@@ -921,6 +1061,12 @@ function App() {
 
     <div className="filter-row">
       <span className="filter-label">Filtros:</span>
+      <select className="filter-select" value={filterMatch} onChange={e=>setFilterMatch(e.target.value)}>
+        <option value="all">🎯 Match: Todos</option>
+        <option value="high">🎯 Match: Alto (65%+)</option>
+        <option value="med">🎯 Match: Medio (35-64%)</option>
+        <option value="low">🎯 Match: Bajo (&lt;35%)</option>
+      </select>
       <select className="filter-select" value={filterScore} onChange={e=>setFilterScore(e.target.value)}>
         {scoreRanges.map(s=><option key={s.key} value={s.key}>{`🤖 AI: ${s.label}`}</option>)}
       </select>
@@ -932,14 +1078,14 @@ function App() {
         <option value="all">📍 Ciudad: Todas</option>
         {cities.map(c=><option key={c} value={c}>{`📍 ${c}`}</option>)}
       </select>
-      {(filterScore!=='all'||filterCountry!=='all'||filterCity!=='all')&&<button className="btn btn-sm" onClick={()=>{setFilterScore('all');setFilterCountry('all');setFilterCity('all');}}>✕ Limpiar</button>}
+      {(filterMatch!=='all'||filterScore!=='all'||filterCountry!=='all'||filterCity!=='all')&&<button className="btn btn-sm" onClick={()=>{setFilterMatch('all');setFilterScore('all');setFilterCountry('all');setFilterCity('all');}}>✕ Limpiar</button>}
     </div>
 
     {filtered.length===0?(
       <div className="empty"><h2>{syncStatus==='loading'?'⏳ Cargando...':'🔍 Sin resultados'}</h2><p>{syncStatus==='loading'?'Conectando...':'Cambia los filtros'}</p></div>
     ):(
       <div className="cards">
-        {filtered.map(inf=>(<InfluencerCard key={inf.id} inf={inf} infState={getInfState(crmState,inf.username)} onUpdateState={updateInfState} expanded={!!expanded[inf.id]} onToggle={()=>setExpanded(p=>({...p,[inf.id]:!p[inf.id]}))} currentUser={userName} company={activeCo} />))}
+        {filtered.map(inf=>(<InfluencerCard key={inf.id} inf={inf} infState={getInfState(crmState,inf.username)} onUpdateState={updateInfState} expanded={!!expanded[inf.id]} onToggle={()=>setExpanded(p=>({...p,[inf.id]:!p[inf.id]}))} currentUser={userName} company={activeCo} allCompanies={companies} />))}
       </div>
     )}
   </>);
