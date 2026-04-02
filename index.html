@@ -397,7 +397,7 @@ const THEME_COLORS = [
 
 const DEFAULT_COMPANIES = [
   {
-    id: 'ora', name: 'Ora', icon: '🤝', theme: 'indigo',
+    id: 'ora', name: 'Ora', icon: 'OR', theme: 'indigo',
     description: 'Creator & Brand Management',
     website: 'https://myora.co',
     social: { ig: '@ora.creators', tiktok: '', twitter: '' },
@@ -414,7 +414,7 @@ const DEFAULT_COMPANIES = [
     }
   },
   {
-    id: 'trafix', name: 'Trafix', icon: '🚀', theme: 'cyan',
+    id: 'trafix', name: 'Trafix', icon: 'TX', theme: 'cyan',
     description: 'Traffic Acquisition & SFS',
     website: 'https://unlimited.partners',
     social: { ig: '', tiktok: '', twitter: '' },
@@ -431,7 +431,7 @@ const DEFAULT_COMPANIES = [
     }
   },
   {
-    id: 'leakhunter', name: 'LeakHunter', icon: '🛡️', theme: 'red',
+    id: 'leakhunter', name: 'LeakHunter', icon: 'LH', theme: 'red',
     description: 'Content Protection & DMCA',
     website: 'https://unlimited.partners',
     social: { ig: '', tiktok: '', twitter: '' },
@@ -448,7 +448,7 @@ const DEFAULT_COMPANIES = [
     }
   },
   {
-    id: 'piclink', name: 'PicLink', icon: '🔗', theme: 'emerald',
+    id: 'piclink', name: 'PicLink', icon: 'PL', theme: 'emerald',
     description: 'Smart Bio Links & Monetization',
     website: 'https://unlimited.partners',
     social: { ig: '', tiktok: '', twitter: '' },
@@ -465,7 +465,7 @@ const DEFAULT_COMPANIES = [
     }
   },
   {
-    id: 'lumina', name: 'Lumina', icon: '✨', theme: 'violet',
+    id: 'lumina', name: 'Lumina', icon: 'LM', theme: 'violet',
     description: 'AI Content Enhancement & Chat',
     website: 'https://unlimited.partners',
     social: { ig: '', tiktok: '', twitter: '' },
@@ -482,7 +482,7 @@ const DEFAULT_COMPANIES = [
     }
   },
   {
-    id: 'blu', name: 'Blu', icon: '💙', theme: 'cyan',
+    id: 'blu', name: 'Blu', icon: 'BL', theme: 'cyan',
     description: 'Fan & Subscriber CRM',
     website: 'https://unlimited.partners',
     social: { ig: '', tiktok: '', twitter: '' },
@@ -499,7 +499,7 @@ const DEFAULT_COMPANIES = [
     }
   },
   {
-    id: 'lets_shoot', name: "Let's Shoot", icon: '📸', theme: 'pink',
+    id: 'lets_shoot', name: "Let's Shoot", icon: 'LS', theme: 'pink',
     description: 'AI Digital Clone Photoshoots',
     website: 'https://unlimited.partners',
     social: { ig: '', tiktok: '', twitter: '' },
@@ -516,7 +516,7 @@ const DEFAULT_COMPANIES = [
     }
   },
   {
-    id: 'makeme', name: 'MakeMe', icon: '🤖', theme: 'violet',
+    id: 'makeme', name: 'MakeMe', icon: 'MM', theme: 'violet',
     description: 'AI Avatars & Virtual Influencers',
     website: 'https://unlimited.partners',
     social: { ig: '', tiktok: '', twitter: '' },
@@ -533,7 +533,7 @@ const DEFAULT_COMPANIES = [
     }
   },
   {
-    id: 'creator_radar', name: 'Creator Radar', icon: '📡', theme: 'emerald',
+    id: 'creator_radar', name: 'Creator Radar', icon: 'CR', theme: 'emerald',
     description: 'Creator Discovery & Brand Matching',
     website: 'https://unlimited.partners',
     social: { ig: '', tiktok: '', twitter: '' },
@@ -550,7 +550,7 @@ const DEFAULT_COMPANIES = [
     }
   },
   {
-    id: 'maven', name: 'Maven', icon: '⚡', theme: 'amber',
+    id: 'maven', name: 'Maven', icon: 'MV', theme: 'amber',
     description: 'The Operating Platform for Agencies',
     website: 'https://unlimited.partners',
     social: { ig: '', tiktok: '', twitter: '' },
@@ -567,7 +567,7 @@ const DEFAULT_COMPANIES = [
     }
   },
   {
-    id: 'kash', name: 'KASH Agency', icon: '💎', theme: 'pink',
+    id: 'kash', name: 'KASH Agency', icon: 'KA', theme: 'pink',
     description: 'OnlyFans Management Agency — Miami',
     website: 'https://kash-creator-hub.lovable.app',
     social: { ig: '@kash_miami__', tiktok: '', twitter: '' },
@@ -723,15 +723,15 @@ function getMatchLabel(pct) {
 }
 
 const STATUS_OPTIONS = [
-  { value:"pendiente",      label:"⏳ Pendiente",       cls:"s-pendiente" },
-  { value:"enviado_1",      label:"📤 Msg 1 Enviado",   cls:"s-enviado_1" },
-  { value:"fu1_enviado",    label:"🔄 Follow Up 1",     cls:"s-fu1_enviado" },
-  { value:"fu2_enviado",    label:"🔄 Follow Up 2",     cls:"s-fu2_enviado" },
-  { value:"fu3_enviado",    label:"🔄 Follow Up 3",     cls:"s-fu3_enviado" },
-  { value:"respondio",      label:"💬 Respondió",       cls:"s-respondio" },
-  { value:"en_negociacion", label:"🤝 Negociando",      cls:"s-en_negociacion" },
-  { value:"cerrado_si",     label:"✅ ¡Cerrado!",       cls:"s-cerrado_si" },
-  { value:"no_interesada",  label:"❌ No interesada",   cls:"s-no_interesada" },
+  { value:"pendiente",      label:"Pendiente",       cls:"s-pendiente" },
+  { value:"enviado_1",      label:"Msg 1 Enviado",   cls:"s-enviado_1" },
+  { value:"fu1_enviado",    label:"Follow Up 1",     cls:"s-fu1_enviado" },
+  { value:"fu2_enviado",    label:"Follow Up 2",     cls:"s-fu2_enviado" },
+  { value:"fu3_enviado",    label:"Follow Up 3",     cls:"s-fu3_enviado" },
+  { value:"respondio",      label:"Respondió",       cls:"s-respondio" },
+  { value:"en_negociacion", label:"Negociando",      cls:"s-en_negociacion" },
+  { value:"cerrado_si",     label:"Cerrado",       cls:"s-cerrado_si" },
+  { value:"no_interesada",  label:"No interesada",   cls:"s-no_interesada" },
 ];
 
 const STATUS_FLOW = ["pendiente","enviado_1","fu1_enviado","fu2_enviado","fu3_enviado","respondio","en_negociacion","cerrado_si"];
@@ -950,7 +950,7 @@ function AuthScreen({ onLogin }) {
   return (
     <div className="auth-overlay">
       <div className="auth-box">
-        <h1>👙 Influencer <span>CRM</span></h1>
+        <h1>Influencer <span>CRM</span></h1>
         <div className="auth-subtitle">{mode === 'login' ? 'Inicia sesión para continuar' : 'Crea tu cuenta'}</div>
         <form onSubmit={handleSubmit}>
           {error && <div className="auth-error">{error}</div>}
@@ -972,7 +972,7 @@ function AuthScreen({ onLogin }) {
 function CompanyManager({ companies, onSave, onClose }) {
   const [editing, setEditing] = useState(null); // null = list, or company object
   const [name, setName] = useState('');
-  const [icon, setIcon] = useState('🏢');
+  const [icon, setIcon] = useState('CO');
   const [theme, setTheme] = useState('indigo');
   const [desc, setDesc] = useState('');
   const [idealProfile, setIdealProfile] = useState('');
@@ -984,9 +984,9 @@ function CompanyManager({ companies, onSave, onClose }) {
   const [msgFu3, setMsgFu3] = useState('');
 
   const startEdit = (co) => {
-    setEditing(co || { id:'', name:'', icon:'🏢', theme:'indigo', description:'', idealProfile:'', idealTags:[], antiTags:[], msgTemplates:{ first:'', fu1:'', fu2:'', fu3:'' } });
+    setEditing(co || { id:'', name:'', icon:'CO', theme:'indigo', description:'', idealProfile:'', idealTags:[], antiTags:[], msgTemplates:{ first:'', fu1:'', fu2:'', fu3:'' } });
     setName(co?.name || '');
-    setIcon(co?.icon || '🏢');
+    setIcon(co?.icon || 'CO');
     setTheme(co?.theme || 'indigo');
     setDesc(co?.description || '');
     setIdealProfile(co?.idealProfile || '');
@@ -1038,7 +1038,7 @@ function CompanyManager({ companies, onSave, onClose }) {
           <input className="modal-input" value={desc} onChange={e => setDesc(e.target.value)} placeholder="Breve descripción de la compañía" />
 
           <div style={{background:'var(--card2)',border:'1px solid var(--border)',borderRadius:10,padding:14,margin:'12px 0'}}>
-            <div className="modal-label" style={{color:t.accent}}>🎯 Perfil Ideal (para Match Scoring)</div>
+            <div className="modal-label" style={{color:t.accent}}>Perfil Ideal (para Match Scoring)</div>
             <textarea className="modal-textarea" value={idealProfile} onChange={e => setIdealProfile(e.target.value)} placeholder="Describe el tipo de modelo ideal para esta compañía. Ej: Modelos fitness, lifestyle, que promuevan un estilo de vida saludable..." />
             <div className="modal-label">Tags positivos <span style={{color:'var(--text2)',fontWeight:400,textTransform:'none'}}>— separados por coma</span></div>
             <input className="modal-input" value={idealTagsStr} onChange={e => setIdealTagsStr(e.target.value)} placeholder="lifestyle, fitness, moda, viajes, playa" />
@@ -1118,7 +1118,7 @@ function CompanyProfilePanel({ open, onClose, company, companies, onSave }) {
       <div className="profile-panel-header">
         <h2><span style={{fontSize:'1.3rem'}}>{company.icon}</span> Perfil de {company.name}</h2>
         <div style={{display:'flex',gap:6}}>
-          {!editing && <button className="btn btn-sm btn-accent" onClick={() => setEditing(true)}>✏️ Editar</button>}
+          {!editing && <button className="btn btn-sm btn-accent" onClick={() => setEditing(true)}>Editar</button>}
           <button className="btn btn-sm" onClick={onClose}>✕</button>
         </div>
       </div>
@@ -1138,7 +1138,7 @@ function CompanyProfilePanel({ open, onClose, company, companies, onSave }) {
 
         {/* Mission */}
         <div className="profile-section">
-          <div className="profile-section-title">🎯 Misión</div>
+          <div className="profile-section-title">Mision</div>
           {editing ? (
             <textarea className="profile-edit-textarea" value={form.mission||''} onChange={e=>updateForm('mission',e.target.value)} placeholder="¿Cuál es la misión de esta compañía?" />
           ) : (
@@ -1148,7 +1148,7 @@ function CompanyProfilePanel({ open, onClose, company, companies, onSave }) {
 
         {/* What we do */}
         <div className="profile-section">
-          <div className="profile-section-title">💼 Qué hacemos</div>
+          <div className="profile-section-title">Que hacemos</div>
           {editing ? (
             <textarea className="profile-edit-textarea" value={form.whatWeDo||''} onChange={e=>updateForm('whatWeDo',e.target.value)} placeholder="Describe los servicios/productos de la compañía" />
           ) : (
@@ -1158,7 +1158,7 @@ function CompanyProfilePanel({ open, onClose, company, companies, onSave }) {
 
         {/* Website & Social */}
         <div className="profile-section">
-          <div className="profile-section-title">🌐 Web & Redes Sociales</div>
+          <div className="profile-section-title">Web y Redes Sociales</div>
           {editing ? (<>
             <div className="profile-field-label">Website</div>
             <input className="profile-edit-input" value={form.website||''} onChange={e=>updateForm('website',e.target.value)} placeholder="https://..." />
@@ -1170,9 +1170,9 @@ function CompanyProfilePanel({ open, onClose, company, companies, onSave }) {
             <input className="profile-edit-input" value={form.social?.twitter||''} onChange={e=>updateSocial('twitter',e.target.value)} placeholder="@username" />
           </>) : (
             <div className="profile-social-links">
-              {company.website && <a href={company.website} target="_blank" className="profile-social-link">🌐 {company.website.replace(/https?:\/\//,'')}</a>}
-              {company.social?.ig && <a href={`https://instagram.com/${company.social.ig.replace('@','')}`} target="_blank" className="profile-social-link">📷 {company.social.ig}</a>}
-              {company.social?.tiktok && <a href={`https://tiktok.com/@${company.social.tiktok.replace('@','')}`} target="_blank" className="profile-social-link">🎵 {company.social.tiktok}</a>}
+              {company.website && <a href={company.website} target="_blank" className="profile-social-link">{company.website.replace(/https?:\/\//,'')}</a>}
+              {company.social?.ig && <a href={`https://instagram.com/${company.social.ig.replace('@','')}`} target="_blank" className="profile-social-link">{company.social.ig}</a>}
+              {company.social?.tiktok && <a href={`https://tiktok.com/@${company.social.tiktok.replace('@','')}`} target="_blank" className="profile-social-link">{company.social.tiktok}</a>}
               {company.social?.twitter && <a href={`https://x.com/${company.social.twitter.replace('@','')}`} target="_blank" className="profile-social-link">𝕏 {company.social.twitter}</a>}
               {!company.website && !company.social?.ig && !company.social?.tiktok && !company.social?.twitter && <span style={{color:'var(--text2)',fontSize:'0.82rem'}}>No hay redes configuradas</span>}
             </div>
@@ -1181,7 +1181,7 @@ function CompanyProfilePanel({ open, onClose, company, companies, onSave }) {
 
         {/* Ideal Profile */}
         <div className="profile-section">
-          <div className="profile-section-title">🎯 Perfil Ideal (Match Scoring)</div>
+          <div className="profile-section-title">Perfil Ideal (Match Scoring)</div>
           {editing ? (
             <textarea className="profile-edit-textarea" value={form.idealProfile||''} onChange={e=>updateForm('idealProfile',e.target.value)} placeholder="Describe el tipo de creadora ideal para esta compañía..." />
           ) : (
@@ -1191,7 +1191,7 @@ function CompanyProfilePanel({ open, onClose, company, companies, onSave }) {
 
         {/* Tags */}
         <div className="profile-section">
-          <div className="profile-section-title">🏷️ Tags</div>
+          <div className="profile-section-title">Tags</div>
           {editing ? (<>
             <div className="profile-field-label">Tags positivos (separados por coma)</div>
             <input className="profile-edit-input" value={(form.idealTags||[]).join(', ')} onChange={e=>updateForm('idealTags',e.target.value.split(',').map(t=>t.trim().toLowerCase()).filter(Boolean))} />
@@ -1209,7 +1209,7 @@ function CompanyProfilePanel({ open, onClose, company, companies, onSave }) {
         {/* Color theme */}
         {editing && (
           <div className="profile-section">
-            <div className="profile-section-title">🎨 Color / Tema</div>
+            <div className="profile-section-title">Color / Tema</div>
             <div className="color-picker-row">
               {THEME_COLORS.map(tc => (
                 <div key={tc.id} className={`color-swatch${form.theme===tc.id?' active':''}`} style={{background:tc.accent2}} onClick={()=>updateForm('theme',tc.id)} title={tc.label} />
@@ -1221,7 +1221,7 @@ function CompanyProfilePanel({ open, onClose, company, companies, onSave }) {
         {/* Save / Cancel */}
         {editing && (
           <div className="profile-btn-row">
-            <button className="btn btn-accent" onClick={handleSave}>💾 Guardar</button>
+            <button className="btn btn-accent" onClick={handleSave}>Guardar</button>
             <button className="btn" onClick={() => { setForm({...company}); setEditing(false); }}>Cancelar</button>
           </div>
         )}
@@ -1249,14 +1249,14 @@ function ActivityPanel({ open, onClose }) {
     return true;
   });
   const fmtTime = (iso) => { const d = new Date(iso); return d.toLocaleDateString('es-ES',{day:'2-digit',month:'short'})+' '+d.toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit'}); };
-  const labels = { login:'🔑 Inicio sesión', logout:'🚪 Cerró sesión', copy_message:'📋 Copió mensaje', status_change:'🔄 Cambió estado', next_step:'▶ Avanzó paso', add_note:'📝 Nota', expand_card:'👁 Abrió tarjeta' };
+  const labels = { login:'Inicio sesion', logout:'Cerro sesion', copy_message:'Copio mensaje', status_change:'Cambio estado', next_step:'Avanzo paso', add_note:'Nota', expand_card:'Abrio tarjeta' };
   if (!open) return null;
   return (<>
     <div className="activity-backdrop" onClick={onClose} />
     <div className={`activity-panel${open?' open':''}`}>
-      <div className="activity-panel-header"><h2>📊 Actividad</h2><button className="btn btn-sm" onClick={onClose}>✕</button></div>
+      <div className="activity-panel-header"><h2>Actividad</h2><button className="btn btn-sm" onClick={onClose}>✕</button></div>
       <div className="activity-filters">
-        {[{key:'all',label:'Todo'},{key:'copy',label:'📋 Copias'},{key:'status',label:'🔄 Estados'},{key:'notes',label:'📝 Notas'},{key:'login',label:'🔑 Sesiones'}].map(f=>(
+        {[{key:'all',label:'Todo'},{key:'copy',label:'Copias'},{key:'status',label:'Estados'},{key:'notes',label:'Notas'},{key:'login',label:'Sesiones'}].map(f=>(
           <button key={f.key} className={`activity-filter-btn${actFilter===f.key?' active':''}`} onClick={()=>setActFilter(f.key)}>{f.label}</button>
         ))}
       </div>
@@ -1285,7 +1285,7 @@ function CopyBtn({ text, currentUser, influencer, companyName }) {
       if (currentUser && influencer) logActivity(currentUser,'copy_message',influencer,text.substring(0,50)+'...',companyName);
     }
   };
-  return <button className="btn btn-sm" onClick={handleCopy}>{copied ? '✅ Copiado' : '📋 Copiar'}</button>;
+  return <button className="btn btn-sm" onClick={handleCopy}>{copied ? 'Copiado!' : 'Copiar'}</button>;
 }
 
 function MsgCard({ label, text, color, currentUser, influencer, companyName }) {
@@ -1345,9 +1345,9 @@ function InfluencerCard({ inf, infState, onUpdateState, expanded, onToggle, curr
             <div className="card-user"><a href={`https://instagram.com/${inf.username}`} target="_blank" onClick={e=>e.stopPropagation()}>@{inf.username}</a></div>
             <div className="card-meta">{inf.followers&&`${inf.followers} seg`}{inf.city&&` · ${inf.city}`}{inf.country&&`, ${inf.country}`}</div>
             <div className="card-badges">
-              {inf.potential==='Alto'&&<span className="badge badge-high">🔥 Alto</span>}
-              {inf.potential==='Medio'&&<span className="badge badge-medio">⚡ Medio</span>}
-              {inf.potential==='Bajo'&&<span className="badge badge-bajo">📊 Bajo</span>}
+              {inf.potential==='Alto'&&<span className="badge badge-high">Alto</span>}
+              {inf.potential==='Medio'&&<span className="badge badge-medio">Medio</span>}
+              {inf.potential==='Bajo'&&<span className="badge badge-bajo">Bajo</span>}
               {inf.contentType&&<span className="badge" style={{background:'#1a2e3a',color:'var(--teal)'}}>{inf.contentType}</span>}
             </div>
           </div>
@@ -1355,7 +1355,7 @@ function InfluencerCard({ inf, infState, onUpdateState, expanded, onToggle, curr
         <div style={{display:'flex',flexDirection:'column',alignItems:'flex-end',gap:4}}>
           <span className={`status-badge ${statusObj.cls}`}>{statusObj.label}</span>
           <span className={`match-badge ${matchStyle.cls}`}>
-            <span style={{fontSize:'0.9em'}}>🎯</span> {matchPct}%
+            {matchPct}%
           </span>
         </div>
       </div>
@@ -1389,14 +1389,14 @@ function InfluencerCard({ inf, infState, onUpdateState, expanded, onToggle, curr
         )}
 
         {inf.bio && <><div className="section-title">Bio</div><div className="bio-text">{inf.bio}</div></>}
-        <div className="tip-box"><div className="msg-label" style={{color:'var(--yellow)'}}>💡 Tip</div><div className="msg-text">{tip}</div></div>
+        <div className="tip-box"><div className="msg-label" style={{color:'var(--yellow)'}}>Tip</div><div className="msg-text">{tip}</div></div>
 
         <div className="section-title">Mensajes — {company?.icon} {companyName}</div>
         {msgs && <>
-          <MsgCard label="📤 Primer contacto" text={msgs.first} currentUser={currentUser} influencer={inf.username} companyName={companyName} />
-          <MsgCard label="🔄 Follow Up 1" text={msgs.fu1} color="var(--teal)" currentUser={currentUser} influencer={inf.username} companyName={companyName} />
-          <MsgCard label="🔄 Follow Up 2" text={msgs.fu2} color="var(--orange)" currentUser={currentUser} influencer={inf.username} companyName={companyName} />
-          <MsgCard label="🔄 Follow Up 3" text={msgs.fu3} color="var(--red)" currentUser={currentUser} influencer={inf.username} companyName={companyName} />
+          <MsgCard label="Primer contacto" text={msgs.first} currentUser={currentUser} influencer={inf.username} companyName={companyName} />
+          <MsgCard label="Follow Up 1" text={msgs.fu1} color="var(--teal)" currentUser={currentUser} influencer={inf.username} companyName={companyName} />
+          <MsgCard label="Follow Up 2" text={msgs.fu2} color="var(--orange)" currentUser={currentUser} influencer={inf.username} companyName={companyName} />
+          <MsgCard label="Follow Up 3" text={msgs.fu3} color="var(--red)" currentUser={currentUser} influencer={inf.username} companyName={companyName} />
         </>}
 
         <div className="section-title">Acciones</div>
@@ -1541,7 +1541,7 @@ function App() {
           {companies.map(co => <option key={co.id} value={co.id}>{co.icon} {co.name}</option>)}
         </select>
         <button className="co-profile-btn" onClick={() => setProfileOpen(true)} title="Perfil de compañía">⋮</button>
-        <button className="co-manage-btn" onClick={() => setCoManagerOpen(true)}>⚙️</button>
+        <button className="co-manage-btn" onClick={() => setCoManagerOpen(true)}>···</button>
         <div className="user-badge">
           <div className="user-avatar-sm">{userName.charAt(0).toUpperCase()}</div>
           <span className="user-name">{userName}</span>
@@ -1559,11 +1559,11 @@ function App() {
         <h1>{activeCo?.icon} <span>{activeCo?.name}</span> CRM</h1>
         <div className="header-actions">
           <span className={`sync-status ${syncStatus==='ok'?'ok':syncStatus==='error'?'err':syncStatus==='loading'?'loading':''}`}>
-            {syncStatus==='loading'?'⏳ Cargando...':syncStatus==='ok'?'✅ Sincronizado':syncStatus==='error'?'❌ Error':'⏸️'}
+            {syncStatus==='loading'?'Cargando...':syncStatus==='ok'?'Sincronizado':syncStatus==='error'?'Error':'—'}
           </span>
-          <button className="btn btn-sm" onClick={loadSheet}>🔄</button>
-          <button className="btn btn-sm" onClick={()=>setActivityOpen(true)}>📊 Actividad</button>
-          <a href={SHEET_URL} target="_blank" className="btn btn-sm">📊 Sheet</a>
+          <button className="btn btn-sm" onClick={loadSheet}>Sync</button>
+          <button className="btn btn-sm" onClick={()=>setActivityOpen(true)}>Actividad</button>
+          <a href={SHEET_URL} target="_blank" className="btn btn-sm">Sheet</a>
         </div>
       </div>
     </div>
@@ -1584,8 +1584,8 @@ function App() {
     </div>
 
     <div className="controls">
-      <input className="search-input" placeholder="🔍 Buscar..." value={search} onChange={e=>setSearch(e.target.value)} />
-      {[{key:'all',label:'Todas'},{key:'high',label:'🔥 Alta'},{key:'pending',label:'⏳ Pendientes'},{key:'inprogress',label:'📤 En proceso'},{key:'responded',label:'💬 Respondieron'}].map(f=>(
+      <input className="search-input" placeholder="Buscar..." value={search} onChange={e=>setSearch(e.target.value)} />
+      {[{key:'all',label:'Todas'},{key:'high',label:'Alta'},{key:'pending',label:'Pendientes'},{key:'inprogress',label:'En proceso'},{key:'responded',label:'Respondieron'}].map(f=>(
         <button key={f.key} className={`filter-btn${filter===f.key?' active':''}`} onClick={()=>setFilter(f.key)}>{f.label}</button>
       ))}
     </div>
@@ -1593,27 +1593,27 @@ function App() {
     <div className="filter-row">
       <span className="filter-label">Filtros:</span>
       <select className="filter-select" value={filterMatch} onChange={e=>setFilterMatch(e.target.value)}>
-        <option value="all">🎯 Match: Todos</option>
-        <option value="high">🎯 Match: Alto (65%+)</option>
-        <option value="med">🎯 Match: Medio (35-64%)</option>
-        <option value="low">🎯 Match: Bajo (&lt;35%)</option>
+        <option value="all">Match: Todos</option>
+        <option value="high">Match: Alto (65%+)</option>
+        <option value="med">Match: Medio (35-64%)</option>
+        <option value="low">Match: Bajo (&lt;35%)</option>
       </select>
       <select className="filter-select" value={filterScore} onChange={e=>setFilterScore(e.target.value)}>
-        {scoreRanges.map(s=><option key={s.key} value={s.key}>{`🤖 AI: ${s.label}`}</option>)}
+        {scoreRanges.map(s=><option key={s.key} value={s.key}>{`AI: ${s.label}`}</option>)}
       </select>
       <select className="filter-select" value={filterCountry} onChange={e=>{setFilterCountry(e.target.value);setFilterCity('all');}}>
-        <option value="all">🌎 País: Todos</option>
-        {countries.map(c=><option key={c} value={c}>{`🌎 ${c}`}</option>)}
+        <option value="all">Pais: Todos</option>
+        {countries.map(c=><option key={c} value={c}>{c}</option>)}
       </select>
       <select className="filter-select" value={filterCity} onChange={e=>setFilterCity(e.target.value)}>
-        <option value="all">📍 Ciudad: Todas</option>
-        {cities.map(c=><option key={c} value={c}>{`📍 ${c}`}</option>)}
+        <option value="all">Ciudad: Todas</option>
+        {cities.map(c=><option key={c} value={c}>{c}</option>)}
       </select>
-      {(filterMatch!=='all'||filterScore!=='all'||filterCountry!=='all'||filterCity!=='all')&&<button className="btn btn-sm" onClick={()=>{setFilterMatch('all');setFilterScore('all');setFilterCountry('all');setFilterCity('all');}}>✕ Limpiar</button>}
+      {(filterMatch!=='all'||filterScore!=='all'||filterCountry!=='all'||filterCity!=='all')&&<button className="btn btn-sm" onClick={()=>{setFilterMatch('all');setFilterScore('all');setFilterCountry('all');setFilterCity('all');}}>Limpiar</button>}
     </div>
 
     {filtered.length===0?(
-      <div className="empty"><h2>{syncStatus==='loading'?'⏳ Cargando...':'🔍 Sin resultados'}</h2><p>{syncStatus==='loading'?'Conectando...':'Cambia los filtros'}</p></div>
+      <div className="empty"><h2>{syncStatus==='loading'?'Cargando...':'Sin resultados'}</h2><p>{syncStatus==='loading'?'Conectando...':'Cambia los filtros'}</p></div>
     ):(
       <div className="cards">
         {filtered.map(inf=>(<InfluencerCard key={inf.id} inf={inf} infState={getInfState(crmState,inf.username)} onUpdateState={updateInfState} expanded={!!expanded[inf.id]} onToggle={()=>setExpanded(p=>({...p,[inf.id]:!p[inf.id]}))} currentUser={userName} company={activeCo} allCompanies={companies} />))}
