@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Influencer CRM — Brand Ambassador</title>
+<style>
+  :root {
+    --bg: #0f1117; --card: #1a1d27; --card2: #22252f; --border: #2a2d3a;
+    --text: #e4e4e7; --text2: #a1a1aa; --accent: #818cf8; --accent2: #6366f1;
+    --green: #22c55e; --yellow: #eab308; --red: #ef4444; --orange: #f97316;
+    --blue: #3b82f6; --pink: #ec4899; --teal: #14b8a6;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background:var(--bg); color:var(--text); min-height:100vh; }
+  a { color:var(--accent); text-decoration:none; }
+  a:hover { text-decoration:underline; }
+
+  /* Header */
+  .header { background:var(--card); border-bottom:1px solid var(--border); padding:16px 24px; position:sticky; top:0; z-index:100; }
+  .header-top { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px; }
+  .header h1 { font-size:1.4rem; font-weight:700; }
+  .header h1 span { color:var(--accent); }
+  .header-actions { display:flex; gap:8px; align-items:center; }
+  .sync-status { font-size:0.75rem; color:var(--text2); padding:4px 10px; border-radius:12px; background:var(--card2); }
+  .sync-status.ok { color:var(--green); }
+  .sync-status.err { color:var(--red); }
+  .sync-status.loading { color:var(--yellow); }
+
+  /* Buttons */
+  .btn { padding:8px 16px; border-radius:8px; border:1px solid var(--border); background:var(--card2); color:var(--text); cursor:pointer; font-size:0.85rem; transition:all .2s; display:inline-flex; align-items:center; gap:6px; }
+  .btn:hover { background:var(--accent2); border-color:var(--accent2); color:#fff; }
+  .btn-sm { padding:5px 10px; font-size:0.78rem; }
+  .btn-accent { background:var(--accent2); border-color:var(--accent2); color:#fff; }
+  .btn-accent:hover { background:var(--accent); }
+  .btn-green { background:#166534; border-color:#166534; color:#fff; }
+  .btn-green:hover { background:var(--green); color:#000; }
+
+  /* Stats */
+  .stats { display:flex; gap:12px; padding:16px 24px; flex-wrap:wrap; }
+  .stat { background:var(--card); border:1px solid var(--border); border-radius:12px; padding:14px 20px; flex:1; min-width:140px; }
+  .stat-label { font-size:0.75rem; color:var(--text2); text-transform:uppercase; letter-spacing:0.5px; }
+  .stat-value { font-size:1.6rem; font-weight:700; margin-top:4px; }
+  .stat-value.accent { color:var(--accent); }
+  .stat-value.green { color:var(--green); }
+  .stat-value.yellow { color:var(--yellow); }
+  .stat-value.pink { color:var(--pink); }
+
+  /* Progress bar */
+  .progress-wrap { padding:0 24px 8px; }
+  .progress-bar { height:6px; background:var(--card2); border-radius:3px; overflow:hidden; }
+  .progress-fill { height:100%; background:linear-gradient(90deg, var(--accent2), var(--green)); border-radius:3px; transition:width .5s; }
+
+  /* Search & Filters */
+  .controls { padding:12px 24px; display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
+  .search-input { background:var(--card); border:1px solid var(--border); border-radius:8px; padding:8px 14px; color:var(--text); font-size:0.9rem; width:260px; outline:none; }
+  .search-input:focus { border-color:var(--accent); }
+  .filter-btn { padding:6px 14px; border-radius:20px; border:1px solid var(--border); background:var(--card); color:var(--text2); cursor:pointer; font-size:0.8rem; transition:all .2s; }
+  .filter-btn:hover, .filter-btn.active { background:var(--accent2); color:#fff; border-color:var(--accent2); }
+
+  /* Cards grid */
+  .cards { padding:12px 24px 40px; display:grid; grid-template-columns:repeat(auto-fill, minmax(380px, 1fr)); gap:14px; }
+  .card { background:var(--card); border:1px solid var(--border); border-radius:14px; overflow:hidden; transition:all .2s; }
+  .card:hover { border-color:var(--accent); }
+  .card-head { padding:16px; display:flex; justify-content:space-between; align-items:flex-start; cursor:pointer; }
+  .card-info { display:flex; gap:12px; align-items:center; flex:1; min-width:0; }
+  .avatar { width:48px; height:48px; border-radius:50%; background:var(--accent2); display:flex; align-items:center; justify-content:center; font-size:1.2rem; font-weight:700; color:#fff; flex-shrink:0; }
+  .card-name { font-weight:600; font-size:0.95rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .card-user { font-size:0.8rem; color:var(--text2); }
+  .card-meta { font-size:0.75rem; color:var(--text2); margin-top:2px; }
+  .card-badges { display:flex; gap:6px; flex-wrap:wrap; margin-top:6px; }
+  .badge { font-size:0.7rem; padding:2px 8px; border-radius:10px; }
+  .badge-high { background:#422006; color:var(--orange); }
+  .badge-medio { background:#422006; color:var(--yellow); }
+  .badge-bajo { background:#1a2e05; color:var(--green); }
+  .badge-verified { background:#1e1b4b; color:var(--accent); }
+
+  /* Status badge */
+  .status-badge { font-size:0.75rem; padding:4px 10px; border-radius:10px; white-space:nowrap; }
+  .s-pendiente { background:#422006; color:var(--yellow); }
+  .s-enviado_1 { background:#172554; color:var(--blue); }
+  .s-fu1_enviado, .s-fu2_enviado, .s-fu3_enviado { background:#1e1b4b; color:var(--accent); }
+  .s-respondio { background:#052e16; color:var(--green); }
+  .s-en_negociacion { background:#3b1764; color:var(--pink); }
+  .s-cerrado_si { background:#052e16; color:var(--green); font-weight:700; }
+  .s-no_interesada { background:#2a0a0a; color:var(--red); }
+
+  /* Card expanded */
+  .card-body { padding:0 16px 16px; display:none; }
+  .card.expanded .card-body { display:block; }
+  .section-title { font-size:0.75rem; color:var(--text2); text-transform:uppercase; letter-spacing:0.5px; margin:12px 0 6px; }
+  .bio-text { font-size:0.83rem; color:var(--text2); line-height:1.5; }
+  .msg-card { background:var(--card2); border:1px solid var(--border); border-radius:10px; padding:12px; margin:6px 0; }
+  .msg-label { font-size:0.72rem; color:var(--accent); font-weight:600; text-transform:uppercase; margin-bottom:6px; }
+  .msg-text { font-size:0.83rem; line-height:1.5; white-space:pre-wrap; }
+  .msg-actions { display:flex; gap:6px; margin-top:8px; }
+  .tip-box { background:#1e1b4b; border:1px solid var(--accent2); border-radius:10px; padding:12px; margin:6px 0; }
+  .tip-box .msg-label { color:var(--yellow); }
+
+  /* Notes */
+  .notes-area { width:100%; background:var(--card2); border:1px solid var(--border); border-radius:8px; padding:10px; color:var(--text); font-size:0.83rem; resize:vertical; min-height:60px; outline:none; font-family:inherit; }
+  .notes-area:focus { border-color:var(--accent); }
+
+  /* History */
+  .history-item { font-size:0.78rem; color:var(--text2); padding:4px 0; border-bottom:1px solid var(--border); }
+  .history-item:last-child { border-bottom:none; }
+  .history-date { color:var(--accent); font-weight:600; }
+
+  /* Counter */
+  .contact-counter { display:flex; align-items:center; gap:8px; margin:8px 0; }
+  .counter-val { font-size:1.1rem; font-weight:700; color:var(--accent); }
+
+  /* Empty state */
+  .empty { text-align:center; padding:60px 24px; color:var(--text2); }
+  .empty h2 { font-size:1.2rem; margin-bottom:8px; }
+
+  /* Responsive */
+  @media (max-width:600px) {
+    .cards { grid-template-columns:1fr; padding:8px 12px 40px; }
+    .stats { padding:12px; gap:8px; }
+    .stat { min-width:100px; padding:10px 14px; }
+    .controls { padding:8px 12px; }
+    .search-input { width:100%; }
+    .header { padding:12px 16px; }
+  }
+</style>
+</head>
+<body>
+
+<div id="root"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.9/babel.min.js"></script>
+
+<script type="text/babel">
+const { useState, useEffect, useCallback, useRef } = React;
+
+/* ─── Constants ─── */
+const SHEET_ID  = "12AdZymPjRbiWdGr1A7BEAN8aRb1RAb5ZfULuJ71Xpb8";
+const SHEET_GID = "0";
+const SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/edit#gid=${SHEET_GID}`;
+const STORAGE_KEY = 'ig_crm_v4';
+
+const STATUS_OPTIONS = [
+  { value:"pendiente",      label:"⏳ Pendiente",       cls:"s-pendiente" },
+  { value:"enviado_1",      label:"📤 Msg 1 Enviado",   cls:"s-enviado_1" },
+  { value:"fu1_enviado",    label:"🔄 Follow Up 1",     cls:"s-fu1_enviado" },
+  { value:"fu2_enviado",    label:"🔄 Follow Up 2",     cls:"s-fu2_enviado" },
+  { value:"fu3_enviado",    label:"🔄 Follow Up 3",     cls:"s-fu3_enviado" },
+  { value:"respondio",      label:"💬 Respondió",       cls:"s-respondio" },
+  { value:"en_negociacion", label:"🤝 Negociando",      cls:"s-en_negociacion" },
+  { value:"cerrado_si",     label:"✅ ¡Cerrado!",       cls:"s-cerrado_si" },
+  { value:"no_interesada",  label:"❌ No interesada",   cls:"s-no_interesada" },
+];
+
+const STATUS_FLOW = ["pendiente","enviado_1","fu1_enviado","fu2_enviado","fu3_enviado","respondio","en_negociacion","cerrado_si"];
+
+/* ─── Personalized Messages ─── */
+const MESSAGES_DB = {
+  "karoramirezl": {
+    first: `Hola Karo! 💜 Me encanta tu estilo y cómo muestras tus outfits. Somos una marca de swimwear y nos encantaría que fueras parte de nuestra familia como Brand Ambassador. ¿Te interesaría saber más?`,
+    fu1: `Hey Karo! Soy yo de nuevo 😊 ¿Pudiste ver mi mensaje anterior? Me encantaría platicar contigo sobre nuestra propuesta de Brand Ambassador. ¡Creo que harías un match increíble con nuestra marca!`,
+    fu2: `Hola Karo! 🌊 Solo quería hacer un último follow up. Nos encanta tu perfil y creemos que juntas podríamos crear contenido increíble. ¿Tienes un momento para platicar?`,
+    fu3: `Hey Karo! Último mensaje, lo prometo 😄 Si en algún momento te interesa explorar una colaboración, aquí estamos. ¡Te deseamos lo mejor! 💜`
+  },
+  "aleja_velezv": {
+    first: `Hola Aleja! 🌟 Tu contenido me parece súper auténtico. Somos una marca de swimwear y estamos buscando embajadoras que compartan nuestros valores. ¿Te gustaría ser parte?`,
+    fu1: `Hey Aleja! ¿Cómo estás? Quería saber si pudiste ver mi mensaje anterior sobre ser Brand Ambassador. ¡Me encantaría contarte más! 😊`,
+    fu2: `Hola Aleja! 🏖️ Follow up rápido — tenemos una propuesta especial para creadoras como tú. ¿Podemos platicar?`,
+    fu3: `Aleja! Último intento 💛 Si alguna vez quieres explorar una collab, aquí estamos. ¡Éxitos en todo!`
+  },
+  "lucianasierra_": {
+    first: `Hola Luciana! ✨ Tu feed es hermoso y tu estilo encaja perfecto con nuestra marca de swimwear. ¿Te interesaría ser nuestra Brand Ambassador?`,
+    fu1: `Hey Luciana! Solo quería hacer follow up de mi mensaje anterior. Nos encantaría tenerte como embajadora 😊`,
+    fu2: `Luciana! 🌺 ¿Tienes un momento? Me encantaría platicarte sobre nuestra propuesta de Brand Ambassador.`,
+    fu3: `Hola Luciana! Último mensaje — si alguna vez te interesa colaborar, ¡aquí estamos! 💜`
+  },
+  "14.mol": {
+    first: `Hola! 🔥 Me encanta tu energía y tu contenido. Somos una marca de swimwear y estamos buscando embajadoras. ¿Te gustaría saber más?`,
+    fu1: `Hey! ¿Pudiste ver mi mensaje? Me encantaría contarte sobre nuestra propuesta de Brand Ambassador 😊`,
+    fu2: `Hola! 🌊 Quick follow up — tenemos algo especial para creadoras como tú. ¿Platicamos?`,
+    fu3: `Hey! Último mensaje — la puerta siempre está abierta si quieres colaborar. ¡Éxitos! 💛`
+  },
+  "katerine_carde": {
+    first: `Hola Katerine! 💫 Tu contenido transmite mucha buena vibra. Somos una marca de swimwear y queremos que seas parte de nuestro equipo de Brand Ambassadors. ¿Te interesa?`,
+    fu1: `Hey Katerine! Solo quería hacer follow up. ¿Te gustó la propuesta? Me encantaría platicar más 😊`,
+    fu2: `Katerine! 🏝️ ¿Tienes un momentito? Quería contarte más sobre lo que ofrecemos a nuestras embajadoras.`,
+    fu3: `Hola Katerine! Último follow up — si en algún momento quieres explorar esto, aquí estamos. ¡Mucho éxito! 💜`
+  },
+  "paulopez.29": {
+    first: `Hola Pau! 🌟 Tu estilo me encanta — encajas perfecto con nuestra marca de swimwear. ¿Te gustaría ser Brand Ambassador?`,
+    fu1: `Hey Pau! ¿Cómo vas? Quería saber si viste mi mensaje sobre la propuesta de Brand Ambassador 😊`,
+    fu2: `Pau! 🌺 Follow up rápido — nos encantaría tenerte en el equipo. ¿Platicamos?`,
+    fu3: `Pau! Último mensaje — la invitación sigue en pie si te interesa. ¡Te deseo lo mejor! 💛`
+  },
+  "alzatejufit": {
+    first: `Hola! 💪✨ Tu dedicación al fitness es inspiradora. Somos una marca de swimwear y nos encantaría que representaras nuestra marca. ¿Te interesa?`,
+    fu1: `Hey! ¿Pudiste ver mi mensaje anterior? Creo que serías una embajadora increíble 😊`,
+    fu2: `Hola! 🏖️ Follow up — tenemos beneficios especiales para creadoras fitness como tú. ¿Hablamos?`,
+    fu3: `Hey! Último intento — si alguna vez te interesa, aquí estamos. ¡Sigue brillando! 💜`
+  },
+  "sofianvalenzuela": {
+    first: `Hola Sofia! 🌸 Tu contenido es precioso. Somos una marca de swimwear y nos encantaría que fueras nuestra Brand Ambassador. ¿Qué dices?`,
+    fu1: `Sofia! ¿Cómo estás? Solo quería hacer follow up de mi propuesta. ¡Me encantaría platicar! 😊`,
+    fu2: `Hey Sofia! 🌊 ¿Tienes un momento? Quería contarte más sobre lo que ofrecemos.`,
+    fu3: `Sofia! Último mensaje — la puerta siempre está abierta. ¡Éxitos en todo! 💛`
+  },
+  "pierina": {
+    first: `Hola Pierina! ✨ Me encanta tu perfil y tu estilo. Somos una marca de swimwear y queremos que seas parte de nuestra familia. ¿Te interesaría?`,
+    fu1: `Pierina! ¿Pudiste ver mi mensaje? Me encantaría platicar sobre la propuesta 😊`,
+    fu2: `Hey Pierina! 🌺 Follow up rápido — creemos que harías un match perfecto con la marca.`,
+    fu3: `Pierina! Último follow up — aquí estamos si alguna vez quieres colaborar. ¡Mucho éxito! 💜`
+  },
+  "majubikini": {
+    first: `Hola Maju! 👙✨ Tu contenido de bikinis es exactamente lo que buscamos. ¿Te gustaría ser Brand Ambassador de nuestra marca de swimwear?`,
+    fu1: `Maju! ¿Cómo estás? Solo quería hacer follow up. ¡Me encantaría contarte más! 😊`,
+    fu2: `Hey Maju! 🌊 ¿Platicamos? Tenemos una propuesta especial para creadoras como tú.`,
+    fu3: `Maju! Último mensaje — si te interesa en el futuro, aquí estaremos. ¡Éxitos! 💛`
+  },
+  "pietracupello": {
+    first: `Hola Pietra! 🌟 Tu feed es increíble y tu estilo es justo lo que buscamos. ¿Te gustaría representar nuestra marca de swimwear como Brand Ambassador?`,
+    fu1: `Pietra! ¿Pudiste ver mi mensaje anterior? ¡Me encantaría platicar contigo! 😊`,
+    fu2: `Hey Pietra! 🏝️ Follow up — creemos que juntas podríamos crear algo increíble.`,
+    fu3: `Pietra! Último intento — la invitación sigue en pie. ¡Te deseamos lo mejor! 💜`
+  }
+};
+
+function genMessages(firstName) {
+  const name = firstName || 'Hola';
+  return {
+    first: `Hola ${name}! 💜 Me encanta tu contenido y tu estilo. Somos una marca de swimwear y estamos buscando Brand Ambassadors. ¿Te gustaría saber más sobre nuestra propuesta?`,
+    fu1: `Hey ${name}! 😊 Solo quería hacer follow up de mi mensaje anterior. ¿Pudiste verlo? Me encantaría contarte sobre nuestra propuesta de Brand Ambassador.`,
+    fu2: `${name}! 🌊 Follow up rápido — tenemos beneficios especiales para creadoras como tú. ¿Tienes un momento para platicar?`,
+    fu3: `${name}! Último mensaje, lo prometo 💛 Si en algún momento te interesa explorar una colaboración, aquí estamos. ¡Te deseamos lo mejor!`
+  };
+}
+
+/* ─── Tips DB ─── */
+const TIPS_DB = {
+  "karoramirezl": "Menciona que viste sus outfits recientes — le encanta la moda casual.",
+  "aleja_velezv": "Muy activa en stories. Responde mejor por DM que por comentarios.",
+  "lucianasierra_": "Contenido muy estético — habla de la calidad visual de la marca.",
+  "14.mol": "Energía alta — usa un tono más informal y divertido.",
+  "katerine_carde": "Buena vibra. Menciona community y valores de marca.",
+  "paulopez.29": "Estilo relajado. Habla de lifestyle y viajes.",
+  "alzatejufit": "Fitness focus — conecta swimwear con estilo de vida activo.",
+  "sofianvalenzuela": "Contenido elegante — enfatiza la calidad premium.",
+  "pierina": "Estilo versátil — menciona la variedad de diseños.",
+  "majubikini": "Ya crea contenido de bikinis — match natural con la marca.",
+  "pietracupello": "Feed curado — habla de la estética de la marca."
+};
+
+function genTip(inf) {
+  if (inf.links) return `Revisar sus links en bio: ${inf.links}`;
+  if (inf.contentType) return `Contenido principal: ${inf.contentType}. Adaptar el pitch.`;
+  return "Revisar su perfil antes de contactar para personalizar el mensaje.";
+}
+
+/* ─── Sheet loading (GViz) ─── */
+function loadSheetGviz(sheetId, gid) {
+  return new Promise((resolve, reject) => {
+    const SCRIPT_ID = '_gviz_load';
+    const old = document.getElementById(SCRIPT_ID);
+    if (old) old.remove();
+
+    const timer = setTimeout(() => {
+      const el = document.getElementById(SCRIPT_ID);
+      if (el) el.remove();
+      reject(new Error('Timeout cargando el Sheet'));
+    }, 15000);
+
+    window.google = window.google || {};
+    window.google.visualization = window.google.visualization || {};
+    window.google.visualization.Query = window.google.visualization.Query || {};
+    window.google.visualization.Query.setResponse = (data) => {
+      clearTimeout(timer);
+      const el = document.getElementById(SCRIPT_ID);
+      if (el) el.remove();
+      if (!data || data.status === 'error') {
+        reject(new Error(data?.errors?.[0]?.message || 'Error en el Sheet'));
+      } else {
+        resolve(data);
+      }
+    };
+
+    const s = document.createElement('script');
+    s.id = SCRIPT_ID;
+    s.onerror = () => { clearTimeout(timer); reject(new Error('No se pudo cargar el script')); };
+    s.src = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json&gid=${gid}`;
+    document.head.appendChild(s);
+  });
+}
+
+function parseSheetData(data) {
+  const { cols, rows } = data.table;
+  const idx = {};
+  cols.forEach((c, i) => { if (c.label) idx[c.label.trim()] = i; });
+
+  function get(row, label) {
+    const i = idx[label];
+    if (i == null || !row.c?.[i]) return '';
+    const cell = row.c[i];
+    return (cell.f != null ? String(cell.f) : (cell.v != null ? String(cell.v) : '')).trim();
+  }
+
+  return rows.map(row => {
+    if (!row?.c) return null;
+    const username = get(row, 'Perfil').replace(/^@/, '').trim();
+    const name = get(row, 'Nombre').trim();
+    if (!username || !name) return null;
+
+    let followers = get(row, 'Followers');
+    followers = followers.replace(/(\d+)\.0([KMB])/gi, '$1$2');
+
+    return {
+      id: username,
+      username,
+      name,
+      country: get(row, 'Country'),
+      city: get(row, 'Cuidad'),
+      followers,
+      posts: get(row, 'Posts'),
+      following: get(row, 'Following'),
+      source: get(row, 'Fuente'),
+      potential: get(row, 'Potencial'),
+      lifestyle: get(row, 'Lifestyle'),
+      bio: get(row, 'Bio'),
+      accountStatus: get(row, 'Estado Cuenta'),
+      verified: get(row, 'Verificación IG'),
+      appearance: get(row, 'Aspecto Físico'),
+      contentType: get(row, 'Tipo de Contenido'),
+      links: get(row, 'Links en Bio'),
+      category: get(row, 'Categoría'),
+      ambassador: get(row, 'Embajador Potencial'),
+      notes_sheet: get(row, 'Notas'),
+    };
+  }).filter(Boolean);
+}
+
+/* ─── localStorage helpers ─── */
+function loadState() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return {};
+    const parsed = JSON.parse(raw);
+    // Migrate v3 (numeric keys) → v4 (username keys) not needed if clean
+    return parsed;
+  } catch { return {}; }
+}
+
+function saveState(state) {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch {}
+}
+
+function getInfState(state, username) {
+  return state[username] || { status: 'pendiente', count: 0, notes: '', history: [] };
+}
+
+/* ─── Copy helper ─── */
+async function copyText(text) {
+  try {
+    await navigator.clipboard.writeText(text);
+    return true;
+  } catch {
+    // Fallback for file:// protocol
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.cssText = 'position:fixed;left:-9999px';
+    document.body.appendChild(ta);
+    ta.select();
+    let ok = false;
+    try { ok = document.execCommand('copy'); } catch {}
+    document.body.removeChild(ta);
+    return ok;
+  }
+}
+
+/* ─── Components ─── */
+
+function CopyBtn({ text }) {
+  const [copied, setCopied] = useState(false);
+  const handleCopy = async (e) => {
+    e.stopPropagation();
+    const ok = await copyText(text);
+    if (ok) { setCopied(true); setTimeout(() => setCopied(false), 2000); }
+  };
+  return (
+    <button className="btn btn-sm" onClick={handleCopy}>
+      {copied ? '✅ Copiado' : '📋 Copiar'}
+    </button>
+  );
+}
+
+function MsgCard({ label, text, color }) {
+  return (
+    <div className="msg-card">
+      <div className="msg-label" style={color ? { color } : {}}>{label}</div>
+      <div className="msg-text">{text}</div>
+      <div className="msg-actions">
+        <CopyBtn text={text} />
+      </div>
+    </div>
+  );
+}
+
+function InfluencerCard({ inf, infState, onUpdateState, expanded, onToggle }) {
+  const msgs = MESSAGES_DB[inf.username] || genMessages(inf.name.split(' ')[0]);
+  const tip = TIPS_DB[inf.username] || genTip(inf);
+  const statusObj = STATUS_OPTIONS.find(s => s.value === infState.status) || STATUS_OPTIONS[0];
+
+  const nextStep = () => {
+    const currentIdx = STATUS_FLOW.indexOf(infState.status);
+    if (currentIdx < 0 || currentIdx >= STATUS_FLOW.length - 1) return;
+    const nextStatus = STATUS_FLOW[currentIdx + 1];
+    const nextLabel = STATUS_OPTIONS.find(s => s.value === nextStatus)?.label || nextStatus;
+    const now = new Date().toLocaleDateString('es-ES', { day:'2-digit', month:'short', year:'numeric' });
+    onUpdateState(inf.username, {
+      ...infState,
+      status: nextStatus,
+      count: infState.count + (nextStatus.includes('enviado') || nextStatus.includes('fu') ? 1 : 0),
+      history: [...(infState.history || []), { date: now, action: nextLabel }]
+    });
+  };
+
+  const setStatus = (value) => {
+    const label = STATUS_OPTIONS.find(s => s.value === value)?.label || value;
+    const now = new Date().toLocaleDateString('es-ES', { day:'2-digit', month:'short', year:'numeric' });
+    onUpdateState(inf.username, {
+      ...infState,
+      status: value,
+      history: [...(infState.history || []), { date: now, action: `Cambio a: ${label}` }]
+    });
+  };
+
+  const updateNotes = (notes) => {
+    onUpdateState(inf.username, { ...infState, notes });
+  };
+
+  const initial = inf.name.charAt(0).toUpperCase();
+
+  return (
+    <div className={`card${expanded ? ' expanded' : ''}`}>
+      <div className="card-head" onClick={onToggle}>
+        <div className="card-info">
+          <div className="avatar">{initial}</div>
+          <div style={{minWidth:0}}>
+            <div className="card-name">{inf.name}</div>
+            <div className="card-user">
+              <a href={`https://instagram.com/${inf.username}`} target="_blank" onClick={e => e.stopPropagation()}>@{inf.username}</a>
+            </div>
+            <div className="card-meta">
+              {inf.followers && `${inf.followers} seguidores`}
+              {inf.city && ` · ${inf.city}`}
+              {inf.country && `, ${inf.country}`}
+            </div>
+            <div className="card-badges">
+              {inf.potential === 'Alto' && <span className="badge badge-high">🔥 Alto</span>}
+              {inf.potential === 'Medio' && <span className="badge badge-medio">⚡ Medio</span>}
+              {inf.potential === 'Bajo' && <span className="badge badge-bajo">📊 Bajo</span>}
+              {inf.verified && inf.verified.includes('✔') && <span className="badge badge-verified">✔️ Verificada</span>}
+              {inf.contentType && <span className="badge" style={{background:'#1a2e3a',color:'var(--teal)'}}>{inf.contentType}</span>}
+            </div>
+          </div>
+        </div>
+        <span className={`status-badge ${statusObj.cls}`}>{statusObj.label}</span>
+      </div>
+
+      <div className="card-body">
+        {/* Bio */}
+        {inf.bio && <>
+          <div className="section-title">Bio</div>
+          <div className="bio-text">{inf.bio}</div>
+        </>}
+
+        {/* Tip */}
+        <div className="tip-box">
+          <div className="msg-label" style={{color:'var(--yellow)'}}>💡 Tip estratégico</div>
+          <div className="msg-text">{tip}</div>
+        </div>
+
+        {/* Messages */}
+        <div className="section-title">Mensajes</div>
+        <MsgCard label="📤 Primer contacto" text={msgs.first} />
+        <MsgCard label="🔄 Follow Up 1 (día 3)" text={msgs.fu1} color="var(--teal)" />
+        <MsgCard label="🔄 Follow Up 2 (día 7)" text={msgs.fu2} color="var(--orange)" />
+        <MsgCard label="🔄 Follow Up 3 (día 14)" text={msgs.fu3} color="var(--red)" />
+
+        {/* Actions */}
+        <div className="section-title">Acciones</div>
+        <div style={{display:'flex', gap:'8px', flexWrap:'wrap', margin:'8px 0'}}>
+          <button className="btn btn-green btn-sm" onClick={nextStep}>▶ Siguiente paso</button>
+          <select
+            className="btn btn-sm"
+            value={infState.status}
+            onChange={e => setStatus(e.target.value)}
+            onClick={e => e.stopPropagation()}
+          >
+            {STATUS_OPTIONS.map(s => <option key={s.value} value={s.value}>{s.label}</option>)}
+          </select>
+        </div>
+
+        {/* Contact counter */}
+        <div className="contact-counter">
+          <span style={{fontSize:'0.8rem', color:'var(--text2)'}}>Contactos realizados:</span>
+          <span className="counter-val">{infState.count}</span>
+        </div>
+
+        {/* Notes */}
+        <div className="section-title">Notas del equipo</div>
+        <textarea
+          className="notes-area"
+          value={infState.notes || ''}
+          onChange={e => updateNotes(e.target.value)}
+          placeholder="Agrega notas sobre esta influencer..."
+          onClick={e => e.stopPropagation()}
+        />
+
+        {/* History */}
+        {infState.history && infState.history.length > 0 && <>
+          <div className="section-title">Historial</div>
+          {infState.history.slice().reverse().map((h, i) => (
+            <div className="history-item" key={i}>
+              <span className="history-date">{h.date}</span> — {h.action}
+            </div>
+          ))}
+        </>}
+      </div>
+    </div>
+  );
+}
+
+function App() {
+  const [influencers, setInfluencers] = useState([]);
+  const [crmState, setCrmState] = useState(loadState);
+  const [syncStatus, setSyncStatus] = useState('idle');
+  const [search, setSearch] = useState('');
+  const [filter, setFilter] = useState('all');
+  const [expanded, setExpanded] = useState({});
+
+  const updateInfState = useCallback((username, newState) => {
+    setCrmState(prev => {
+      const next = { ...prev, [username]: newState };
+      saveState(next);
+      return next;
+    });
+  }, []);
+
+  const loadSheet = useCallback(async () => {
+    setSyncStatus('loading');
+    try {
+      const data = await loadSheetGviz(SHEET_ID, SHEET_GID);
+      const parsed = parseSheetData(data);
+      setInfluencers(parsed);
+      setSyncStatus('ok');
+    } catch (err) {
+      console.error('Error loading sheet:', err);
+      setSyncStatus('error');
+    }
+  }, []);
+
+  useEffect(() => { loadSheet(); }, [loadSheet]);
+
+  // Stats
+  const total = influencers.length;
+  const contacted = influencers.filter(i => {
+    const s = getInfState(crmState, i.username).status;
+    return s !== 'pendiente';
+  }).length;
+  const responded = influencers.filter(i => {
+    const s = getInfState(crmState, i.username).status;
+    return ['respondio','en_negociacion','cerrado_si'].includes(s);
+  }).length;
+  const closed = influencers.filter(i => getInfState(crmState, i.username).status === 'cerrado_si').length;
+  const totalMessages = influencers.reduce((sum, i) => sum + getInfState(crmState, i.username).count, 0);
+  const progressPct = total > 0 ? Math.round((contacted / total) * 100) : 0;
+
+  // Filter
+  const filtered = influencers.filter(inf => {
+    const s = getInfState(crmState, inf.username).status;
+    if (search) {
+      const q = search.toLowerCase();
+      if (!inf.name.toLowerCase().includes(q) && !inf.username.toLowerCase().includes(q)) return false;
+    }
+    switch (filter) {
+      case 'high': return inf.potential === 'Alto';
+      case 'pending': return s === 'pendiente';
+      case 'inprogress': return ['enviado_1','fu1_enviado','fu2_enviado','fu3_enviado','en_negociacion'].includes(s);
+      case 'responded': return ['respondio','cerrado_si'].includes(s);
+      default: return true;
+    }
+  });
+
+  const toggleCard = (id) => setExpanded(prev => ({ ...prev, [id]: !prev[id] }));
+
+  return (
+    <>
+      <div className="header">
+        <div className="header-top">
+          <h1>👙 Influencer <span>CRM</span></h1>
+          <div className="header-actions">
+            <span className={`sync-status ${syncStatus === 'ok' ? 'ok' : syncStatus === 'error' ? 'err' : syncStatus === 'loading' ? 'loading' : ''}`}>
+              {syncStatus === 'loading' ? '⏳ Cargando...' : syncStatus === 'ok' ? '✅ Sincronizado' : syncStatus === 'error' ? '❌ Error' : '⏸️ Sin cargar'}
+            </span>
+            <button className="btn btn-sm" onClick={loadSheet}>🔄 Actualizar</button>
+            <a href={SHEET_URL} target="_blank" className="btn btn-sm">📊 Sheet</a>
+          </div>
+        </div>
+      </div>
+
+      <div className="stats">
+        <div className="stat">
+          <div className="stat-label">Total influencers</div>
+          <div className="stat-value accent">{total}</div>
+        </div>
+        <div className="stat">
+          <div className="stat-label">Contactadas</div>
+          <div className="stat-value yellow">{contacted}</div>
+        </div>
+        <div className="stat">
+          <div className="stat-label">Respondieron</div>
+          <div className="stat-value green">{responded}</div>
+        </div>
+        <div className="stat">
+          <div className="stat-label">Cerradas</div>
+          <div className="stat-value pink">{closed}</div>
+        </div>
+        <div className="stat">
+          <div className="stat-label">Mensajes enviados</div>
+          <div className="stat-value">{totalMessages}</div>
+        </div>
+      </div>
+
+      <div className="progress-wrap">
+        <div className="progress-bar">
+          <div className="progress-fill" style={{width: `${progressPct}%`}} />
+        </div>
+        <div style={{fontSize:'0.72rem', color:'var(--text2)', marginTop:'4px', textAlign:'right'}}>{progressPct}% contactadas</div>
+      </div>
+
+      <div className="controls">
+        <input
+          className="search-input"
+          placeholder="🔍 Buscar por nombre o username..."
+          value={search}
+          onChange={e => setSearch(e.target.value)}
+        />
+        {[
+          { key:'all', label:'Todas' },
+          { key:'high', label:'🔥 Prioridad Alta' },
+          { key:'pending', label:'⏳ Pendientes' },
+          { key:'inprogress', label:'📤 En proceso' },
+          { key:'responded', label:'💬 Respondieron' },
+        ].map(f => (
+          <button key={f.key} className={`filter-btn${filter === f.key ? ' active' : ''}`} onClick={() => setFilter(f.key)}>
+            {f.label}
+          </button>
+        ))}
+      </div>
+
+      {filtered.length === 0 ? (
+        <div className="empty">
+          <h2>{syncStatus === 'loading' ? '⏳ Cargando influencers...' : '🔍 No se encontraron resultados'}</h2>
+          <p>{syncStatus === 'loading' ? 'Conectando con Google Sheets...' : 'Intenta con otro filtro o término de búsqueda'}</p>
+        </div>
+      ) : (
+        <div className="cards">
+          {filtered.map(inf => (
+            <InfluencerCard
+              key={inf.id}
+              inf={inf}
+              infState={getInfState(crmState, inf.username)}
+              onUpdateState={updateInfState}
+              expanded={!!expanded[inf.id]}
+              onToggle={() => toggleCard(inf.id)}
+            />
+          ))}
+        </div>
+      )}
+    </>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>
