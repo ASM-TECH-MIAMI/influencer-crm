@@ -362,6 +362,55 @@
   .daily-count-pill {
     font-size: 0.68rem; padding: 2px 8px; border-radius: 10px; font-weight: 600;
   }
+
+  /* ═══ View Toggle (CRM vs Dashboard) ═══ */
+  .view-toggle {
+    display: flex; gap: 2px; background: var(--select-bg); border: 1px solid var(--select-border);
+    border-radius: 10px; padding: 3px; margin-left: 12px;
+  }
+  .view-toggle-btn {
+    padding: 6px 16px; border-radius: 8px; border: none; background: none;
+    color: var(--text3); font-size: 0.78rem; font-weight: 600; cursor: pointer; transition: all .15s;
+  }
+  .view-toggle-btn.active {
+    background: var(--company-accent); color: #fff; box-shadow: 0 2px 8px var(--company-glow);
+  }
+  .view-toggle-btn:not(.active):hover { color: var(--text); }
+
+  /* Dashboard View */
+  .dashboard-view { padding: 20px 24px; }
+  .dash-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; }
+  @media (max-width: 768px) { .dash-grid { grid-template-columns: 1fr; } }
+  .dash-card {
+    background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-lg);
+    padding: 18px; backdrop-filter: blur(20px);
+  }
+  .dash-card-title {
+    font-size: 0.72rem; color: var(--text3); text-transform: uppercase; letter-spacing: 0.8px;
+    font-weight: 600; margin-bottom: 14px; display: flex; align-items: center; gap: 8px;
+  }
+
+  /* ═══ Creator Mini Profile ═══ */
+  .mini-profile {
+    background: linear-gradient(135deg, rgba(99,102,241,0.05), rgba(236,72,153,0.03));
+    border: 1px solid rgba(99,102,241,0.12); border-radius: 10px;
+    padding: 14px; margin-bottom: 14px; font-size: 0.82rem; line-height: 1.6; color: var(--text2);
+  }
+  .mini-profile-title {
+    font-size: 0.68rem; color: var(--company-accent); font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.5px; margin-bottom: 6px;
+  }
+
+  /* IG Account Selector */
+  .ig-account-selector {
+    display: flex; align-items: center; gap: 8px; padding: 8px 12px; margin: 10px 0;
+    background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: 8px;
+    font-size: 0.78rem;
+  }
+  .ig-account-selector select {
+    background: var(--select-bg); border: 1px solid var(--select-border); border-radius: 6px;
+    color: var(--text); padding: 4px 8px; font-size: 0.76rem; cursor: pointer; outline: none;
+  }
   .section-title { font-size: 0.68rem; color: var(--text3); text-transform: uppercase; letter-spacing: 0.8px; font-weight: 500; margin: 14px 0 6px; }
   .bio-text { font-size: 0.82rem; color: var(--text2); line-height: 1.6; }
   .msg-card { background: rgba(255,255,255,0.02); border: 1px solid var(--border); border-radius: 10px; padding: 14px; margin: 6px 0; transition: all .15s; }
@@ -554,6 +603,7 @@ const DEFAULT_COMPANIES = [
     description: 'Creator & Brand Management',
     website: 'https://myora.co',
     social: { ig: '@ora.creators', tiktok: '', twitter: '' },
+    igAccounts: ['@ora.creators', '@ora.miami'],
     mission: 'Conectamos marcas con creadoras — crédito, escrow y coordinación para que todos ganen sin riesgo.',
     whatWeDo: 'Líneas de crédito para marcas, pagos garantizados via escrow, coordinación de campañas entre marcas y creadoras. Negociación de contratos y revenue tracking.',
     idealProfile: 'Modelos profesionales e influencers con audiencia activa (10K+), contenido estético de alta calidad, que ya trabajan con marcas o tienen potencial para colaboraciones pagadas. Perfiles de moda, belleza, lifestyle con engagement real y presencia profesional.',
@@ -855,6 +905,7 @@ const DEFAULT_COMPANIES = [
     description: 'OnlyFans Management Agency — Miami',
     website: 'https://kash-creator-hub.lovable.app',
     social: { ig: '@kash_miami__', tiktok: '', twitter: '' },
+    igAccounts: ['@kash_miami__', '@kash.agency', '@kash_latam'],
     mission: 'Agencia de management de OnlyFans basada en Miami. 50+ creadoras, 94% retención. Gestión 360° para maximizar revenue de creadoras.',
     whatWeDo: 'Gestión completa de cuentas OnlyFans: marketing multi-plataforma, chat management 24/7, producción de contenido elite, protección legal y DMCA, crecimiento con IA, soporte financiero y fiscal. Sin contratos de permanencia, account managers femeninas, splits transparentes.',
     idealProfile: 'Creadoras de OnlyFans y plataformas de contenido exclusivo que quieren crecer con una agencia profesional. Modelos con potencial de monetización que buscan gestión completa — desde marketing hasta chat y protección legal. Perfiles en Miami o que quieren management remoto.',
@@ -1736,6 +1787,50 @@ function MsgCard({ label, text, color, currentUser, influencer, companyName }) {
   );
 }
 
+/* ─── Creator Profile Summary Generator ─── */
+function generateProfileSummary(inf) {
+  const parts = [];
+  const bio = (inf.bio || '').toLowerCase();
+  const cat = (inf.category || '').toLowerCase();
+  const links = (inf.links || '').toLowerCase();
+  const fNum = parseFollowers(inf.followers);
+  const name = inf.name || inf.username;
+
+  // Audience size insight
+  if (fNum >= 500000) parts.push(`Cuenta grande con ${inf.followers} seguidores — alto alcance`);
+  else if (fNum >= 100000) parts.push(`Perfil mid-tier con ${inf.followers} seguidores — buen alcance`);
+  else if (fNum >= 10000) parts.push(`Micro-influencer con ${inf.followers} seguidores — engagement alto probable`);
+  else if (fNum > 0) parts.push(`Cuenta en crecimiento con ${inf.followers} seguidores`);
+
+  // Location insight
+  if (inf.city && inf.country) parts.push(`Basada en ${inf.city}, ${inf.country}`);
+  else if (inf.country) parts.push(`Ubicada en ${inf.country}`);
+
+  // Content type
+  if (cat.includes('fashion') || cat.includes('moda')) parts.push('Contenido de moda y estilo');
+  else if (cat.includes('fitness') || cat.includes('gym')) parts.push('Enfocada en fitness y vida saludable');
+  else if (cat.includes('lifestyle')) parts.push('Contenido de lifestyle');
+  else if (cat.includes('beauty') || cat.includes('belleza')) parts.push('Nicho de belleza y cuidado personal');
+  else if (cat.includes('business') || cat.includes('entrepreneur')) parts.push('Perfil de negocios/emprendimiento');
+  else if (cat) parts.push(`Categoria: ${inf.category}`);
+
+  // Bio signals
+  if (/publicidad|ads|collab|sponsor/.test(bio)) parts.push('Abierta a publicidad y colaboraciones');
+  if (/portafolio|portfolio/.test(bio) || /canva\.site|carrd|notion/.test(links)) parts.push('Tiene portafolio profesional de contenido');
+  if (/viaj|travel/.test(bio)) parts.push('Viajera — contenido de diferentes locaciones');
+  if (/empren|business|ceo|founder/.test(bio)) parts.push('Perfil emprendedor');
+  if (/model|modelo/.test(bio)) parts.push('Se identifica como modelo');
+  if (/mama|mom|madre/.test(bio)) parts.push('Contenido de maternidad/familia');
+  if (/contenido exclusivo|exclusive/.test(bio)) parts.push('Crea contenido exclusivo/premium');
+  if (/link|linktree|beacons/.test(links)) parts.push('Usa smart links — ya monetiza su bio');
+
+  // AI Score insight
+  if (inf.aiScore >= 8) parts.push('Evaluacion AI: perfil de alto potencial');
+  else if (inf.aiScore >= 6) parts.push('Evaluacion AI: buen potencial');
+
+  return parts.length > 0 ? parts.join('. ') + '.' : `Perfil de ${name} — datos limitados en el sheet, recomendable verificar en Instagram.`;
+}
+
 /* ─── Daily Dashboard ─── */
 function DailyDashboard({ companies, influencers }) {
   const [open, setOpen] = useState(true);
@@ -2005,6 +2100,12 @@ function CreatorModal({ inf, infState, onUpdateState, onClose, currentUser, comp
           {/* ═══ TAB: PROFILE ═══ */}
           {activeTab === 'profile' && (
             <div className="modal-section">
+              {/* Mini Profile Summary */}
+              <div className="mini-profile">
+                <div className="mini-profile-title">Resumen del perfil</div>
+                {generateProfileSummary(inf)}
+              </div>
+
               {/* Key stats */}
               <div style={{display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:10,marginBottom:16}}>
                 <div style={{background:'rgba(255,255,255,0.03)',border:'1px solid var(--border)',borderRadius:'10px',padding:'12px',textAlign:'center'}}>
@@ -2046,6 +2147,16 @@ function CreatorModal({ inf, infState, onUpdateState, onClose, currentUser, comp
           {/* ═══ TAB: APPROACH ═══ */}
           {activeTab === 'approach' && (
             <div className="modal-section">
+              {/* IG Account selector */}
+              {company?.igAccounts && company.igAccounts.length > 0 && (
+                <div className="ig-account-selector">
+                  <span style={{color:'var(--text3)',fontSize:'0.72rem',fontWeight:600}}>Contactar desde:</span>
+                  <select defaultValue={company.igAccounts[0]}>
+                    {company.igAccounts.map(acc => <option key={acc} value={acc}>{acc}</option>)}
+                  </select>
+                </div>
+              )}
+
               <div className="tip-box" style={{margin:'0 0 16px'}}><div className="msg-label" style={{color:'var(--yellow)'}}>Tip estratégico</div><div className="msg-text">{tip}</div></div>
 
               <div className="modal-section-title" style={{display:'flex',alignItems:'center',gap:8}}>
@@ -2169,6 +2280,7 @@ function App() {
   const [profileOpen, setProfileOpen] = useState(false);
   const [theme, setTheme] = useState(() => localStorage.getItem('ig_crm_theme') || 'dark');
   const [syncing, setSyncing] = useState(false);
+  const [mainView, setMainView] = useState('crm'); // 'crm' or 'dashboard'
 
   // Resolve active company
   const activeCo = companies.find(c => c.id === activeCoId) || companies[0];
@@ -2267,7 +2379,7 @@ function App() {
     if(filterCountry!=='all'&&inf.country!==filterCountry)return false;
     if(filterCity!=='all'&&inf.city!==filterCity)return false;
     if(filterScore!=='all'){const sc=inf.aiScore||0;switch(filterScore){case '9-10':if(sc<9)return false;break;case '7-8':if(sc<7||sc>=9)return false;break;case '4-6':if(sc<4||sc>=7)return false;break;case '1-3':if(sc<1||sc>=4)return false;break;case '0':if(sc>0)return false;break;}}
-    if(filterMatch!=='all'){const mp=calculateMatch(activeCo,inf);switch(filterMatch){case 'high':if(mp<65)return false;break;case 'med':if(mp<35||mp>=65)return false;break;case 'low':if(mp>=35)return false;break;}}
+    if(filterMatch!=='all'){const mp=calculateMatch(activeCo,inf);const numMatch=parseInt(filterMatch);if(!isNaN(numMatch)){if(mp<numMatch)return false;}else{switch(filterMatch){case 'high':if(mp<65)return false;break;case 'med':if(mp<35||mp>=65)return false;break;case 'low':if(mp>=35)return false;break;}}}
     switch(filter){case 'high':return inf.potential==='Alto';case 'pending':return s==='pendiente';case 'inprogress':return['enviado_1','fu1_enviado','fu2_enviado','fu3_enviado','en_negociacion'].includes(s);case 'responded':return['respondio','cerrado_si'].includes(s);default:return true;}
   });
 
@@ -2301,7 +2413,13 @@ function App() {
 
     <div className="header">
       <div className="header-top">
-        <h1 style={{display:'flex',alignItems:'center',gap:'10px'}}>Influencer CRM</h1>
+        <div style={{display:'flex',alignItems:'center'}}>
+          <h1 style={{display:'flex',alignItems:'center',gap:'10px'}}>Influencer CRM</h1>
+          <div className="view-toggle">
+            <button className={`view-toggle-btn${mainView==='crm'?' active':''}`} onClick={()=>setMainView('crm')}>CRM</button>
+            <button className={`view-toggle-btn${mainView==='dashboard'?' active':''}`} onClick={()=>setMainView('dashboard')}>Dashboard</button>
+          </div>
+        </div>
         <div className="header-actions">
           <span className={`sync-status ${syncStatus==='ok'?'ok':syncStatus==='error'?'err':syncStatus==='loading'?'loading':''}`}>
             {syncStatus==='loading'?'Cargando...':syncStatus==='ok'?'Sync OK':syncStatus==='error'?'Error':'—'}
@@ -2321,25 +2439,66 @@ function App() {
     {/* Creator Modal */}
     {modalInf && <CreatorModal inf={modalInf} infState={getInfState(crmState,modalInf.username)} onUpdateState={updateInfState} onClose={closeCreatorModal} currentUser={userName} company={activeCo} allCompanies={companies} />}
 
-    {/* Daily Dashboard */}
-    <DailyDashboard companies={companies} influencers={influencers} />
+    {/* ═══════ DASHBOARD VIEW ═══════ */}
+    {mainView === 'dashboard' && (
+      <div className="dashboard-view">
+        <DailyDashboard companies={companies} influencers={influencers} />
 
-    {/* Worked Today */}
-    {workedToday.length > 0 && (
-      <div className="worked-today">
-        <div className="worked-today-title">
-          Trabajadas hoy <span className="worked-today-count">{workedToday.length}</span>
-        </div>
-        <div className="worked-today-list">
-          {workedToday.map(w => {
-            const inf = influencers.find(i => i.username === w.username);
-            const time = new Date(w.lastOpen).toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit'});
+        {/* Worked Today */}
+        {workedToday.length > 0 && (
+          <div className="worked-today" style={{margin:'16px 0'}}>
+            <div className="worked-today-title">
+              Perfiles trabajados hoy <span className="worked-today-count">{workedToday.length}</span>
+            </div>
+            <div className="worked-today-list">
+              {workedToday.map(w => {
+                const inf = influencers.find(i => i.username === w.username);
+                const time = new Date(w.lastOpen).toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit'});
+                return (
+                  <div className="worked-chip" key={w.username} onClick={() => { if(inf) openCreatorModal(inf); }}>
+                    <div className="mini-avatar">{(inf?.name||w.username).charAt(0).toUpperCase()}</div>
+                    <span>{inf?.name || w.username}</span>
+                    <span className="worked-chip-time">{time}</span>
+                    {w.opens > 1 && <span className="worked-chip-time">x{w.opens}</span>}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
+        {/* Per-company summary cards */}
+        <div className="dash-grid">
+          {companies.slice(0, 6).map(co => {
+            const coInfs = influencers;
+            const coState = loadCompanyState(co.id);
+            const cContacted = coInfs.filter(i => coState[i.username]?.status && coState[i.username].status !== 'pendiente').length;
+            const cResponded = coInfs.filter(i => ['respondio','en_negociacion','cerrado_si'].includes(coState[i.username]?.status)).length;
+            const cClosed = coInfs.filter(i => coState[i.username]?.status === 'cerrado_si').length;
+            const topMatches = coInfs.map(i => ({...i, match: calculateMatch(co, i)})).sort((a,b) => b.match - a.match).slice(0, 3);
             return (
-              <div className="worked-chip" key={w.username} onClick={() => { if(inf) openCreatorModal(inf); }}>
-                <div className="mini-avatar">{(inf?.name||w.username).charAt(0).toUpperCase()}</div>
-                <span>{inf?.name || w.username}</span>
-                <span className="worked-chip-time">{time}</span>
-                {w.opens > 1 && <span className="worked-chip-time">x{w.opens}</span>}
+              <div className="dash-card" key={co.id}>
+                <div className="dash-card-title">
+                  {co.logo ? <img src={co.logo} alt={co.name} style={{width:'20px',height:'20px',objectFit:'contain',borderRadius:'3px'}} /> : <span>{co.icon}</span>}
+                  {co.name}
+                  {co.igAccounts && <span style={{fontSize:'0.66rem',color:'var(--text3)',fontWeight:400,marginLeft:'auto'}}>{co.igAccounts[0]}</span>}
+                </div>
+                <div style={{display:'flex',gap:12,marginBottom:10,fontSize:'0.78rem'}}>
+                  <span style={{color:'var(--blue)'}}>{cContacted} contactadas</span>
+                  <span style={{color:'var(--green)'}}>{cResponded} respondieron</span>
+                  <span style={{color:'var(--pink)'}}>{cClosed} cerradas</span>
+                </div>
+                <div style={{fontSize:'0.72rem',color:'var(--text3)',marginBottom:4}}>Top matches:</div>
+                {topMatches.map(tm => {
+                  const mc = getMatchColor(tm.match);
+                  return (
+                    <div key={tm.id} style={{display:'flex',alignItems:'center',gap:6,padding:'3px 0',fontSize:'0.76rem',cursor:'pointer'}} onClick={()=>openCreatorModal(tm)}>
+                      <span style={{color:mc.color,fontWeight:700,minWidth:32}}>{tm.match}%</span>
+                      <span style={{color:'var(--text2)'}}>{tm.name}</span>
+                      <span style={{color:'var(--text3)',fontSize:'0.68rem'}}>@{tm.username}</span>
+                    </div>
+                  );
+                })}
               </div>
             );
           })}
@@ -2347,6 +2506,8 @@ function App() {
       </div>
     )}
 
+    {/* ═══════ CRM VIEW ═══════ */}
+    {mainView === 'crm' && <>
     <div className="stats">
       <div className="stat"><div className="stat-label">Total</div><div className="stat-value accent">{total}</div></div>
       <div className="stat"><div className="stat-label">Contactadas</div><div className="stat-value yellow">{contacted}</div></div>
@@ -2373,6 +2534,11 @@ function App() {
       <span className="filter-label">Filtros:</span>
       <select className="filter-select" value={filterMatch} onChange={e=>setFilterMatch(e.target.value)}>
         <option value="all">Match: Todos</option>
+        <option value="90">Match: 90%+</option>
+        <option value="80">Match: 80%+</option>
+        <option value="70">Match: 70%+</option>
+        <option value="60">Match: 60%+</option>
+        <option value="50">Match: 50%+</option>
         <option value="high">Match: Alto (65%+)</option>
         <option value="med">Match: Medio (35-64%)</option>
         <option value="low">Match: Bajo (&lt;35%)</option>
@@ -2398,6 +2564,7 @@ function App() {
         {filtered.map(inf=>(<InfluencerCard key={inf.id} inf={inf} infState={getInfState(crmState,inf.username)} onOpenModal={openCreatorModal} company={activeCo} />))}
       </div>
     )}
+    </>}
   </>);
 }
 
