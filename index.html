@@ -406,6 +406,29 @@ const DEFAULT_COMPANIES = [
     idealProfile: 'Modelos profesionales e influencers con audiencia activa (10K+), contenido estético de alta calidad, que ya trabajan con marcas o tienen potencial para colaboraciones pagadas. Perfiles de moda, belleza, lifestyle con engagement real y presencia profesional.',
     idealTags: ['modelo','model','brand','marca','colaboracion','partnership','sponsorship','ambassador','embajadora','campaign','fashion','moda','belleza','beauty','lifestyle','luxury','profesional','engagement','influencer','contenido profesional'],
     antiTags: ['spam','fake followers','compra seguidores','follow4follow','f4f','bot'],
+    // ══ Company DNA — Match Intelligence ══
+    matchDNA: {
+      // Audience size preference (0-100 weight for each tier)
+      audienceTiers: { nano: 10, micro: 40, mid: 80, macro: 100, mega: 90 },
+      // Creator archetype affinity (-100 to +100)
+      archetypeAffinity: { model: 100, lifestyle: 60, fitness: 45, adultCreator: -20, agency: -40, humor: -30, visualCreator: 70, techCreator: 10 },
+      // Content platform priority
+      platformPriority: { instagram: 100, tiktok: 50, youtube: 40, onlyfans: -30, fansly: -30 },
+      // Geographic preference (empty = worldwide)
+      geoPreference: { regions: ['latam','us','europe'], boost: 15 },
+      // Monetization readiness (does the creator need to already monetize?)
+      monetizationReady: 60, // 0-100: 0=doesn't matter, 100=must already monetize
+      // Content quality bar (0-100)
+      qualityBar: 75,
+      // Brand safety requirement (0-100)
+      brandSafety: 80,
+      // Engagement rate importance (0-100)
+      engagementWeight: 70,
+      // Service type: 'b2b' (sells TO creators), 'b2c' (creators ARE the product), 'platform' (universal tool)
+      serviceType: 'b2c',
+      // Is this an exclusive/agency relationship?
+      exclusivity: 'preferred', // 'none', 'preferred', 'required'
+    },
     msgTemplates: {
       first: 'Hola {name}! 🤝 Soy de Ora — conectamos marcas con creadoras como tú. Tenemos oportunidades de colaboración con marcas que buscan tu perfil. ¿Te interesa saber más?',
       fu1: 'Hey {name}! 😊 Follow up de mi mensaje sobre Ora. Tenemos marcas buscando creadoras y tu perfil encaja perfecto. ¿Platicamos?',
@@ -423,6 +446,18 @@ const DEFAULT_COMPANIES = [
     idealProfile: 'Creadoras en fase de crecimiento (1K-500K) que necesitan más tráfico y audiencia. Perfiles activos que publican contenido regular, buscan crecer rápido, y están abiertas a estrategias de SFS y cross-promotion.',
     idealTags: ['crecimiento','growth','followers','tráfico','traffic','sfs','shoutout','audiencia','reach','viral','trending','reels','tiktok','contenido','creator','promo','cross promotion','engagement','creciendo','nueva','new creator'],
     antiTags: ['inactive','inactiva','no posts','privada','private'],
+    matchDNA: {
+      audienceTiers: { nano: 70, micro: 100, mid: 60, macro: 20, mega: 5 },
+      archetypeAffinity: { model: 60, lifestyle: 60, fitness: 60, adultCreator: 50, agency: 10, humor: 50, visualCreator: 60, techCreator: 40 },
+      platformPriority: { instagram: 80, tiktok: 90, youtube: 60, onlyfans: 40, fansly: 40 },
+      geoPreference: { regions: [], boost: 0 },
+      monetizationReady: 20,
+      qualityBar: 30,
+      brandSafety: 20,
+      engagementWeight: 40,
+      serviceType: 'platform',
+      exclusivity: 'none',
+    },
     msgTemplates: {
       first: 'Hola {name}! 🚀 Soy de Trafix — ayudamos a creadoras a crecer su audiencia con targeting inteligente. ¿Te gustaría multiplicar tu alcance?',
       fu1: 'Hey {name}! Follow up — en Trafix tenemos estrategias de crecimiento personalizadas. Tu perfil tiene mucho potencial 📈',
@@ -440,6 +475,18 @@ const DEFAULT_COMPANIES = [
     idealProfile: 'Creadoras que venden contenido exclusivo en OnlyFans, Fansly, o plataformas de suscripción. Modelos con contenido premium que necesitan proteger su IP. Perfiles con links a plataformas de pago en su bio.',
     idealTags: ['onlyfans','fansly','contenido exclusivo','premium','content creator','exclusive','suscripción','subscription','paid content','ppv','18+','adult creator','modelo exclusiva','contenido premium','fan platform','link in bio','beacons','allmylinks','linktr'],
     antiTags: ['menor','underage','kids','family','familia','infantil','niños'],
+    matchDNA: {
+      audienceTiers: { nano: 20, micro: 50, mid: 80, macro: 100, mega: 100 },
+      archetypeAffinity: { model: 70, lifestyle: 20, fitness: 30, adultCreator: 100, agency: 40, humor: -10, visualCreator: 60, techCreator: 5 },
+      platformPriority: { instagram: 40, tiktok: 20, youtube: 20, onlyfans: 100, fansly: 100 },
+      geoPreference: { regions: [], boost: 0 },
+      monetizationReady: 80,
+      qualityBar: 40,
+      brandSafety: 0,
+      engagementWeight: 30,
+      serviceType: 'platform',
+      exclusivity: 'none',
+    },
     msgTemplates: {
       first: 'Hola {name}! 🛡️ Soy de LeakHunter — protegemos el contenido de creadoras como tú. Hemos detectado que tu contenido podría estar en riesgo. ¿Te gustaría saber cómo te podemos ayudar?',
       fu1: 'Hey {name}! Follow up — la protección de tu contenido es clave. En LeakHunter monitoreamos 24/7 y hacemos takedowns automáticos 😊',
@@ -457,6 +504,18 @@ const DEFAULT_COMPANIES = [
     idealProfile: 'Creadoras con 10K+ seguidores que venden productos, servicios, o contenido. Perfiles con múltiples plataformas que necesitan centralizar links. Creadoras que ya usan Linktree/Beacons pero quieren mejor monetización.',
     idealTags: ['link in bio','linktree','beacons','allmylinks','monetización','revenue','e-commerce','tienda','shop','affiliate','afiliado','suscripción','contenido','creator','influencer','múltiples plataformas','youtube','tiktok','podcast','merch'],
     antiTags: ['no links','sin bio','empty bio'],
+    matchDNA: {
+      audienceTiers: { nano: 30, micro: 70, mid: 90, macro: 100, mega: 100 },
+      archetypeAffinity: { model: 60, lifestyle: 70, fitness: 60, adultCreator: 70, agency: 30, humor: 50, visualCreator: 60, techCreator: 50 },
+      platformPriority: { instagram: 90, tiktok: 70, youtube: 80, onlyfans: 60, fansly: 60 },
+      geoPreference: { regions: [], boost: 0 },
+      monetizationReady: 50,
+      qualityBar: 30,
+      brandSafety: 20,
+      engagementWeight: 50,
+      serviceType: 'platform',
+      exclusivity: 'none',
+    },
     msgTemplates: {
       first: 'Hola {name}! 🔗 Soy de PicLink — hacemos smart bio links que convierten clicks en dinero real. ¿Quieres duplicar tu revenue de link-in-bio?',
       fu1: 'Hey {name}! Follow up — PicLink puede optimizar todos tus links para maximizar conversiones. ¿Te cuento cómo? 😊',
@@ -474,6 +533,18 @@ const DEFAULT_COMPANIES = [
     idealProfile: 'Creadoras visuales de alto volumen — moda, belleza, fitness, lifestyle — que necesitan producir más contenido o automatizar interacciones con fans. Perfiles con estética definida y contenido visual de calidad.',
     idealTags: ['fotos','video','edición','creator','visual','calidad','producción','profesional','modelo','photography','aesthetic','estética','belleza','beauty','fashion','moda','fitness','lifestyle','contenido visual','reels','stories'],
     antiTags: ['low quality','baja calidad','pixelado'],
+    matchDNA: {
+      audienceTiers: { nano: 20, micro: 60, mid: 90, macro: 100, mega: 80 },
+      archetypeAffinity: { model: 90, lifestyle: 60, fitness: 50, adultCreator: 40, agency: 20, humor: 10, visualCreator: 95, techCreator: 30 },
+      platformPriority: { instagram: 100, tiktok: 60, youtube: 40, onlyfans: 50, fansly: 50 },
+      geoPreference: { regions: [], boost: 0 },
+      monetizationReady: 30,
+      qualityBar: 70,
+      brandSafety: 40,
+      engagementWeight: 50,
+      serviceType: 'platform',
+      exclusivity: 'none',
+    },
     msgTemplates: {
       first: 'Hola {name}! ✨ Soy de Lumina — usamos IA para elevar tu contenido visual al siguiente nivel. ¿Te gustaría producir contenido de calidad editorial sin esfuerzo?',
       fu1: 'Hey {name}! Follow up — Lumina puede transformar tu producción de contenido con IA. Misma calidad, 10x más rápido 😊',
@@ -491,6 +562,18 @@ const DEFAULT_COMPANIES = [
     idealProfile: 'Creadoras con base de fans/suscriptores activos en OnlyFans, Fansly, o Patreon (1K+ subs). Perfiles que necesitan gestionar su comunidad, mejorar retención, y personalizar engagement para maximizar revenue por fan.',
     idealTags: ['fans','suscriptores','comunidad','engagement','subscriber','onlyfans','fansly','patreon','membership','audiencia','retention','retención','community','chat','dm','mensajes','exclusive content','contenido exclusivo','top creator'],
     antiTags: ['no followers','sin seguidores','bot','fake'],
+    matchDNA: {
+      audienceTiers: { nano: 10, micro: 40, mid: 80, macro: 100, mega: 90 },
+      archetypeAffinity: { model: 50, lifestyle: 30, fitness: 30, adultCreator: 100, agency: 20, humor: 10, visualCreator: 40, techCreator: 5 },
+      platformPriority: { instagram: 40, tiktok: 20, youtube: 30, onlyfans: 100, fansly: 100 },
+      geoPreference: { regions: [], boost: 0 },
+      monetizationReady: 70,
+      qualityBar: 40,
+      brandSafety: 0,
+      engagementWeight: 60,
+      serviceType: 'platform',
+      exclusivity: 'none',
+    },
     msgTemplates: {
       first: 'Hola {name}! 💙 Soy de Blu — te ayudamos a gestionar y hacer crecer tu comunidad de fans. ¿Te gustaría conocer mejor a tu audiencia y ganar más?',
       fu1: 'Hey {name}! Follow up — con Blu puedes segmentar tu audiencia y personalizar tu engagement. Más conexión = más revenue 😊',
@@ -508,6 +591,18 @@ const DEFAULT_COMPANIES = [
     idealProfile: 'Modelos profesionales e influencers que necesitan contenido visual constante y de alta calidad. Creadoras con estética definida que quieren producir más sin depender de fotógrafos. Perfiles de moda, belleza, fitness, lifestyle.',
     idealTags: ['modelo','model','fotos','photoshoot','contenido','visual','influencer','producción','photography','content','profesional','fashion','moda','belleza','beauty','fitness','lifestyle','editorial','sesión de fotos','portfolio','book'],
     antiTags: ['no photos','sin fotos','text only'],
+    matchDNA: {
+      audienceTiers: { nano: 30, micro: 60, mid: 90, macro: 100, mega: 100 },
+      archetypeAffinity: { model: 100, lifestyle: 50, fitness: 70, adultCreator: 60, agency: 30, humor: -20, visualCreator: 95, techCreator: 5 },
+      platformPriority: { instagram: 100, tiktok: 50, youtube: 30, onlyfans: 70, fansly: 70 },
+      geoPreference: { regions: [], boost: 0 },
+      monetizationReady: 40,
+      qualityBar: 65,
+      brandSafety: 20,
+      engagementWeight: 40,
+      serviceType: 'b2c',
+      exclusivity: 'none',
+    },
     msgTemplates: {
       first: "Hola {name}! 📸 Soy de Let's Shoot — con IA puedes hacer photoshoots profesionales desde tu casa. ¿Te gustaría producir contenido editorial sin límites?",
       fu1: "Hey {name}! Follow up — Let's Shoot crea tu clon digital para fotos HD en cualquier locación. Sin fotógrafo, sin viajes 😊",
@@ -525,6 +620,18 @@ const DEFAULT_COMPANIES = [
     idealProfile: 'Agencias de talento, creadoras tech-savvy que quieren escalar sin límites físicos, o modelos que quieren un avatar virtual para plataformas adicionales. Perfiles con interés en tecnología, AI, o múltiples cuentas.',
     idealTags: ['avatar','virtual','ai','artificial intelligence','digital','tech','tecnología','automation','múltiples cuentas','escalar','scale','innovación','futurista','metaverso','nft','web3','content at scale'],
     antiTags: ['technophobe','anti tech','no technology'],
+    matchDNA: {
+      audienceTiers: { nano: 10, micro: 20, mid: 40, macro: 60, mega: 50 },
+      archetypeAffinity: { model: 40, lifestyle: 20, fitness: 15, adultCreator: 30, agency: 80, humor: 10, visualCreator: 35, techCreator: 90 },
+      platformPriority: { instagram: 60, tiktok: 50, youtube: 40, onlyfans: 40, fansly: 40 },
+      geoPreference: { regions: [], boost: 0 },
+      monetizationReady: 40,
+      qualityBar: 30,
+      brandSafety: 20,
+      engagementWeight: 20,
+      serviceType: 'b2c',
+      exclusivity: 'none',
+    },
     msgTemplates: {
       first: 'Hola {name}! 🤖 Soy de MakeMe — creamos avatares virtuales que generan contenido 24/7. ¿Te gustaría escalar tu presencia sin límites?',
       fu1: 'Hey {name}! Follow up — con MakeMe puedes crear tu influencer virtual y monetizarla en todas las plataformas 😊',
@@ -542,6 +649,18 @@ const DEFAULT_COMPANIES = [
     idealProfile: 'Todas las creadoras son potencialmente relevantes — Creator Radar es la herramienta de discovery del ecosistema. Prioriza perfiles con datos completos, engagement verificado, y presencia multi-plataforma.',
     idealTags: ['influencer','creator','modelo','contenido','social media','instagram','tiktok','youtube','marca','brand','colaboración','ambassador','embajadora','partnership','available','disponible','open to collabs','dms open'],
     antiTags: ['private','privada','no dms','cerrada'],
+    matchDNA: {
+      audienceTiers: { nano: 50, micro: 70, mid: 90, macro: 100, mega: 100 },
+      archetypeAffinity: { model: 70, lifestyle: 60, fitness: 50, adultCreator: 40, agency: 30, humor: 40, visualCreator: 60, techCreator: 40 },
+      platformPriority: { instagram: 100, tiktok: 80, youtube: 70, onlyfans: 30, fansly: 30 },
+      geoPreference: { regions: [], boost: 0 },
+      monetizationReady: 20,
+      qualityBar: 40,
+      brandSafety: 50,
+      engagementWeight: 60,
+      serviceType: 'platform',
+      exclusivity: 'none',
+    },
     msgTemplates: {
       first: 'Hola {name}! 📡 Soy de Creator Radar — tenemos una plataforma que conecta creadoras con las marcas perfectas para ellas. Tu perfil apareció en nuestro radar. ¿Te interesa?',
       fu1: 'Hey {name}! Follow up — Creator Radar encontró varias oportunidades que matchean con tu perfil. ¿Te cuento más? 😊',
@@ -559,6 +678,18 @@ const DEFAULT_COMPANIES = [
     idealProfile: 'Agencias de creadoras que gestionan 5+ talentos. Creadoras que operan como empresa con equipo propio. Managers de talento con alto volumen de operaciones que necesitan centralizar gestión.',
     idealTags: ['agencia','agency','gestión','management','operaciones','equipo','team','manager','talent','negocio','business','escalar','scale','empresa','company','multi-creator','múltiples creadoras','admin','dashboard','analytics','reporting'],
     antiTags: ['solo creator','individual','hobby'],
+    matchDNA: {
+      audienceTiers: { nano: 0, micro: 5, mid: 10, macro: 30, mega: 40 },
+      archetypeAffinity: { model: -10, lifestyle: -10, fitness: -10, adultCreator: -10, agency: 100, humor: -20, visualCreator: -10, techCreator: 20 },
+      platformPriority: { instagram: 50, tiktok: 30, youtube: 30, onlyfans: 40, fansly: 40 },
+      geoPreference: { regions: [], boost: 0 },
+      monetizationReady: 60,
+      qualityBar: 20,
+      brandSafety: 10,
+      engagementWeight: 10,
+      serviceType: 'b2b',
+      exclusivity: 'none',
+    },
     msgTemplates: {
       first: 'Hola {name}! ⚡ Soy de Maven — la plataforma operativa para agencias de creadoras. ¿Gestionas múltiples talentos? Podemos simplificar todo.',
       fu1: 'Hey {name}! Follow up — Maven integra 12 módulos en uno: CRM, finanzas, mensajería, analytics. Todo lo que necesitas 😊',
@@ -576,6 +707,18 @@ const DEFAULT_COMPANIES = [
     idealProfile: 'Creadoras de OnlyFans y plataformas de contenido exclusivo que quieren crecer con una agencia profesional. Modelos con potencial de monetización que buscan gestión completa — desde marketing hasta chat y protección legal. Perfiles en Miami o que quieren management remoto.',
     idealTags: ['onlyfans','fansly','content creator','modelo','model','exclusive','exclusivo','premium','adult creator','18+','miami','management','agencia','agency','chat','ppv','suscripción','subscription','monetización','revenue','creator economy','fan platform','contenido exclusivo','top creator','digital creator'],
     antiTags: ['menor','underage','kids','family','familia','infantil','brand safe only'],
+    matchDNA: {
+      audienceTiers: { nano: 30, micro: 60, mid: 90, macro: 100, mega: 80 },
+      archetypeAffinity: { model: 80, lifestyle: 20, fitness: 30, adultCreator: 100, agency: -20, humor: -30, visualCreator: 60, techCreator: 0 },
+      platformPriority: { instagram: 60, tiktok: 40, youtube: 20, onlyfans: 100, fansly: 90 },
+      geoPreference: { regions: ['us','latam'], boost: 20 },
+      monetizationReady: 50,
+      qualityBar: 55,
+      brandSafety: 0,
+      engagementWeight: 50,
+      serviceType: 'b2c',
+      exclusivity: 'preferred',
+    },
     msgTemplates: {
       first: 'Hola {name}! 💎 Soy de KASH Agency — somos una agencia de management en Miami con 50+ creadoras. Ofrecemos gestión 360°: marketing, chat 24/7, producción y protección legal. ¿Te gustaría saber cómo podemos hacer crecer tu cuenta?',
       fu1: 'Hey {name}! Follow up — en KASH tenemos 94% de retención porque nuestras creadoras CRECEN de verdad. Sin contratos de permanencia, todo transparente. ¿Hablamos? 😊',
@@ -585,127 +728,199 @@ const DEFAULT_COMPANIES = [
   },
 ];
 
-/* ─── Match Scoring Engine v2 — Industry-aware ─── */
+/* ─── Match Scoring Engine v3 — DNA-driven Intelligence ─── */
+
+// Parse follower count to raw number
+function parseFollowers(f) {
+  if (!f) return 0;
+  const s = String(f).replace(/,/g,'').trim().toUpperCase();
+  const m = s.match(/^([\d.]+)\s*([KMB]?)$/);
+  if (!m) return parseInt(s,10) || 0;
+  const num = parseFloat(m[1]);
+  const mult = { K: 1e3, M: 1e6, B: 1e9 }[m[2]] || 1;
+  return Math.round(num * mult);
+}
+
+// Determine audience tier from follower count
+function getAudienceTier(followers) {
+  const n = parseFollowers(followers);
+  if (n === 0) return 'nano';
+  if (n < 10000) return 'nano';    // <10K
+  if (n < 50000) return 'micro';   // 10K-50K
+  if (n < 500000) return 'mid';    // 50K-500K
+  if (n < 1000000) return 'macro'; // 500K-1M
+  return 'mega';                   // 1M+
+}
+
+// Detect creator archetypes — returns object with confidence 0-1
+function detectArchetypes(inf) {
+  const text = [inf.bio||'', inf.category||'', inf.contentType||'', inf.links||'', inf.name||''].join(' ').toLowerCase();
+  const has = (rx) => rx.test(text);
+  return {
+    model: has(/model|modelo|fashion|moda|belleza|beauty|glamour|bikini|swim|lingerie/) ? 1 : 0,
+    lifestyle: has(/lifestyle|travel|viajes|lujo|luxury/) ? 1 : 0,
+    fitness: has(/fitness|gym|fit|workout|health|deport/) ? 1 : 0,
+    adultCreator: has(/onlyfans|fansly|18\+|adult|exclusive content|contenido exclusivo|ppv|fan platform/) ? 1 : 0,
+    agency: has(/agencia|agency|management|manager|talent|multi.*creator/) ? 1 : 0,
+    humor: has(/humor|comedia|comedy|entretenimiento|memes|funny/) ? 1 : 0,
+    visualCreator: has(/model|modelo|fashion|moda|belleza|beauty|glamour|bikini|swim|lingerie|fitness|gym|fit|foto|photo|visual|estética|aesthetic/) ? 1 : 0,
+    techCreator: has(/tech|tecnolog|ai|artificial|digital|web3|nft|software|developer/) ? 1 : 0,
+  };
+}
+
+// Detect platforms mentioned in creator profile
+function detectPlatforms(inf) {
+  const text = [inf.bio||'', inf.links||'', inf.category||''].join(' ').toLowerCase();
+  return {
+    instagram: 1, // they're all from IG
+    tiktok: /tiktok|tik tok/.test(text) ? 1 : 0,
+    youtube: /youtube|youtu\.be|yt/.test(text) ? 1 : 0,
+    onlyfans: /onlyfans|only fans|of link/.test(text) ? 1 : 0,
+    fansly: /fansly/.test(text) ? 1 : 0,
+  };
+}
+
+// Check if creator is in preferred geographic region
+function checkGeoMatch(inf, geoPreference) {
+  if (!geoPreference || !geoPreference.regions || geoPreference.regions.length === 0) return 0;
+  const country = (inf.country || '').toLowerCase();
+  const city = (inf.city || '').toLowerCase();
+  const geo = country + ' ' + city;
+  const LATAM = ['colombia','mexico','argentina','chile','peru','brasil','brazil','ecuador','venezuela','dominicana','panama','costa rica','puerto rico','uruguay','paraguay','bolivia'];
+  const US = ['usa','united states','us','estados unidos','miami','new york','los angeles','california','texas','florida'];
+  const EUROPE = ['spain','españa','uk','united kingdom','france','germany','italia','italy','portugal','netherlands'];
+  for (const region of geoPreference.regions) {
+    if (region === 'latam' && LATAM.some(c => geo.includes(c))) return geoPreference.boost || 10;
+    if (region === 'us' && US.some(c => geo.includes(c))) return geoPreference.boost || 10;
+    if (region === 'europe' && EUROPE.some(c => geo.includes(c))) return geoPreference.boost || 10;
+    if (geo.includes(region.toLowerCase())) return geoPreference.boost || 10;
+  }
+  return 0;
+}
+
+// Estimate monetization signals from profile
+function estimateMonetization(inf) {
+  const text = [inf.bio||'', inf.links||''].join(' ').toLowerCase();
+  let signals = 0;
+  if (/linktree|beacons|allmylinks|linktr|link in bio|linkr/.test(text)) signals += 25;
+  if (/onlyfans|fansly|patreon|subscribe|suscri/.test(text)) signals += 35;
+  if (/shop|tienda|merch|store|compra|buy/.test(text)) signals += 20;
+  if (/booking|book|reserv|contrat|hire|collab/.test(text)) signals += 15;
+  if (inf.links) signals += 10;
+  return Math.min(100, signals);
+}
+
 function calculateMatch(company, inf) {
-  if (!company?.idealTags || company.idealTags.length === 0) return 50;
+  const dna = company.matchDNA;
+
+  // Fallback for companies without DNA — use legacy tag matching
+  if (!dna) {
+    const idealTags = (company.idealTags || []).map(t => t.toLowerCase());
+    const antiTags = (company.antiTags || []).map(t => t.toLowerCase());
+    const text = [inf.bio||'', inf.category||'', inf.contentType||'', inf.links||'', inf.name||''].join(' ').toLowerCase();
+    let s = 30;
+    for (const tag of idealTags) { if (text.includes(tag)) s += 5; }
+    for (const tag of antiTags) { if (tag && text.includes(tag)) s -= 15; }
+    if (inf.aiScore >= 7) s += 10; else if (inf.aiScore >= 4) s += 5;
+    return Math.max(0, Math.min(100, s));
+  }
+
+  // ═══ DNA-DRIVEN SCORING ═══
+  const archetypes = detectArchetypes(inf);
+  const platforms = detectPlatforms(inf);
+  const tier = getAudienceTier(inf.followers);
+  const hasFollowers = inf.followers && inf.followers !== '0';
+  const isActive = hasFollowers && (inf.category || inf.bio);
+
+  // 1. ARCHETYPE AFFINITY (weight: 35%)
+  // How well do the creator's archetypes match what the company wants?
+  let archetypeScore = 0;
+  let archetypeCount = 0;
+  const af = dna.archetypeAffinity || {};
+  for (const [arch, confidence] of Object.entries(archetypes)) {
+    if (confidence > 0 && af[arch] !== undefined) {
+      archetypeScore += af[arch] * confidence;
+      archetypeCount++;
+    }
+  }
+  // If no archetypes detected, use a neutral baseline
+  if (archetypeCount === 0) {
+    archetypeScore = 20; // mild positive — unknown is not bad
+  } else {
+    archetypeScore = archetypeScore / archetypeCount; // avg of matching archetypes
+  }
+  // Normalize from -100..+100 to 0..100
+  archetypeScore = Math.max(0, Math.min(100, (archetypeScore + 100) / 2));
+
+  // 2. AUDIENCE SIZE FIT (weight: 20%)
+  const tierScores = dna.audienceTiers || { nano:50, micro:50, mid:50, macro:50, mega:50 };
+  const audienceScore = tierScores[tier] || 30;
+
+  // 3. PLATFORM ALIGNMENT (weight: 15%)
+  let platformScore = 0;
+  let platformWeightTotal = 0;
+  const pp = dna.platformPriority || {};
+  for (const [plat, creatorHas] of Object.entries(platforms)) {
+    if (pp[plat] !== undefined) {
+      platformScore += (creatorHas > 0 ? pp[plat] : 0);
+      platformWeightTotal += Math.abs(pp[plat]);
+    }
+  }
+  platformScore = platformWeightTotal > 0 ? (platformScore / platformWeightTotal) * 100 : 50;
+
+  // 4. TAG MATCHING (weight: 15%)
   const idealTags = (company.idealTags || []).map(t => t.toLowerCase());
   const antiTags = (company.antiTags || []).map(t => t.toLowerCase());
-  const idealDesc = (company.idealProfile || '').toLowerCase();
-  const coId = (company.id || '').toLowerCase();
+  const text = [inf.bio||'', inf.category||'', inf.contentType||'', inf.links||'', inf.name||''].join(' ').toLowerCase();
+  let tagHits = 0;
+  for (const tag of idealTags) { if (text.includes(tag)) tagHits++; }
+  let antiHits = 0;
+  for (const tag of antiTags) { if (tag && text.includes(tag)) antiHits++; }
+  let tagScore = idealTags.length > 0 ? Math.min(100, (tagHits / Math.min(idealTags.length, 6)) * 100) : 50;
+  tagScore = Math.max(0, tagScore - (antiHits * 30));
 
-  const modelText = [inf.bio||'', inf.category||'', inf.contentType||'', inf.links||'', inf.name||''].join(' ').toLowerCase();
-  const cat = (inf.category || '').toLowerCase();
-  const linksLow = (inf.links || '').toLowerCase();
-  const hasFollowers = inf.followers && inf.followers !== '0';
-  const isActiveCreator = hasFollowers && (cat || inf.bio);
+  // 5. QUALITY & AI SCORE (weight: 10%)
+  let qualityScore = 50; // neutral
+  if (inf.aiScore >= 8) qualityScore = 95;
+  else if (inf.aiScore >= 7) qualityScore = 80;
+  else if (inf.aiScore >= 5) qualityScore = 60;
+  else if (inf.aiScore >= 3) qualityScore = 40;
+  else if (inf.aiScore > 0) qualityScore = 25;
+  // Scale by company's quality bar: high bar = more sensitive to quality
+  const qualityBar = dna.qualityBar || 50;
+  qualityScore = qualityBar > 50 ? qualityScore * (qualityBar / 75) : qualityScore;
+  qualityScore = Math.min(100, qualityScore);
 
-  // Detect creator archetypes from their data
-  const isModel = /model|modelo|fashion|moda|belleza|beauty|glamour|bikini|swim|lingerie/i.test(modelText);
-  const isLifestyle = /lifestyle|travel|viajes|lujo|luxury/i.test(modelText);
-  const isFitness = /fitness|gym|fit|workout|health|deport/i.test(modelText);
-  const isAdultCreator = /onlyfans|fansly|18\+|adult|exclusive content|contenido exclusivo|ppv|fan platform/i.test(modelText);
-  const isAgency = /agencia|agency|management|manager|talent|multi.*creator/i.test(modelText);
-  const isHumor = /humor|comedia|comedy|entretenimiento|memes|funny/i.test(modelText);
-  const isVisualCreator = isModel || isFitness || /foto|photo|visual|estética|aesthetic/i.test(modelText);
+  // 6. BONUS SIGNALS (weight: 5%)
+  let bonusScore = 0;
+  // Geographic match
+  bonusScore += checkGeoMatch(inf, dna.geoPreference);
+  // Monetization readiness
+  const monetization = estimateMonetization(inf);
+  const monetReq = dna.monetizationReady || 0;
+  if (monetReq > 50 && monetization > 50) bonusScore += 15;
+  else if (monetReq > 50 && monetization < 20) bonusScore -= 10;
+  // Active creator bonus
+  if (isActive) bonusScore += 10;
+  bonusScore = Math.max(0, Math.min(100, bonusScore + 40)); // normalize around 40 base
 
-  let score = 15; // lower base, more room for intelligence
+  // ═══ WEIGHTED COMBINATION ═══
+  const weights = { archetype: 0.35, audience: 0.20, platform: 0.15, tags: 0.15, quality: 0.10, bonus: 0.05 };
+  let finalScore = (
+    archetypeScore * weights.archetype +
+    audienceScore * weights.audience +
+    platformScore * weights.platform +
+    tagScore * weights.tags +
+    qualityScore * weights.quality +
+    bonusScore * weights.bonus
+  );
 
-  // ══════ UNIVERSAL UTILITY COMPANIES ══════
-  // Some companies are useful to virtually ALL active creators
-  if (coId === 'piclink') {
-    // Everyone with an audience needs smart bio links
-    if (isActiveCreator) score += 35;
-    if (linksLow) score += 15; // already has links = even better match
-    if (isModel || isLifestyle || isFitness) score += 10;
-  }
-  if (coId === 'leakhunter') {
-    // Any content creator benefits from content protection
-    if (isActiveCreator) score += 25;
-    if (isAdultCreator) score += 35; // critical for adult creators
-    if (isModel) score += 15; // models get pirated a lot
-    if (isVisualCreator) score += 10;
-  }
-  if (coId === 'creator_radar') {
-    // Discovery platform — relevant for all real creators
-    if (isActiveCreator) score += 30;
-    if (isModel || isLifestyle) score += 10;
-  }
-
-  // ══════ BRAND & PROFESSIONAL COMPANIES ══════
-  if (coId === 'ora') {
-    // Brand management — PERFECT for professional models, fashion, lifestyle
-    if (isModel) score += 45;
-    if (isLifestyle) score += 15;
-    if (isFitness) score += 12;
-    if (isVisualCreator && !isModel) score += 10;
-    if (inf.aiScore >= 7) score += 10; // quality profile
-    if (isHumor && !isModel) score -= 10; // humor without model = less brand-ready
-    if (isAgency) score -= 15; // agencies use Maven, not Ora
+  // Special handling: B2B companies (Maven) — non-agencies get hard cap
+  if (dna.serviceType === 'b2b' && !archetypes.agency) {
+    finalScore = Math.min(finalScore, 15);
   }
 
-  // ══════ GROWTH COMPANIES ══════
-  if (coId === 'trafix') {
-    if (isActiveCreator) score += 15;
-    // Better for growing creators, less for huge ones
-    const fNum = parseInt(String(inf.followers).replace(/[KMB,\.]/g,''),10) || 0;
-    if (fNum > 0 && fNum < 500) score += 20; // growing phase
-    else if (isActiveCreator) score += 10;
-    if (isModel || isLifestyle || isFitness) score += 8;
-  }
-
-  // ══════ VISUAL CONTENT COMPANIES ══════
-  if (coId === 'lets_shoot') {
-    if (isModel) score += 45;
-    if (isVisualCreator) score += 20;
-    if (isFitness) score += 15;
-    if (isLifestyle) score += 10;
-    if (isHumor && !isVisualCreator) score -= 10;
-  }
-  if (coId === 'lumina') {
-    if (isVisualCreator) score += 30;
-    if (isModel) score += 20;
-    if (isFitness) score += 10;
-    if (isLifestyle) score += 8;
-  }
-
-  // ══════ SUBSCRIPTION/FAN COMPANIES ══════
-  if (coId === 'blu') {
-    if (isAdultCreator) score += 40;
-    if (isActiveCreator && !isAdultCreator) score += 10;
-    if (isModel && !isAdultCreator) score += 8;
-  }
-  if (coId === 'kash') {
-    if (isAdultCreator) score += 45;
-    if (isModel && !isAdultCreator) score += 12;
-    if (isActiveCreator && !isModel && !isAdultCreator) score += 5;
-    if (isHumor) score -= 10;
-  }
-
-  // ══════ TECH/SCALE COMPANIES ══════
-  if (coId === 'makeme') {
-    // Very niche — virtual influencers
-    if (isAgency) score += 20;
-    if (isActiveCreator && !isAgency) score += 5; // minimal for regular creators
-  }
-  if (coId === 'maven') {
-    // ONLY for agencies — individual creators should be ~10%
-    if (isAgency) score += 55;
-    if (!isAgency && isActiveCreator) { score = Math.min(score, 12); } // cap at ~12% for non-agencies
-  }
-
-  // ══════ GENERAL TAG MATCHING (lighter weight now) ══════
-  for (const tag of idealTags) {
-    if (modelText.includes(tag)) score += 3;
-  }
-  for (const tag of antiTags) {
-    if (tag && modelText.includes(tag)) score -= 15;
-  }
-
-  // ══════ AI QUALITY BONUS ══════
-  if (inf.aiScore >= 7) score += 6;
-  else if (inf.aiScore >= 4) score += 3;
-
-  return Math.max(0, Math.min(100, score));
+  return Math.max(0, Math.min(100, Math.round(finalScore)));
 }
 
 function getMatchColor(pct) {
@@ -764,8 +979,20 @@ function getCompanies() {
     const defaultMap = Object.fromEntries(DEFAULT_COMPANIES.map(c => [c.id, c]));
     saved = saved.map(c => {
       const def = defaultMap[c.id];
-      if (def && (!c.idealTags || c.idealTags.length === 0 || (def.antiTags && def.antiTags.length > 0 && (!c.antiTags || c.antiTags.length === 0)))) {
-        return { ...c, idealTags: def.idealTags, antiTags: def.antiTags, idealProfile: def.idealProfile };
+      if (def) {
+        const updates = {};
+        // Sync tags if missing
+        if (!c.idealTags || c.idealTags.length === 0) updates.idealTags = def.idealTags;
+        if (def.antiTags && def.antiTags.length > 0 && (!c.antiTags || c.antiTags.length === 0)) {
+          updates.antiTags = def.antiTags;
+          updates.idealProfile = def.idealProfile;
+        }
+        // Always sync matchDNA from defaults (ensures latest intelligence)
+        if (def.matchDNA && (!c.matchDNA || JSON.stringify(c.matchDNA) !== JSON.stringify(def.matchDNA))) {
+          updates.matchDNA = def.matchDNA;
+          added = true; // flag to save
+        }
+        if (Object.keys(updates).length > 0) return { ...c, ...updates };
       }
       return c;
     });
