@@ -1089,7 +1089,7 @@ function applyTheme(theme) {
   const root = document.documentElement;
   root.style.setProperty('--company-accent', theme.accent);
   root.style.setProperty('--company-accent2', theme.accent2);
-  root.style.setProperty('--bg', theme.bg);
+  // Don't override --bg inline — let [data-theme] CSS rules control it
   root.style.setProperty('--company-glow', theme.glow);
 }
 
@@ -1803,8 +1803,8 @@ function App() {
   const activeCo = companies.find(c => c.id === activeCoId) || companies[0];
   const activeTheme = getTheme(activeCo?.theme);
 
-  // Apply company theme whenever company changes
-  useEffect(() => { if (activeTheme) applyTheme(activeTheme); }, [activeCo?.theme]);
+  // Apply company theme whenever company or dark/light mode changes
+  useEffect(() => { if (activeTheme) applyTheme(activeTheme); }, [activeCo?.theme, theme]);
 
   // Apply dark/light theme
   useEffect(() => {
